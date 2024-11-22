@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 import userAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/bUserAdministration/aUserAPIEndpoints";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bounce, toast } from "react-toastify";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
 
@@ -201,7 +201,7 @@ const PegasusSignInComponent = () => {
               <HyperLink2 href={fullRoute.aGlobalRoute.bProtectedRoute.aAuthenticationRoute.cForgotPasswordRoute}>Forget Password?</HyperLink2>
             </Para>
             <HorizontalLine></HorizontalLine>
-            <HyperLink2 href={fullRoute.aGlobalRoute.bProtectedRoute.aAuthenticationRoute.aSignInRoute}>Pegasus Customer?</HyperLink2>
+            <Link to={fullRoute.aGlobalRoute.bProtectedRoute.aAuthenticationRoute.aSignInRoute}>Pegasus Customer?</Link>
             {/* <GoogleLogin
               onSuccess={responseGoogleSuccess}
               onFailure={responseGoogleFailure}
