@@ -1,0 +1,268 @@
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+
+const ButtonLinkone = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 5px;
+  //padding: 8px 20px;
+  flex-basis:6.5%;
+  
+  
+  font-size: 1.1rem;
+  background-color: #fff;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #f0f7ff;
+  }
+`;
+
+const ButtonLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 5px;
+  padding: 8px 20px;
+  flex-basis:6.5%;
+  border: 1px solid #242424;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  background-color: #fff;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #f0f7ff;
+  }
+`;
+
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+`;
+
+
+
+const PageHeading = styled.h1`
+  margin: 20px 50px 10px 50px;
+  font-weight: 300;
+  letter-spacing: 0.1rem;
+  font-size: 3rem;
+  font-family: Segoe UI, sans-serif;
+`;
+
+const Form = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  margin: 10px 50px 20px 50px;
+  height: 60px;
+`;
+
+const SearchButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  margin: 10px 5px 10px 10px;
+  padding: 8px 20px;
+  flex-basis: 9.5%;
+  border: 1px solid #242424;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #f0f7ff;
+  }
+`;
+
+const Image = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+`;
+
+const Para = styled.span`
+  margin: 0;
+  padding: 0;
+`;
+
+
+const Input = styled.input`
+  width: 100%;
+  padding: 8px 20px;
+  margin: 8px 0;
+  flex-basis: 80%;
+  border: 1px solid #f0f7ff;
+  border-radius: 10px;
+  background-color: #f0f7ff;
+  font-size: 0.9rem;
+  letter-spacing: 0.1rem;
+`;
+
+// const Table = styled.table`
+//   margin: 15px 50px;
+//   width: calc(100% - 100px);
+//   border-collapse: collapse;
+//   border: 1px solid #b5b5b5;
+//   border-radius: 15px;
+//   overflow: hidden;
+
+//   th,
+//   td {
+//     padding: 10px;
+//     text-align: center;
+//   }
+
+//   th {
+//     font-weight: 600;
+//   }
+
+//   tr:last-child td {
+//     border-bottom: none;
+//   }
+
+//   tr:first-child {
+//     background-color: #f0f7ff;
+//   }
+// `;
+
+
+
+
+
+// const TableSection = styled.tr`
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   padding: 3px 0px;
+//   border-bottom: 1px solid #b5b5b5;
+// `;
+
+// const TableHeading = styled.th`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   padding: 10px;
+//   background-color: #f0f7ff;
+// `;
+
+// const TableBody = styled.td`
+//   display: flex;
+//   align-items: center;
+//   padding: 10px;
+// `;
+
+// const Icon = styled.img`
+//   width: 20px;
+//   height: 20px;
+//   cursor: pointer;
+// `;
+
+const Table = styled.table`
+  margin: 15px 50px;
+  width: calc(100% - 100px);
+  border-collapse: collapse;
+  border: 1px solid #b5b5b5;
+  border-radius: 15px;
+  overflow: hidden;
+
+  th,
+  td {
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:first-child {
+    background-color: #f0f7ff;
+  }
+`;
+
+const TableSection = styled.tr`
+  border-bottom: 1px solid #b5b5b5;
+
+  &:nth-child(odd) {  // Targeting odd rows
+    background-color: #FFF9E6;
+  }
+  &:nth-child(even) { // Targeting even rows
+    background-color: #ffffff;
+  }
+`;
+
+const TableHeading = styled.th`
+  padding: 10px;
+  background-color: #f0f7ff;
+  text-align: center;
+  vertical-align: middle;
+`;
+
+const TableBody = styled.td`
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+
+  &:nth-child(1) { // Assuming the firm name is the first column
+    position: relative;
+  }
+`;
+const Icon = styled.img`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin: auto;
+  display: block;
+`;
+
+const ViewButton = styled.button`
+  padding: 5px 10px;
+  margin-right: 10px;
+  background-color: #f0f7ff;
+  border: 1px solid #242424;
+  border-radius: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
+
+export {
+  ButtonLinkone,
+  ButtonLink,
+  MainContainer,
+  PageHeading,
+  Form,
+  SearchButton,
+  Image,
+  Para,
+  Input,
+  // Table,
+  // TableSection,
+  // TableHeading,
+  // TableBody,
+  // Icon,
+  Table,
+  TableSection,
+  TableHeading,
+  TableBody,
+  Icon,
+  ViewButton,
+}
