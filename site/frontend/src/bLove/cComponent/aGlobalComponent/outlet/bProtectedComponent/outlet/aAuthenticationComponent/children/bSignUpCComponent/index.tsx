@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, ContactInfo, ContactInput, Container, ContentWrapper, ContinueLink, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Form, HyperLink, Image, ImageWrapper, Input, InputHeading, IssueDate, MainHeading, PageLink, Para } from "./style";
 import LessThanSign from '@/bLove/hAsset/icon/LessThanSign.png'
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import userAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/bUserAdministration/aUserAP
 import fullRoute from "@/bLove/gRoute/bFullRoute";
 import { Bounce, toast } from "react-toastify";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
+import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
 
 
 const SignUpCComponent = () => {
@@ -26,6 +27,9 @@ const SignUpCComponent = () => {
 
     organizationSubmitAPITrigger: organizationAPIEndpoint.useOrganizationCreateAPIMutation()[0],
     organizationSubmitAPIResponse: organizationAPIEndpoint.useOrganizationCreateAPIMutation()[1],
+
+    licenseSubmitAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
+    licenseSubmitAPIResponse: licenseAPIEndpoint.useLicenseCreateAPIMutation()[1],
   }
   
   // Variable
@@ -148,10 +152,6 @@ const SignUpCComponent = () => {
         dName: finalFormData.name_of_firm,
         dType: finalFormData.type_of_firm,
         dCompanyEmail: finalFormData.company_email,
-        dLicenseNumber: finalFormData.licenseNumber,
-        dIssueDate: finalFormData.issueDate,
-        dExpiryDate: finalFormData.expiryDate,
-        dSelectedLicense: finalFormData.selectedLicense,
         dPhoneNumber: finalFormData.phone_number,
         dAddress: finalFormData.address,
         dSelectedState: finalFormData.selectedState,
@@ -159,6 +159,115 @@ const SignUpCComponent = () => {
         dCountry: finalFormData.country,
         dPin: finalFormData.pin,
         dPanNumber: finalFormData.pan_number,
+
+        dLicenseNumber: finalFormData.licenseNumber,
+        dIssueDate: finalFormData.issueDate,
+        dExpiryDate: finalFormData.expiryDate,
+        dSelectedLicense: finalFormData.selectedLicense,
+      } });
+
+      console.log(serverResponse)
+
+      if (serverResponse.error && (serverResponse.error as any).originalStatus === 404) {
+        return toast.error(("There was a problem with server connection."), {
+          position: "bottom-right",
+          autoClose: 5000,
+          transition: Bounce,
+        });
+
+        // return toast({
+        //   variant: "destructive",
+        //   title: "Uh oh! Cannot connect with server.",
+        //   description: "There was a problem with server connection.",
+        // })  
+      } 
+      
+      if (serverResponse.error && (serverResponse.error as any)?.data?.success === false) {
+        return toast.error(((serverResponse.error as any).data.message || "There was an error occured."), {
+          position: "bottom-right",
+          autoClose: 5000,
+          transition: Bounce,
+        });
+
+        // return toast({
+        //   variant: "destructive",
+        //   title: "Uh oh! Something went wrong.",
+        //   description: serverResponse.error.data.message || "There was an error occured.",
+        // })  
+      }
+
+      if (serverResponse.data && serverResponse.data?.success === true) {
+        toast.success((serverResponse.data.message), {
+          position: "bottom-right",
+          autoClose: 5000,
+          transition: Bounce,
+        });
+
+        // toast({
+        //   variant: "default",
+        //   title: "Yayy! Congratulations...",
+        //   description: serverResponse.data.message,
+        // })
+        // form.reset();
+
+        // Redux.dispatch(
+        //   Redux.action.extraObjectAction({
+        //     ProfileRetrieve: {
+        //       _id: serverResponse.data.user_register._id
+        //     }
+        //   })
+        // )
+
+        await licenseAPIHandler(finalFormData, (serverResponse.data as any)?.create?._id)
+        // return navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.aOrganizationRoute.aListRoute);
+      }
+
+      return;
+
+    } catch (error: any) {
+      return toast.error(("There was a problem with try block code"), {
+        position: "bottom-right",
+        autoClose: 5000,
+        transition: Bounce,
+      });
+
+      // return toast({
+      //   variant: "destructive",
+      //   title: "Uh oh! Bad code... Bad code.",
+      //   description: "There was a problem with try block code",
+      // })
+    }    
+
+  }
+
+  const licenseAPIHandler = async (finalFormData: any, id: string) => {
+    try {
+      const serverResponse = await APICall.licenseSubmitAPITrigger({ body: {
+        // eFirstname: finalFormData.username,
+        // eLastname: finalFormData.username,
+        // eMobile: finalFormData.phone_number,
+        // eEmail: finalFormData.email,
+        // ePassword: finalFormData.password,
+
+        // dRole: "user"
+
+        // dName: finalFormData.name_of_firm,
+        // dType: finalFormData.type_of_firm,
+        // dCompanyEmail: finalFormData.company_email,
+        // dPhoneNumber: finalFormData.phone_number,
+        // dAddress: finalFormData.address,
+        // dSelectedState: finalFormData.selectedState,
+        // dSelectedCity: finalFormData.selectedCity,
+        // dCountry: finalFormData.country,
+        // dPin: finalFormData.pin,
+        // dPanNumber: finalFormData.pan_number,
+        
+        aTitle: finalFormData.licenseNumber,
+        cOrganization: id,
+        dLicenseNumber: finalFormData.licenseNumber,
+        dIssueDate: finalFormData.issueDate,
+        dExpiryDate: finalFormData.expiryDate,
+        dSelectedLicense: finalFormData.selectedLicense,
       } });
 
       console.log(serverResponse)
@@ -247,6 +356,12 @@ const SignUpCComponent = () => {
     registerAPIHandler(finalFormData)
 
   };
+
+  // Extra Render
+  useEffect(() => {
+    console.log(formData)
+  }, [formData])
+  
 
   // JSX
   return (

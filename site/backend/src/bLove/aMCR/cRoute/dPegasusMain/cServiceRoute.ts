@@ -12,7 +12,7 @@ const router = express.Router();
 router.route("/list").get(
   rateLimiterMiddleware("service-list", 60, 10), 
   authenticationMiddleware,
-  checkCacheMiddleware("service-list", "Product", "List"), 
+  checkCacheMiddleware("service-list", "Service", "List"), 
   serviceListValidation(), validatorMiddleware, 
   serviceController().list
 );
@@ -28,7 +28,7 @@ router.route("/create").post(
 router.route("/retrieve/:id").get(
   rateLimiterMiddleware("service-retrieve", 60, 10), 
   authenticationMiddleware,
-  checkCacheMiddleware("service-retrieve", "Product", "Retrieve"), 
+  checkCacheMiddleware("service-retrieve", "Service", "Retrieve"), 
   serviceRetrieveValidation(), validatorMiddleware, 
   serviceController().retrieve
 )

@@ -55,9 +55,9 @@ const ServiceListPage = () => {
     <React.Fragment>
       {/* ServiceListPage */}
 
-      <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.bCreateRoute} >Create</Link>
+      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.bCreateRoute} >Create</Link> */}
 
-      {APICall.listAPIResponse.isLoading ? null : 
+      {/* {APICall.listAPIResponse.isLoading ? null : 
         APICall.listAPIResponse.isError ? null :
           APICall.listAPIResponse.isSuccess ? (
             APICall.listAPIResponse.data.success ? (
@@ -67,7 +67,7 @@ const ServiceListPage = () => {
                     APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
                       <div key={index} >
                         {each.aTitle}
-                        {/* <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.dUpdateRoute}/${each._id}`} >Update</Link> */}
+                        <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.dUpdateRoute}/${each._id}`} >Update</Link>
                       </div> 
                     ))
                   }
@@ -75,16 +75,16 @@ const ServiceListPage = () => {
               ) : []
             ) : []
           ) : []
-      }
+      } */}
 
-      <div>
+      {/* <div>
         ---------------------------------------------------------------------------------------
-      </div>
+      </div> */}
 
       <>
         <TopNavBarComponent />
         <MainContainer>
-          <PageHeading>Your Services</PageHeading>
+          <PageHeading>Your Enrolled Services</PageHeading>
           <Form>
             <Input
               type="text"

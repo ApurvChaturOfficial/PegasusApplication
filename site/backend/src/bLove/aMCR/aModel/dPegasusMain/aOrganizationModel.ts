@@ -7,6 +7,8 @@ export type OrganizationModelType = DefaultSchemaUtilityType & {
   // cCategory: {};
   // cTag: {}[];
 
+  cService: {}[];
+
   dName?: string,
   dType?: string,
   dCompanyEmail?: string,
@@ -26,6 +28,8 @@ export type OrganizationModelType = DefaultSchemaUtilityType & {
 
 const schema = new mongoose.Schema<OrganizationModelType>({
   ...DefaultSchemaUtility.schema.obj,
+
+  cService: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ServiceModel' }] ,
 
   dName: { type: String },
   dType: { type: String },

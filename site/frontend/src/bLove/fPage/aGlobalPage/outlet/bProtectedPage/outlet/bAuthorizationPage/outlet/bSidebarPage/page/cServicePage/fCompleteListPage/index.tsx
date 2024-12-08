@@ -98,7 +98,6 @@ const ServiceCompleteListPage = () => {
               <Table>
                 <thead>
                   <tr>
-                    <TableHeading>Organization</TableHeading>
                     <TableHeading>Form Number</TableHeading>
                     <TableHeading>Type of Firm</TableHeading>
                     <TableHeading>Category</TableHeading>
@@ -119,7 +118,6 @@ const ServiceCompleteListPage = () => {
                               {
                                 APICall.listAPIResponse.data.list?.map((each: any, index: any) => (
                                   <tr key={index}>
-                                    <TableBody>{each.cOrganization?.aTitle}</TableBody>
                                     <TableBody>{each.dFormNumber}</TableBody>
                                     <TableBody>{each.dFormType}</TableBody>
                                     <TableBody>{each.dCategory}</TableBody>

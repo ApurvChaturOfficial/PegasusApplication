@@ -4,8 +4,6 @@ import { DefaultSchemaUtility, DefaultSchemaUtilityType } from '../../../cUtilit
 
 
 export type ServiceModelType = DefaultSchemaUtilityType & {
-  cOrganization?: string,
-
   dFormNumber?: string,
   dFormType?: string,
   dCategory?: string,
@@ -19,8 +17,6 @@ export type ServiceModelType = DefaultSchemaUtilityType & {
 
 const schema = new mongoose.Schema<ServiceModelType>({
   ...DefaultSchemaUtility.schema.obj,
-
-  cOrganization: { type: mongoose.Schema.Types.ObjectId, ref: 'OrganizationModel' } ,
   
   dFormNumber: { type: String },
   dFormType: { type: String },

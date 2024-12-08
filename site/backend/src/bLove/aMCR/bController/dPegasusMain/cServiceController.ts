@@ -14,7 +14,6 @@ const serviceController = (Model=ServiceModel, Label="Service") => ({
       const list = await Model.find()
         .populate("bCreatedBy", "eFirstname eLastname eEmail")
         .populate("bUpdatedBy", "eFirstname eLastname eEmail")
-        .populate("cOrganization", "aTitle");
 
       // Set Cache
       await redisClient.setex(`${Label.toLowerCase()}-list`, 60, JSON.stringify(list))
@@ -59,7 +58,6 @@ const serviceController = (Model=ServiceModel, Label="Service") => ({
       const retrieve = await Model.findById(request.params.id)
         .populate("bCreatedBy", "eFirstname eLastname eEmail")
         .populate("bUpdatedBy", "eFirstname eLastname eEmail")
-        .populate("cOrganization", "aTitle");
 
       // Set Cache
       await redisClient.setex(`${Label.toLowerCase()}-retrieve:${request.params.id}`, 60, JSON.stringify(retrieve))

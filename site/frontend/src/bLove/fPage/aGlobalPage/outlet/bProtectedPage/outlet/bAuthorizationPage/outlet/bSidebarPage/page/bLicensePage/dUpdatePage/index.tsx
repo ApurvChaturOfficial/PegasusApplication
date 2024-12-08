@@ -168,112 +168,135 @@ const LicenseUpdatePage = () => {
 
       <>
         <TopNavBarComponent />
-        <Container>
-          <MainHeading>Edit License</MainHeading>
-          <Form onSubmit={handleSubmit}>
 
-            <div>
-              <InputHeading>Select Organization</InputHeading>
-              <Dropdown
-                value={formData.cOrganization}
-                onChange={handleInputChange}
-                name="cOrganization"
-              >
-                <DropdownOption value="" disabled>
-                  Select Organization
-                </DropdownOption>
-                {/* {companyData.map((Organization) => (
-                  <DropdownOption key={Organization.companyName} value={Organization.companyName}>
-                    {Organization.companyName}
-                  </DropdownOption>
-                ))} */}
+        {
+          APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
+          APICall.retrieveAPIResponse.isError ? "Error..." :
+          APICall.retrieveAPIResponse.isSuccess ? (
+            <React.Fragment>
+              {
+                APICall.retrieveAPIResponse.data.success ? (
+                  <React.Fragment>
+                    <Container>
+                      <MainHeading>Edit License</MainHeading>
+                      <Form onSubmit={handleSubmit}>
 
-                {APICall.organizationListAPIResponse.isLoading ? null : 
-                  APICall.organizationListAPIResponse.isError ? null :
-                    APICall.organizationListAPIResponse.isSuccess ? (
-                      APICall.organizationListAPIResponse.data.success ? (
-                        APICall.organizationListAPIResponse.data.list.length > 0 ? (
-                          <React.Fragment>
-                            {
-                              APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                                <DropdownOption key={index} value={each._id}>
-                                  {each.dName}
-                                </DropdownOption>
-                              ))
+                        <div>
+                          <InputHeading>Select Organization</InputHeading>
+                          <Dropdown
+                            onChange={handleInputChange}
+                            name="cOrganization"
+                          >
+                            <DropdownOption selected disabled>
+                              Select Organization
+                            </DropdownOption>
+                            {/* {companyData.map((Organization) => (
+                              <DropdownOption key={Organization.companyName} value={Organization.companyName}>
+                                {Organization.companyName}
+                              </DropdownOption>
+                            ))} */}
+
+                            {APICall.organizationListAPIResponse.isLoading ? null : 
+                              APICall.organizationListAPIResponse.isError ? null :
+                                APICall.organizationListAPIResponse.isSuccess ? (
+                                  APICall.organizationListAPIResponse.data.success ? (
+                                    APICall.organizationListAPIResponse.data.list.length > 0 ? (
+                                      <React.Fragment>
+                                        {
+                                          APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
+                                            <DropdownOption 
+                                              key={index} 
+                                              // value={each._id}
+                                              selected={each._id === (formData.cOrganization as any)?._id}
+                                              
+                                              defaultChecked={each._id === (formData.cOrganization as any)?._id}
+                                              
+                                            >
+                                              {each.dName}
+                                            </DropdownOption>
+                                          ))
+                                        }
+                                      </React.Fragment>
+                                    ) : []
+                                  ) : []
+                                ) : []
                             }
-                          </React.Fragment>
-                        ) : []
-                      ) : []
-                    ) : []
-                }
 
-              </Dropdown>
+                          </Dropdown>
 
-              <InputHeading>Select License</InputHeading>
-              <Dropdown
-                name="dSelectedLicense"
-                value={formData.dSelectedLicense}
-                onChange={handleInputChange}
-              >
-                <DropdownOption value="" disabled>
-                  Select License
-                </DropdownOption>
-                <DropdownOption value="license1">License 1</DropdownOption>
-                <DropdownOption value="license2">License 2</DropdownOption>
-              </Dropdown>
-              <InputHeading>Enter License Number</InputHeading>
-              <Input
-                type="text"
-                placeholder="License Number"
-                name="dLicenseNumber"
-                value={formData.dLicenseNumber}
-                onChange={handleInputChange}
-              />
-              <FinalTag>
-                <IssueDate>
-                  <InputHeading>Issue Date</InputHeading>
-                  <ContactInput
-                    type="date"
-                    placeholder="Issue Date"
-                    name="dIssueDate"
-                    value={formData.dIssueDate}
-                    onChange={handleInputChange}
-                  />
-                </IssueDate>
-                <ExpiryDate>
-                  <InputHeading>Expiry Date</InputHeading>
-                  <ContactInput
-                    type="date"
-                    placeholder="Expiry Date"
-                    name="expiryDate"
-                    value={formData.dExpiryDate}
-                    onChange={handleInputChange}
-                  />
-                </ExpiryDate>
-              </FinalTag>
-              <InputHeading>Upload Scan Copy License</InputHeading>
-              <FileInputContainer>
-                <FileInputLabel>
-                  {/* {license.file ? license.file.name : "Choose File"} */}
-                </FileInputLabel>
-                <FileInput
-                  type="file"
-                  // id={`file-upload-${index}`}
-                  name="file"
-                  // onChange={(e) => handleFileChange(e, index)}
-                />
-              </FileInputContainer>
-              
-            </div>
+                          <InputHeading>Select License</InputHeading>
+                          <Dropdown
+                            name="dSelectedLicense"
+                            value={formData.dSelectedLicense}
+                            onChange={handleInputChange}
+                          >
+                            <DropdownOption value="" disabled>
+                              Select License
+                            </DropdownOption>
+                            <DropdownOption value="license1">License 1</DropdownOption>
+                            <DropdownOption value="license2">License 2</DropdownOption>
+                          </Dropdown>
+                          <InputHeading>Enter License Number</InputHeading>
+                          <Input
+                            type="text"
+                            placeholder="License Number"
+                            name="dLicenseNumber"
+                            value={formData.dLicenseNumber}
+                            onChange={handleInputChange}
+                          />
+                          <FinalTag>
+                            <IssueDate>
+                              <InputHeading>Issue Date</InputHeading>
+                              <ContactInput
+                                type="date"
+                                placeholder="Issue Date"
+                                name="dIssueDate"
+                                value={formData.dIssueDate}
+                                onChange={handleInputChange}
+                              />
+                            </IssueDate>
+                            <ExpiryDate>
+                              <InputHeading>Expiry Date</InputHeading>
+                              <ContactInput
+                                type="date"
+                                placeholder="Expiry Date"
+                                name="expiryDate"
+                                value={formData.dExpiryDate}
+                                onChange={handleInputChange}
+                              />
+                            </ExpiryDate>
+                          </FinalTag>
+                          <InputHeading>Upload Scan Copy License</InputHeading>
+                          <FileInputContainer>
+                            <FileInputLabel>
+                              {/* {license.file ? license.file.name : "Choose File"} */}
+                            </FileInputLabel>
+                            <FileInput
+                              type="file"
+                              // id={`file-upload-${index}`}
+                              name="file"
+                              // onChange={(e) => handleFileChange(e, index)}
+                            />
+                          </FileInputContainer>
+                          
+                        </div>
 
-            <>
-              <ButtonContainer>
-                <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
-                <CancelButton type="button" onClick={() => "handleCancel"}>Cancel</CancelButton>
-              </ButtonContainer>
-            </>
-          </Form>
-        </Container>
+                        <>
+                          <ButtonContainer>
+                            <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
+                            <CancelButton type="button" onClick={() => "handleCancel"}>Cancel</CancelButton>
+                          </ButtonContainer>
+                        </>
+                      </Form>
+                    </Container>
+                  </React.Fragment>
+                ) : "Backend Error"
+              }
+            </React.Fragment>
+          ) :
+          "Let me understand first"
+        } 
+
       </>
 
     </React.Fragment>

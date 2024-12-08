@@ -4,21 +4,10 @@ import { Bounce, toast } from "react-toastify";
 
 
 const apiResponseHandler = {
-  createAPIResponseHandler: async (data: any, createAPITrigger: any, navigate: NavigateFunction) => {
+  updateAPIResponseHandler: async (data: any, createAPITrigger: any, navigate: NavigateFunction, organizationRetrieve: any) => {
     try {
-      const serverResponse = await createAPITrigger({ body: {
-        aTitle: data.dFormNumber,
-
-        cOrganization: data.cOrganization,
-
-        dFormNumber: data.dFormNumber,
-        dFormType: data.dFormType,
-        dCategory: data.dCategory,
-        dOwnLoan: data.dOwnLoan,
-        dGovtFees: data.dGovtFees,
-        dOurFees: data.dOurFees,
-        dAddedDate: data.dAddedDate,
-        dServiceValidity: data.dServiceValidity,
+      const serverResponse = await createAPITrigger({ params: { _id: organizationRetrieve._id }, body: {
+        cService: [...organizationRetrieve.cService, data.cService],
       } });
 
       // console.log(serverResponse)

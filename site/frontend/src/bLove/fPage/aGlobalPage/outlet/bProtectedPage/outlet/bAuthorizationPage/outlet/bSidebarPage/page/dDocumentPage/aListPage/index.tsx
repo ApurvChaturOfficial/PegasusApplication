@@ -41,9 +41,9 @@ const DocumentListPage = () => {
     <React.Fragment>
       {/* DocumentListPage */}
 
-      <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.dDocumentRoute.bCreateRoute} >Create</Link>
+      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.dDocumentRoute.bCreateRoute} >Create</Link> */}
 
-      {APICall.listAPIResponse.isLoading ? null : 
+      {/* {APICall.listAPIResponse.isLoading ? null : 
         APICall.listAPIResponse.isError ? null :
           APICall.listAPIResponse.isSuccess ? (
             APICall.listAPIResponse.data.success ? (
@@ -61,16 +61,16 @@ const DocumentListPage = () => {
               ) : []
             ) : []
           ) : []
-      }
+      } */}
 
-      <div>
+      {/* <div>
         ---------------------------------------------------------------------------------------
-      </div>
+      </div> */}
 
       <>
         <TopNavBarComponent />
         <MainContainer>
-          <PageHeading>All Documents</PageHeading>
+          <PageHeading>Your Documents</PageHeading>
           <Form>
             <Input
               type="text"
@@ -117,7 +117,7 @@ const DocumentListPage = () => {
                                 <Icon src={DownloadIcon} alt="Download" />
                               </TableBody>
                               <TableBody>
-                                <ButtonLinkone to="/documents/editdocument">
+                                <ButtonLinkone to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.dDocumentRoute.dUpdateRoute}/${each._id}`}>
                                   <Icon src={EditIcon} alt="Edit" />
                                 </ButtonLinkone>
                               </TableBody>

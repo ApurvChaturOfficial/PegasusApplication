@@ -9,8 +9,6 @@ const apiResponseHandler = {
       const serverResponse = await createAPITrigger({ body: {
         aTitle: data.dFormNumber,
 
-        cOrganization: data.cOrganization,
-
         dFormNumber: data.dFormNumber,
         dFormType: data.dFormType,
         dCategory: data.dCategory,

@@ -110,10 +110,10 @@ const apiResponseHandler = {
 
         cOrganization: organizationID,
 
-        dLicenseSelectedLicense: data.dSelectedLicense,
-        dLicenseLicenseNumber: data.dLicenseLicenseNumber,
-        dLicenseIssueDate: data.dLicenseIssueDate,
-        dLicenseExpiryDate: data.dLicenseExpiryDate,
+        dSelectedLicense: data.dSelectedLicense,
+        dLicenseNumber: data.dLicenseLicenseNumber,
+        dIssueDate: data.dLicenseIssueDate,
+        dExpiryDate: data.dLicenseExpiryDate,
       } });
 
       // console.log(serverResponse)
