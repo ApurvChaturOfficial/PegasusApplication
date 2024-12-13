@@ -6,7 +6,7 @@ import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 import serviceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/fServiceAPIEndpoints";
-import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
+// import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
 import { AddButton, AddHeading, AddService, AddServiceForm, CancelButton, categoryOptions, DropTag, FeeTag, FirmTypeOptions, Input, InputHeading, InputTag, InputTag2, InputTag3, LeftContainer, MainContainer, ownLoanOptions, RightContainer, Select, Select2, ServiceSubContainer, SubmitTag, ValidityTag } from "./style";

@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
-import serviceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/fServiceAPIEndpoints";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
-import apiResponseHandler from "./extras/aAPIResponseHandler";
+import serviceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/fServiceAPIEndpoints";
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { ButtonContainer, CancelButton, CityInfo, ContactInfo, Container, Dropdown, DropdownOption, Form, InputHeading, InputHeadingp, MainHeading, RowContainer, RowInput, SecondaryHeading, StateInfo, SubmitButton } from "./style";
 import { Bounce, toast } from "react-toastify";
+import apiResponseHandler from "./extras/aAPIResponseHandler";
+import { ButtonContainer, CancelButton, CityInfo, ContactInfo, Container, Dropdown, DropdownOption, Form, InputHeading, InputHeadingp, MainHeading, RowContainer, RowInput, SecondaryHeading, StateInfo, SubmitButton } from "./style";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 
@@ -61,7 +61,7 @@ const ServiceCreatePage = () => {
   // Event Handlers
   // Handle Input Change
   const handleOrganizationInputChange = (event: any) => {
-    const { name, value } = event.target;
+    const { value } = event.target;
     
     // setFormData({ ...formData, [name]: value });
     // console.log(value)

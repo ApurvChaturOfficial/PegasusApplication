@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from "react"
-import { Route, Routes, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Route, Routes, useParams } from "react-router-dom";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
 
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { AddButton, AddHeading, AddLicense, AddLicenseForm, AddressDetail, AddressTag, AlertTag, AlertTag2, BaseHeader, Button, ButtonBack, ButtonHeading, ButtonLink2, ButtonLink3, ButtonLink4, ButtonLinkReport2, ButtonTag, ButtonTag1, ButtonTag2, Buttontag3, CancelButton, CompanyContainer, CompanyEmail, CompanyHeading, Companyphone, CompName, ContactInfo, ContactInfoTag, ContactInput, ContactNum, DownloadButton, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FirmDetail, FirmName, FirmType, FirstRow, Form, FormReport, Image, Image2, Image3, Input, Input2, InputHeading, InputReport, InspectionContainer, IssueDate, LastRow, LastRowInfo, LeftContainer, LicenseContainer, LicenseFormNumber, LicenseInfoTag, LicenseInfoTag2, LicenseSubContainer, LicenseTable, LineOne, MainContainer, NameHeading, PANCardTag, PANDetail, Para, ParaReport, RemainderContainer, ReportSubContainer, ReportTable, RightContainer, RightHeading, SearchButton, SearchButtonReport, TableBody, TableHeading, TableSection, UploadButton } from "./style";
 import SubNavBar from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SubNavBar/SubNavBar";
+import { AddButton, AddHeading, AddLicense, AddLicenseForm, AlertTag, AlertTag2, BaseHeader, ButtonBack, ButtonLink2, ButtonLink3, ButtonLink4, ButtonLinkReport2, ButtonTag, Buttontag3, CancelButton, CompanyContainer, CompanyHeading, ContactInfo, ContactInput, DownloadButton, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FirstRow, Form, FormReport, Image, Image2, Image3, Input, Input2, InputHeading, InputReport, InspectionContainer, IssueDate, LastRow, LastRowInfo, LicenseContainer, LicenseFormNumber, LicenseInfoTag, LicenseInfoTag2, LicenseSubContainer, LicenseTable, Para, ParaReport, RemainderContainer, ReportSubContainer, ReportTable, SearchButton, SearchButtonReport, TableBody, TableHeading, TableSection, UploadButton } from "./style";
 
-import licenseicon from "@/bLove/hAsset/icon/file-badge.png";
-import inspectionicon from "@/bLove/hAsset/icon/layers.png";
-import documentsicon from "@/bLove/hAsset/icon/file-input.png";
-import remaindersicon from "@/bLove/hAsset/icon/bell-ring.png";
-import Filter from "@/bLove/hAsset/icon/filter.png";
-import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
-import EditIcon from "@/bLove/hAsset/icon/pencil.png";
-import UploadIcon from "@/bLove/hAsset/icon/upload-cloud.png";
-import DownloadIcon from "@/bLove/hAsset/icon/download.png";
-import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
-import Symbol1 from "@/bLove/hAsset/icon/greenTickMark.png";
-import Symbol2 from "@/bLove/hAsset/icon/alert-triangle.png";
-import Symbol3 from "@/bLove/hAsset/icon/red-alert-triangle.png";
+// import licenseicon from "@/bLove/hAsset/icon/file-badge.png";
+// import inspectionicon from "@/bLove/hAsset/icon/layers.png";
+// import documentsicon from "@/bLove/hAsset/icon/file-input.png";
+// import remaindersicon from "@/bLove/hAsset/icon/bell-ring.png";
 import OrganizationRemainder from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/OrganizationRemainder/OrganizationRemainder";
+import Symbol2 from "@/bLove/hAsset/icon/alert-triangle.png";
+import DownloadIcon from "@/bLove/hAsset/icon/download.png";
+import Filter from "@/bLove/hAsset/icon/filter.png";
+import Symbol1 from "@/bLove/hAsset/icon/greenTickMark.png";
+import EditIcon from "@/bLove/hAsset/icon/pencil.png";
+import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
+import Symbol3 from "@/bLove/hAsset/icon/red-alert-triangle.png";
+import UploadIcon from "@/bLove/hAsset/icon/upload-cloud.png";
+import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
 
 import CompanyTabComponent from "./component/aCompanyTabComponent";
 
