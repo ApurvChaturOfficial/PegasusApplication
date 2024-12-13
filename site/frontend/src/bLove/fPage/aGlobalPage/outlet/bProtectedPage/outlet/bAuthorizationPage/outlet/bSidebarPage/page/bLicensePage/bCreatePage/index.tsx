@@ -56,7 +56,7 @@ const LicenseCreatePage = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    console.log("formDataObj", formData);
+    // console.log("formDataObj", formData);
     apiResponseHandler.createAPIResponseHandler(formData, APICall.createAPITrigger, navigate)
   };
 

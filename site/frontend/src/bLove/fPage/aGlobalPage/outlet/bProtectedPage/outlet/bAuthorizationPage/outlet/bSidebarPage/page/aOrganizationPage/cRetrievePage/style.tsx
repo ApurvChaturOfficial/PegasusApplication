@@ -403,29 +403,20 @@ const LicenseTable = styled.table`
 `;
 
 const TableSection = styled.tr`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 3px 5px;
   border-bottom: 1px solid #b5b5b5;
-
-  &:first-child {
-    border-top: 1px solid #b5b5b5;
-  }
 `;
 
 const TableHeading = styled.th`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
+  padding: 10px;
   background-color: #f0f7ff;
+  text-align: center;
+  vertical-align: middle;
 `;
 
 const TableBody = styled.td`
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
 `;
 
 const AddLicense = styled.div`
@@ -633,6 +624,15 @@ const AlertTag = styled.h2`
   letter-spacing: 1.2px;
 `;
 
+const AlertTag2 = styled.h2`
+  color: red;
+  margin: 0;
+  margin-top: 4px;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+`;
+
 const Buttontag3 = styled.div`
   display: flex;
   flex-direction: row;
@@ -771,6 +771,7 @@ export {
   LicenseInfoTag2,
   BaseHeader,
   AlertTag,
+  AlertTag2,
   Buttontag3,
   DownloadButton,
   UploadButton,

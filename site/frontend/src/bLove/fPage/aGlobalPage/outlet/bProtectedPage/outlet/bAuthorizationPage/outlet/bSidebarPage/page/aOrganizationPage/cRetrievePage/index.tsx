@@ -6,8 +6,10 @@ import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
+import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
+
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { AddButton, AddHeading, AddLicense, AddLicenseForm, AddressDetail, AddressTag, AlertTag, BaseHeader, Button, ButtonBack, ButtonHeading, ButtonLink2, ButtonLink3, ButtonLink4, ButtonLinkReport2, ButtonTag, ButtonTag1, ButtonTag2, Buttontag3, CancelButton, CompanyContainer, CompanyEmail, CompanyHeading, Companyphone, CompName, ContactInfo, ContactInfoTag, ContactInput, ContactNum, DownloadButton, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FirmDetail, FirmName, FirmType, FirstRow, Form, FormReport, Image, Image2, Image3, Input, Input2, InputHeading, InputReport, InspectionContainer, IssueDate, LastRow, LastRowInfo, LeftContainer, LicenseContainer, LicenseFormNumber, LicenseInfoTag, LicenseInfoTag2, LicenseSubContainer, LicenseTable, LineOne, MainContainer, NameHeading, PANCardTag, PANDetail, Para, ParaReport, RemainderContainer, ReportSubContainer, ReportTable, RightContainer, RightHeading, SearchButton, SearchButtonReport, TableBody, TableHeading, TableSection, UploadButton } from "./style";
+import { AddButton, AddHeading, AddLicense, AddLicenseForm, AddressDetail, AddressTag, AlertTag, AlertTag2, BaseHeader, Button, ButtonBack, ButtonHeading, ButtonLink2, ButtonLink3, ButtonLink4, ButtonLinkReport2, ButtonTag, ButtonTag1, ButtonTag2, Buttontag3, CancelButton, CompanyContainer, CompanyEmail, CompanyHeading, Companyphone, CompName, ContactInfo, ContactInfoTag, ContactInput, ContactNum, DownloadButton, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FirmDetail, FirmName, FirmType, FirstRow, Form, FormReport, Image, Image2, Image3, Input, Input2, InputHeading, InputReport, InspectionContainer, IssueDate, LastRow, LastRowInfo, LeftContainer, LicenseContainer, LicenseFormNumber, LicenseInfoTag, LicenseInfoTag2, LicenseSubContainer, LicenseTable, LineOne, MainContainer, NameHeading, PANCardTag, PANDetail, Para, ParaReport, RemainderContainer, ReportSubContainer, ReportTable, RightContainer, RightHeading, SearchButton, SearchButtonReport, TableBody, TableHeading, TableSection, UploadButton } from "./style";
 import SubNavBar from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SubNavBar/SubNavBar";
 
 import licenseicon from "@/bLove/hAsset/icon/file-badge.png";
@@ -25,8 +27,17 @@ import Symbol2 from "@/bLove/hAsset/icon/alert-triangle.png";
 import Symbol3 from "@/bLove/hAsset/icon/red-alert-triangle.png";
 import OrganizationRemainder from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/OrganizationRemainder/OrganizationRemainder";
 
+import CompanyTabComponent from "./component/aCompanyTabComponent";
 
-function formatDateToCustomString(date: any) {
+import LicenseTabListComponent from "./component/bLicenseTabListComponent";
+import LicenseTabCreateComponent from "./component/cLicenseTabCreateComponent";
+import LicenseTabRetrieveComponent from "./component/dLicenseTabRetrieveComponent";
+
+import LoaderComponent from "@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent";
+import ErrorComponent from "@/bLove/cComponent/aGlobalComponent/component/bErrorComponent";
+
+
+export function formatDateToCustomString(date: any) {
   if (!(date instanceof Date)) {
     date = new Date(date);
   }
@@ -41,6 +52,102 @@ function formatDateToCustomString(date: any) {
 
   return `${day} ${month}, ${year}`;
 }
+
+export const allLicenseType = [
+  "License - 10",
+  "License - 10A",
+  "License - 11",
+  "License - 11-A",
+  "License - 12-B",
+  "License - 25",
+  "License - 25B",
+  "License - 28",
+  "License - 28-B",
+  "License - 28-D",
+  "License - 25-F",
+  "License - 25-A",
+  "License - 28-A",
+  "License - 28-DA",
+  "License - 25-D",
+  "License - 25-E",
+  "License - 25-C",
+  "License - COS-2",
+  "License - COS-3",
+  "License - COS-4A",
+  "License - COS-8",
+  "License - COS-9",
+  "License - Form 29",
+  "License - Form 28-C",
+  "License - Form 28-E",
+  "License - Form 28-F",
+  "License - Annexure C",
+  "License - Form 37",
+  "License - Form 48",
+  "License - COS-23",
+  "License - MD-2",
+  "License - MD-5",
+  "License - MD-6",
+  "License - MD-9",
+  "License - MD-10",
+  "License - MD-13",
+  "License - MD-15",
+  "License - MD-17",
+  "License - MD-19",
+  "License - MD-21",
+  "License - MD-23",
+  "License - MD-25",
+  "License - MD-27",
+  "License - MD-29",
+  "License - 20",
+  "License - 20A",
+  "License - 20B",
+  "License - 20BB",
+  "License - 20C",
+  "License - 20D",
+  "License - 20F",
+  "License - 20G",
+  "License - 21",
+  "License - 21A",
+  "License - 21B",
+  "License - 21BB",
+];
+
+export const getAlertSymbolLetter = (dateOfExpiry: any) => {
+  const currentDate = new Date();
+  const expiryDate = new Date(dateOfExpiry);
+  const differenceInDays = Math.floor(
+    ((expiryDate as any) - (currentDate as any)) / (1000 * 60 * 60 * 24)
+  );
+
+  if (differenceInDays > 180) {
+    return <AlertTag>Expiring in more than 6 months</AlertTag>;
+  } else if (differenceInDays > 60) {
+    return <AlertTag>Expiring in {differenceInDays} days</AlertTag>;
+  } else if (differenceInDays < 0) {
+    return <AlertTag>License Expired</AlertTag>;
+  } else {
+    return <AlertTag>Expiring in {differenceInDays} days</AlertTag>;
+  }
+};
+
+export const getAlertSymbolLetter2 = (dateOfExpiry: any) => {
+  const currentDate = new Date();
+  const expiryDate = new Date(dateOfExpiry);
+  const differenceInDays = Math.floor(
+    ((expiryDate as any) - (currentDate as any)) / (1000 * 60 * 60 * 24)
+  );
+
+  if (differenceInDays > 180) {
+    return <AlertTag2>Expiring in more than 6 months</AlertTag2>;
+  } else if (differenceInDays > 60) {
+    return <AlertTag2>Expiring in {differenceInDays} days</AlertTag2>;
+  } else if (differenceInDays < 0) {
+    return <AlertTag2>License Expired</AlertTag2>;
+  } else {
+    return <AlertTag2>Expiring in {differenceInDays} days</AlertTag2>;
+  }
+};
+
 
 function NewLicenses({ newLicense, toggleNewLicense, licensesData }: any) {
   const [searchInput, setSearchInput] = useState("");
@@ -563,6 +670,17 @@ const OrganizationRetrievePage = () => {
   const [newLicense, setNewLicense] = useState(true);
   const [newReport, setNewReport] = useState(true);
 
+  const [companyTab, setCompanyTab] = useState(true);
+  const [licenseTab, setLicenseTab] = useState(false);
+  const [reminderTab, setReminderTab] = useState(false);
+  const [inspectionTab, setInspectionTab] = useState(false);
+  const [documentTab, setDocumentTab] = useState(false);
+  const [serviceTab, setServiceTab] = useState(false)
+
+  const [licenseTabList, setLicenseTabList] = useState(false)
+  const [licenseTabCreate, setLicenseTabCreate] = useState(false)
+  const [licenseTabRetrieve, setLicenseTabRetrieve] = useState(false)
+
   const toggleNewLicense = () => {
     setNewLicense(!newLicense);
   };
@@ -579,15 +697,29 @@ const OrganizationRetrievePage = () => {
   }
 
   // API Call
+  const [lazyLicenseListAPITrigger, lazyLicenseListAPIResponse] = licenseAPIEndpoint.useLazyLicenseListAPIQuery()
+  const [lazyLicenseRetrieveAPITrigger, lazyLicenseRetrieveAPIResponse] = licenseAPIEndpoint.useLazyLicenseRetrievePIQuery()
+  
   const APICall = {
     retrieveAPIResponse: organizationAPIEndpoint.useOrganizationRetrievePIQuery({ params: { _id: id } }),
+    
+    // Requirements... Muaaah...
+    licenseListAPITrigger: lazyLicenseListAPITrigger,
+    licenseListAPIResponse: lazyLicenseListAPIResponse,
+
+    licenseCreateAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
+    licenseCreateAPIResponse: licenseAPIEndpoint.useLicenseCreateAPIMutation()[1],
+
+    licenseRetrieveAPITrigger: lazyLicenseRetrieveAPITrigger,
+    licenseRetrieveAPIResponse: lazyLicenseRetrieveAPIResponse,
+
   }  
 
-    // Extra Render
-    useEffect(() => {
-      console.log(ReduxCall.state)
-    }, [ReduxCall.state])
-  
+  // Extra Render
+  useEffect(() => {
+    console.log(APICall.licenseListAPIResponse)
+  }, [APICall.licenseListAPIResponse])
+
   // JSX
   return (
     <React.Fragment>
@@ -615,142 +747,439 @@ const OrganizationRetrievePage = () => {
 
       <>
         <TopNavBarComponent />
-
         {
-          APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
-          APICall.retrieveAPIResponse.isError ? "Error..." :
-          APICall.retrieveAPIResponse.isSuccess ? (
-            <React.Fragment>
-              {
-                APICall.retrieveAPIResponse.data.success ? (
-                  <React.Fragment>
-                    <CompanyContainer>
-                      <CompanyHeading>{APICall.retrieveAPIResponse.data.retrieve.dName}</CompanyHeading>
-                      <SubNavBar />
-                      <Routes>
-                        <Route
-                          path="/"
-                          element={
-                            <>
-                              <MainContainer>
-                                <LeftContainer>
-                                  <FirmName>
-                                    <CompName>{APICall.retrieveAPIResponse.data.retrieve.dName}</CompName>
-                                    <NameHeading>Firm Name</NameHeading>
-                                  </FirmName>
-                                  <FirmType>
-                                    <FirmDetail>{APICall.retrieveAPIResponse.data.retrieve.dType}</FirmDetail>
-                                    <NameHeading>Firm Type</NameHeading>
-                                  </FirmType>
-                                  <ContactInfoTag>
-                                    <Companyphone>
-                                      <ContactNum>{APICall.retrieveAPIResponse.data.retrieve.dPhoneNumber}</ContactNum>
-                                      <NameHeading>Phone Number</NameHeading>
-                                    </Companyphone>
-                                    <CompanyEmail>
-                                      <ContactNum>{APICall.retrieveAPIResponse.data.retrieve.dCompanyEmail}</ContactNum>
-                                      <NameHeading>Email</NameHeading>
-                                    </CompanyEmail>
-                                  </ContactInfoTag>
-                                  <AddressTag>
-                                    <AddressDetail>{APICall.retrieveAPIResponse.data.retrieve.dAddress}</AddressDetail>
-                                    <NameHeading>Address</NameHeading>
-                                  </AddressTag>
-                                  <PANCardTag>
-                                    <PANDetail>{APICall.retrieveAPIResponse.data.retrieve.dPanNumber}</PANDetail>
-                                    <NameHeading>PAN Card</NameHeading>
-                                  </PANCardTag>
-                                </LeftContainer>
-                                <RightContainer>
-                                  <RightHeading>Documents</RightHeading>
-                                  <LineOne>
-                                    <ButtonTag1>
-                                      <ButtonHeading>Licenses</ButtonHeading>
-                                      <Button to="licenses">
-                                        <Image src={licenseicon} />
-                                        Licenses
-                                      </Button>
-                                    </ButtonTag1>
-                                    <ButtonTag2>
-                                      <ButtonHeading>Inspections</ButtonHeading>
-                                      <Button to="inspections">
-                                        <Image src={inspectionicon} />
-                                        Inspections
-                                      </Button>
-                                    </ButtonTag2>
-                                  </LineOne>
-                                  <LineOne>
-                                    <ButtonTag1>
-                                      <ButtonHeading>Documents</ButtonHeading>
-                                      <Button to="documents">
-                                        <Image src={documentsicon} />
-                                        Documents
-                                      </Button>
-                                    </ButtonTag1>
-                                    <ButtonTag2>
-                                      <ButtonHeading>Remainders</ButtonHeading>
-                                      <Button to="remainders">
-                                        <Image src={remaindersicon} />
-                                        Remainders
-                                      </Button>
-                                    </ButtonTag2>
-                                  </LineOne>
-                                </RightContainer>
-                              </MainContainer>
-                            </>
-                          }
+            APICall.retrieveAPIResponse.isLoading ? <LoaderComponent /> : 
+            APICall.retrieveAPIResponse.isError ? <ErrorComponent message="Error..." /> :
+            APICall.retrieveAPIResponse.isSuccess ? (
+              <React.Fragment>
+                {
+                  APICall.retrieveAPIResponse.data.success ? (
+                    <React.Fragment>
+                      <CompanyContainer>
+                        <CompanyHeading>{APICall.retrieveAPIResponse.data.retrieve.dName || "XXXX XXXXX XXXX XXXXX"}</CompanyHeading>
+                        <SubNavBar 
+                          companyTab={companyTab} setCompanyTab={setCompanyTab}
+                          licenseTab={licenseTab} setLicenseTab={setLicenseTab} licenseListAPITrigger={APICall.licenseListAPITrigger} licenseRetrieveAPITrigger={APICall.licenseRetrieveAPITrigger}
+                          reminderTab={reminderTab} setReminderTab={setReminderTab}
+                          inspectionTab={inspectionTab} setInspectionTab={setInspectionTab}
+                          documentTab={documentTab} setDocumentTab={setDocumentTab}
+                          serviceTab={serviceTab} setServiceTab={setServiceTab}
+                          licenseTabList={licenseTabList} setLicenseTabList={setLicenseTabList}
+                          licenseTabCreate={licenseTabCreate} setLicenseTabCreate={setLicenseTabCreate}
+                          licenseTabRetrieve={licenseTabRetrieve} setLicenseTabRetrieve={setLicenseTabRetrieve}
                         />
-                        <Route
-                          path="licenses"
-                          element={
-                            <>
-                              <LicenseContainer>
-                                <NewLicenses
-                                  newLicense={newLicense}
-                                  toggleNewLicense={toggleNewLicense}
-                                  licensesData={"company.licenses"}
+
+                        {companyTab && (
+                          <React.Fragment>
+                            {/* Company */}
+                            <CompanyTabComponent APICall={APICall} />
+                          </React.Fragment>
+                        )}
+
+                        
+                        {licenseTab && (
+                          <React.Fragment>
+                            {/* License */}
+
+                            {licenseTabList && (
+                              <React.Fragment>
+                                {/* LicenseTabList */}
+                                <LicenseTabListComponent 
+                                  setLicenseTabList={setLicenseTabList}
+                                  setLicenseTabCreate={setLicenseTabCreate}
+                                  setLicenseTabRetrieve={setLicenseTabRetrieve}
+                                  APICall={APICall}
+                                  ReduxCall={ReduxCall}
+                                  organizationID={id}
                                 />
-                              </LicenseContainer>
-                            </>
-                          }
-                        />
-                        <Route
-                          path="inspection-reports"
-                          element={
-                            <>
-                              <InspectionContainer>
-                                <NewReports
-                                  newReport={newReport}
-                                  toggleNewReport={toggleNewReport}
-                                  reportData={"company.report"}
+                              </React.Fragment>
+                            )}
+
+                            {licenseTabCreate && (
+                              <React.Fragment>
+                                {/* LicenseTabCreate */}
+                                <LicenseTabCreateComponent 
+                                  setLicenseTabList={setLicenseTabList}
+                                  setLicenseTabCreate={setLicenseTabCreate}
+                                  setLicenseTabRetrieve={setLicenseTabRetrieve} 
+                                  APICall={APICall}
+                                  // ReduxCall={ReduxCall}
+                                  organizationID={id}                               
                                 />
-                              </InspectionContainer>
-                            </>
-                          }
-                        />
-                        <Route path="documents" element={<h2>Documents Page</h2>} />
-                        <Route
-                          path="reminders"
-                          element={
-                            <>
-                              <RemainderContainer>
-                                <OrganizationRemainder  />
-                              </RemainderContainer>
-                            </>
-                          }
-                        />
-                      </Routes>
-                    </CompanyContainer>
-                  </React.Fragment>
-                ) : "Backend Error"
-              }
-            </React.Fragment>
-          ) :
-          "Let me understand first"
-        }
+                              </React.Fragment>
+                            )}
+
+                            {licenseTabRetrieve && (
+                              <React.Fragment>
+                                {/* LicenseTabRetrieve */}
+                                <LicenseTabRetrieveComponent 
+                                  setLicenseTabList={setLicenseTabList}
+                                  setLicenseTabCreate={setLicenseTabCreate}
+                                  setLicenseTabRetrieve={setLicenseTabRetrieve} 
+                                  APICall={APICall}
+                                  // ReduxCall={ReduxCall}
+                                  // organizationID={id}                                                              
+                                />
+                              </React.Fragment>
+                            )}
+
+                            {/* <>
+                              <FirstRow>
+                                <ButtonBack onClick={() => "handleBackToTable"}>&lt; Back</ButtonBack>
+                              </FirstRow>
+                              <FirstRow>
+                                <LicenseFormNumber>
+                                  <LicenseInfoTag>{"(selectedLicense as any).license"}</LicenseInfoTag>
+                                  <BaseHeader>License Form Number</BaseHeader>
+                                </LicenseFormNumber>
+                                <LicenseFormNumber>
+                                  <LicenseInfoTag2>
+                                    {"getAlertSymbolLetter((selectedLicense as any).dateOfExpiry)"}
+                                  </LicenseInfoTag2>
+                                  <BaseHeader>Alert Status</BaseHeader>
+                                </LicenseFormNumber>
+                              </FirstRow>
+
+                              <FirstRow>
+                                <LicenseFormNumber>
+                                  <LicenseInfoTag>{"(selectedLicense as any).category"}</LicenseInfoTag>
+                                  <BaseHeader>Category</BaseHeader>
+                                </LicenseFormNumber>
+                                <LicenseFormNumber>
+                                  <LicenseInfoTag>{"(selectedLicense as any).ownLoan"}</LicenseInfoTag>
+                                  <BaseHeader>Own/Loan</BaseHeader>
+                                </LicenseFormNumber>
+                              </FirstRow>
+
+                              <FirstRow>
+                                <LicenseFormNumber>
+                                  <LicenseInfoTag>
+                                    {"(selectedLicense as any).licenseNumber"}
+                                  </LicenseInfoTag>
+                                  <BaseHeader>License Number</BaseHeader>
+                                </LicenseFormNumber>
+                              </FirstRow>
+
+                              <LastRow>
+                                <LastRowInfo>
+                                  <LicenseInfoTag>
+                                    {"formatDateToCustomString((selectedLicense as any).dateOfIssue)"}
+                                  </LicenseInfoTag>
+                                  <BaseHeader>Date of Issue</BaseHeader>
+                                </LastRowInfo>
+                                <LastRowInfo>
+                                  <LicenseInfoTag>
+                                    {"formatDateToCustomString((selectedLicense as any).dateOfExpiry)"}
+                                  </LicenseInfoTag>
+                                  <BaseHeader>Date of Expiry</BaseHeader>
+                                </LastRowInfo>
+                                <Buttontag3>
+                                  <DownloadButton onClick={() => "handleBackToTable"}>
+                                    Download
+                                  </DownloadButton>
+                                  <UploadButton onClick={() => "handleBackToTable"}>
+                                    Upload
+                                  </UploadButton>
+                                </Buttontag3>
+                              </LastRow>
+                              <FirstRow>
+                                <ButtonLink4 onClick={() => 'handleBackToTable'}>
+                                  Renew License
+                                </ButtonLink4>
+                              </FirstRow>
+                            </> */}
+
+                            {/* <>
+                              <AddLicense>
+                                <AddHeading>Add License</AddHeading>
+                                <AddLicenseForm onSubmit={() => "handleSubmit"}>
+                                  <InputHeading>Select License</InputHeading>
+                                  <Dropdown
+                                    name="selectedLicense"
+                                    // value={formData.selectedLicense}
+                                    // onChange={handleInputChange}
+                                  >
+                                    <DropdownOption value="" disabled>
+                                      Select License
+                                    </DropdownOption>
+                                    {[1, 2, 3].map((state) => (
+                                      <DropdownOption
+                                        key={state}
+                                        // value={state.toLowerCase().replace(/\s+/g, "-")}
+                                      >
+                                        {state}
+                                      </DropdownOption>
+                                    ))}
+                                  </Dropdown>
+                                  <InputHeading>Enter License Number</InputHeading>
+                                  <Input2
+                                    type="text"
+                                    name="licenseNumber"
+                                    placeholder="Enter License ID Number"
+                                    // value={formData.licenseNumber}
+                                    // onChange={handleInputChange}
+                                  />
+                                  <ContactInfo>
+                                    <IssueDate>
+                                      <InputHeading>Date of Issue</InputHeading>
+                                      <ContactInput
+                                        type="date"
+                                        name="issueDate"
+                                        // value={formData.issueDate}
+                                        // onChange={handleInputChange}
+                                      />
+                                    </IssueDate>
+                                    <ExpiryDate>
+                                      <InputHeading>Date of Expiry</InputHeading>
+                                      <ContactInput
+                                        type="date"
+                                        name="expiryDate"
+                                        // value={formData.expiryDate}
+                                        // onChange={handleInputChange}
+                                      />
+                                    </ExpiryDate>
+                                  </ContactInfo>
+                                  <InputHeading>Upload Scan Copy License</InputHeading>
+                                  <FileInputContainer>
+                                    <FileInputLabel htmlFor="fileInput">Choose File</FileInputLabel>
+                                    <FileInput
+                                      type="file"
+                                      id="fileInput"
+                                      // onChange={handleFileChange}
+                                    />
+                                  </FileInputContainer>
+                                  {formData.file && (
+                                    <UploadedFile>Uploaded File: {formData.file.name}</UploadedFile>
+                                  )}
+
+                                  <ButtonTag>
+                                    <AddButton type="submit" onClick={toggleNewLicense}>
+                                      <Para>Add New</Para>
+                                    </AddButton>
+                                    <CancelButton onClick={toggleNewLicense}>
+                                      <Para>Cancel</Para>
+                                    </CancelButton>
+                                  </ButtonTag>
+                                </AddLicenseForm>
+                              </AddLicense>
+                            </> */}
+
+                            {/* <>
+                              <Form>
+                                <Input
+                                  type="text"
+                                  placeholder="Search Your License"
+                                  name="search"
+                                  // value={searchInput}
+                                  // onChange={handleSearchInputChange}
+                                />
+                                <SearchButton type="submit">
+                                  <Image src={Filter} alt="Filter" />
+                                  <Para>Filter</Para>
+                                </SearchButton>
+
+                                <ButtonLink2 onClick={toggleNewLicense}>
+                                  <Image src={PlusSign} alt="PlusSign" />
+                                  <Para>Add</Para>
+                                </ButtonLink2>
+                              </Form>
+                              <LicenseTable>
+                                <TableSection>
+                                  <TableHeading>License</TableHeading>
+                                  <TableHeading>Category</TableHeading>
+                                  <TableHeading>Own/Loan</TableHeading>
+                                  <TableHeading>License Number</TableHeading>
+                                  <TableHeading>Date of Issue</TableHeading>
+                                  <TableHeading>Date of Expiry</TableHeading>
+                                  <TableHeading>Alerts</TableHeading>
+                                  <TableHeading>Upload</TableHeading>
+                                  <TableHeading>Download</TableHeading>
+                                  <TableHeading>Actions</TableHeading>
+                                </TableSection>
+                                {[1, 2, 3].map((license: any, index: any) => (
+                                  <TableSection key={index}>
+                                    <TableBody>{license.license}</TableBody>
+                                    <TableBody>{license.category}</TableBody>
+                                    <TableBody>{license.ownLoan}</TableBody>
+                                    <TableBody>{license.licenseNumber}</TableBody>
+                                    <TableBody>
+                                      {formatDateToCustomString(license.dateOfIssue)}
+                                    </TableBody>
+                                    <TableBody>
+                                      {formatDateToCustomString(license.dateOfExpiry)}
+                                    </TableBody>
+                                    <TableBody>
+                                      {"getAlertSymbol(license.dateOfExpiry)"}
+                                    </TableBody>
+                                    <TableBody>
+                                      <ButtonLink3>
+                                        <Image2 src={UploadIcon} alt="Upload" />
+                                      </ButtonLink3>
+                                    </TableBody>
+                                    <TableBody>
+                                      <ButtonLink3>
+                                        <Image2 src={DownloadIcon} alt="Download" />
+                                      </ButtonLink3>
+                                    </TableBody>
+                                    <TableBody>
+                                      <ButtonLink3 onClick={() => "handleViewClick(license)"}>
+                                        <Image3 src={ViewIcon} alt="View" />
+                                      </ButtonLink3>
+                                    </TableBody>
+                                  </TableSection>
+                                ))}
+                              </LicenseTable>
+                            </> */}
+
+                          </React.Fragment>
+                        )}
+                        
+                        {reminderTab && (
+                          <React.Fragment>
+                            {/* Reminder */}
+                          </React.Fragment>
+                        )}
+                        
+                        {inspectionTab && (
+                          <React.Fragment>
+                            Inspection
+                          </React.Fragment>
+                        )}
+                        
+                        {documentTab && (
+                          <React.Fragment>
+                            Document
+                          </React.Fragment>
+                        )}
+                        
+                        {serviceTab && (
+                          <React.Fragment>
+                            Service
+                          </React.Fragment>
+                        )}
+                        
+                        <Routes>
+                          <Route
+                            path="/"
+                            element={
+                              <>
+                                {/* <MainContainer>
+                                  <LeftContainer>
+                                    <FirmName>
+                                      <CompName>{APICall.retrieveAPIResponse.data.retrieve.dName}</CompName>
+                                      <NameHeading>Firm Name</NameHeading>
+                                    </FirmName>
+                                    <FirmType>
+                                      <FirmDetail>{APICall.retrieveAPIResponse.data.retrieve.dType}</FirmDetail>
+                                      <NameHeading>Firm Type</NameHeading>
+                                    </FirmType>
+                                    <ContactInfoTag>
+                                      <Companyphone>
+                                        <ContactNum>{APICall.retrieveAPIResponse.data.retrieve.dPhoneNumber}</ContactNum>
+                                        <NameHeading>Phone Number</NameHeading>
+                                      </Companyphone>
+                                      <CompanyEmail>
+                                        <ContactNum>{APICall.retrieveAPIResponse.data.retrieve.dCompanyEmail}</ContactNum>
+                                        <NameHeading>Email</NameHeading>
+                                      </CompanyEmail>
+                                    </ContactInfoTag>
+                                    <AddressTag>
+                                      <AddressDetail>{APICall.retrieveAPIResponse.data.retrieve.dAddress}</AddressDetail>
+                                      <NameHeading>Address</NameHeading>
+                                    </AddressTag>
+                                    <PANCardTag>
+                                      <PANDetail>{APICall.retrieveAPIResponse.data.retrieve.dPanNumber}</PANDetail>
+                                      <NameHeading>PAN Card</NameHeading>
+                                    </PANCardTag>
+                                  </LeftContainer>
+                                  <RightContainer>
+                                    <RightHeading>Documents</RightHeading>
+                                    <LineOne>
+                                      <ButtonTag1>
+                                        <ButtonHeading>Licenses</ButtonHeading>
+                                        <Button to="licenses">
+                                          <Image src={licenseicon} />
+                                          Licenses
+                                        </Button>
+                                      </ButtonTag1>
+                                      <ButtonTag2>
+                                        <ButtonHeading>Inspections</ButtonHeading>
+                                        <Button to="inspections">
+                                          <Image src={inspectionicon} />
+                                          Inspections
+                                        </Button>
+                                      </ButtonTag2>
+                                    </LineOne>
+                                    <LineOne>
+                                      <ButtonTag1>
+                                        <ButtonHeading>Documents</ButtonHeading>
+                                        <Button to="documents">
+                                          <Image src={documentsicon} />
+                                          Documents
+                                        </Button>
+                                      </ButtonTag1>
+                                      <ButtonTag2>
+                                        <ButtonHeading>Remainders</ButtonHeading>
+                                        <Button to="remainders">
+                                          <Image src={remaindersicon} />
+                                          Remainders
+                                        </Button>
+                                      </ButtonTag2>
+                                    </LineOne>
+                                  </RightContainer>
+                                </MainContainer> */}
+                              </>
+                            }
+                          />
+                          <Route
+                            path="licenses"
+                            element={
+                              <>
+                                <LicenseContainer>
+                                  <NewLicenses
+                                    newLicense={newLicense}
+                                    toggleNewLicense={toggleNewLicense}
+                                    licensesData={"company.licenses"}
+                                  />
+                                </LicenseContainer>
+                              </>
+                            }
+                          />
+                          <Route
+                            path="inspection-reports"
+                            element={
+                              <>
+                                <InspectionContainer>
+                                  <NewReports
+                                    newReport={newReport}
+                                    toggleNewReport={toggleNewReport}
+                                    reportData={"company.report"}
+                                  />
+                                </InspectionContainer>
+                              </>
+                            }
+                          />
+                          <Route path="documents" element={<h2>Documents Page</h2>} />
+                          <Route
+                            path="reminders"
+                            element={
+                              <>
+                                <RemainderContainer>
+                                  <OrganizationRemainder  />
+                                </RemainderContainer>
+                              </>
+                            }
+                          />
+                        </Routes>
+                      </CompanyContainer>
+                    </React.Fragment>
+                  ) : <ErrorComponent message="Backend Error..." />
+                }
+              </React.Fragment>
+            ) :
+            <ErrorComponent message="Let me understand first..." />
+          }
       </>
-
-
     </React.Fragment>
   )
 }
