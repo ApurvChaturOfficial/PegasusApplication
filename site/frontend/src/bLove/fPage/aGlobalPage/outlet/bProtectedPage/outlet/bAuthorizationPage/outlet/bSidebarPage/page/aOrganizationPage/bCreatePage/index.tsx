@@ -32,7 +32,7 @@ const OrganizationCreatePage = () => {
 
     cLicenses: [{
       dSelectedLicense: "",
-      dLicenseLicenseNumber: "",
+      dLicenseNumber: "",
       dLicenseIssueDate: "",
       dLicenseExpiryDate: "",
     }]
@@ -62,7 +62,7 @@ const OrganizationCreatePage = () => {
       ...formData, cLicenses: [
         ...formData.cLicenses, {
           dSelectedLicense: "",
-          dLicenseLicenseNumber: "",
+          dLicenseNumber: "",
           dLicenseIssueDate: "",
           dLicenseExpiryDate: "",
         }
@@ -124,92 +124,6 @@ const OrganizationCreatePage = () => {
   return (
     <React.Fragment>
       {/* OrganizationCreatePage */}
-
-      {/* <form onSubmit={handleSubmit} noValidate >
-        <div>
-          Organization Detail
-          <div>
-            <label>Organization Name</label>
-            <input name="dName" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Organization Type</label>
-            <input name="dType" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Phone</label>
-            <input name="dPhoneNumber" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Email</label>
-            <input name="dCompanyEmail" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Address</label>
-            <input name="dAddress" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>State</label>
-            <input name="dSelectedState" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>City</label>
-            <input name="dSelectedCity" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Country</label>
-            <input name="dCountry" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Pin Code</label>
-            <input name="dPin" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>PAN Card</label>
-            <input name="dPanNumber" onChange={(event => handleInputChange(event))} />
-          </div>
-        </div>
-
-        Licenses {formData.cLicenses.length < 10 && <button type="button" onClick={addNewLicense} >Add</button>}
-        {
-          formData.cLicenses.map((eachLicense: any, indexLicense: any) => (
-            <div style={{ backgroundColor: "tomato" }} >
-              <div>
-                <label>License Type</label>
-                <input name="dLicenseSelectedLicense" onChange={(event => handleLicenseInputChange(event, indexLicense))} />
-              </div>
-
-              <div>
-                <label>License Number</label>
-                <input name="dLicenseLicenseNumber" onChange={(event => handleLicenseInputChange(event, indexLicense))} />
-              </div>
-
-              <div>
-                <label>Issue Date</label>
-                <input name="dLicenseIssueDate" onChange={(event => handleLicenseInputChange(event, indexLicense))} />
-              </div>
-
-              <div>
-                <label>Expiry Date</label>
-                <input name="dLicenseExpiryDate" onChange={(event => handleLicenseInputChange(event, indexLicense))} />
-              </div>
-
-              {formData.cLicenses.length > 1 && <button type="button" onClick={() => removeLicense(indexLicense)} >Remove</button>}
-            </div>
-          ))
-        }
-
-        <button type="submit" >Submit</button>
-      </form> */}
 
       <>
         <TopNavBarComponent />
@@ -327,8 +241,8 @@ const OrganizationCreatePage = () => {
                 <Input
                   type="text"
                   placeholder="License Number"
-                  name="dLicenseLicenseNumber"
-                  value={license.dLicenseLicenseNumber}
+                  name="dLicenseNumber"
+                  value={license.dLicenseNumber}
                   onChange={(e) => handleLicenseInputChange(e, index)}
                 />
                 <FinalTag>

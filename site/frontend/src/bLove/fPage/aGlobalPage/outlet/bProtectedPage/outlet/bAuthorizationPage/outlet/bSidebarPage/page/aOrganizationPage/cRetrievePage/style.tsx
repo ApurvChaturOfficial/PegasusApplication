@@ -375,7 +375,7 @@ const ReportTable = styled.table`
   }
 `;
 
-const LicenseTable = styled.table`
+const TypicalTable = styled.table`
   margin: 15px 50px;
   width: calc(100% - 100px);
   border-collapse: collapse;
@@ -405,6 +405,18 @@ const LicenseTable = styled.table`
 const TableSection = styled.tr`
   border-bottom: 1px solid #b5b5b5;
 `;
+
+const TableSection2 = styled.tr`
+  border-bottom: 1px solid #b5b5b5;
+
+  &:nth-child(odd) {  // Targeting odd rows
+    background-color: #FFF9E6;
+  }
+  &:nth-child(even) { // Targeting even rows
+    background-color: #ffffff;
+  }
+`;
+
 
 const TableHeading = styled.th`
   padding: 10px;
@@ -615,24 +627,6 @@ const BaseHeader = styled.h3`
   font-weight: 400;
 `;
 
-const AlertTag = styled.h2`
-  color: red;
-  margin: 0;
-  margin-top: 4px;
-  font-size: 1.5rem;
-  font-weight: 400;
-  letter-spacing: 1.2px;
-`;
-
-const AlertTag2 = styled.h2`
-  color: red;
-  margin: 0;
-  margin-top: 4px;
-  font-size: 1rem;
-  font-weight: 400;
-  letter-spacing: 1.2px;
-`;
-
 const Buttontag3 = styled.div`
   display: flex;
   flex-direction: row;
@@ -692,6 +686,34 @@ const ButtonBack = styled.button`
   }
 `;
 
+const ButtonLinkone = styled(Link)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //margin: 10px 5px;
+  //padding: 8px 20px;
+  flex-basis: 6.5%;
+
+  font-size: 1.1rem;
+  background-color: #fff;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    cursor: pointer;
+    background-color: #f0f7ff;
+  }
+`;
+
+const Icon = styled.img`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  margin: auto;
+  display: block;
+`;
+
+
 const RemainderContainer = styled.div``;
 
 const InspectionContainer = styled.div``;
@@ -741,8 +763,9 @@ export {
   ButtonLink3,
   LicenseSubContainer,
   ReportTable,
-  LicenseTable,
+  TypicalTable,
   TableSection,
+  TableSection2,
   TableHeading,
   TableBody,
   AddLicense,
@@ -770,8 +793,6 @@ export {
   LicenseInfoTag,
   LicenseInfoTag2,
   BaseHeader,
-  AlertTag,
-  AlertTag2,
   Buttontag3,
   DownloadButton,
   UploadButton,
@@ -780,4 +801,6 @@ export {
   RemainderContainer,
   InspectionContainer,
   ReportSubContainer,  
+  ButtonLinkone,
+  Icon,
 }

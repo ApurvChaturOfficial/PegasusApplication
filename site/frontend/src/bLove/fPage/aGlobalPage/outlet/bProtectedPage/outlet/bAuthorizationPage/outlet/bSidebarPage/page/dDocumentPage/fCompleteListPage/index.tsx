@@ -74,11 +74,11 @@ const DocumentCompleteListPage = () => {
           <RightContainer>
             <ServiceSubContainer>
             <>
-              <Heading>Service Management</Heading>
+              <Heading>All Documents</Heading>
               <Form>
                 <Input2
                   type="text"
-                  placeholder="Search Your Services"
+                  placeholder="Search Your Documents"
                   name="search"
                   // value={searchInput}
                   // onChange={handleSearchInputChange}

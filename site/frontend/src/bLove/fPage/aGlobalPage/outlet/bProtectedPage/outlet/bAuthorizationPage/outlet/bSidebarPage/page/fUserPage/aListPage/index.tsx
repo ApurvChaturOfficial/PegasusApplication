@@ -21,8 +21,6 @@ const UserListPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(location)
-
   // State Variable
   const [activeTab, setActiveTab] = useState(location.state?.role ? "Roles" : "Employees");
 
@@ -54,59 +52,6 @@ const UserListPage = () => {
   return (
     <React.Fragment>
       {/* UserListPage */}
-
-      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.fUserRoute.bCreateRoute} >Create</Link> */}
-
-      {/* {APICall.userListAPIResponse.isLoading ? null : 
-        APICall.userListAPIResponse.isError ? null :
-          APICall.userListAPIResponse.isSuccess ? (
-            APICall.userListAPIResponse.data.success ? (
-              APICall.userListAPIResponse.data.list.length > 0 ? (
-                <React.Fragment>
-                  {
-                    APICall.userListAPIResponse.data.list?.map((each: any, index: any) => (
-                      <div key={index} >
-                        {each.eEmail}
-                        <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.fUserRoute.dUpdateRoute}/${each._id}`} >Update</Link>
-                      </div> 
-                    ))
-                  }
-                </React.Fragment>
-              ) : []
-            ) : []
-          ) : []
-      } */}
-
-      {/* <div>
-        ---------------------------------------------------------------------------------------
-      </div> */}
-
-      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.gRoleRoute.bCreateRoute} >Create</Link> */}
-
-      {/* {APICall.roleListAPIResponse.isLoading ? null : 
-        APICall.roleListAPIResponse.isError ? null :
-          APICall.roleListAPIResponse.isSuccess ? (
-            APICall.roleListAPIResponse.data.success ? (
-              APICall.roleListAPIResponse.data.list.length > 0 ? (
-                <React.Fragment>
-                  {
-                    APICall.roleListAPIResponse.data.list?.map((each: any, index: any) => (
-                      <div key={index} >
-                        {each._id} {" "}
-                        {each.aTitle}
-                        <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.gRoleRoute.dUpdateRoute}/${each._id}`} >Update</Link>
-                      </div> 
-                    ))
-                  }
-                </React.Fragment>
-              ) : []
-            ) : []
-          ) : []
-      } */}
-
-      {/* <div>
-        ---------------------------------------------------------------------------------------
-      </div> */}
 
       <>
         <TopNavBarTwoComponent />

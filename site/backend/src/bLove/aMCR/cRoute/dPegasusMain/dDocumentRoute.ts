@@ -12,7 +12,7 @@ const router = express.Router();
 router.route("/list").get(
   rateLimiterMiddleware("document-list", 60, 10), 
   authenticationMiddleware,
-  checkCacheMiddleware("document-list", "Product", "List"), 
+  checkCacheMiddleware("document-list", "Document", "List"), 
   documentListValidation(), validatorMiddleware, 
   documentController().list
 );
@@ -28,7 +28,7 @@ router.route("/create").post(
 router.route("/retrieve/:id").get(
   rateLimiterMiddleware("document-retrieve", 60, 10), 
   authenticationMiddleware,
-  checkCacheMiddleware("document-retrieve", "Product", "Retrieve"), 
+  checkCacheMiddleware("document-retrieve", "Document", "Retrieve"), 
   documentRetrieveValidation(), validatorMiddleware, 
   documentController().retrieve
 )

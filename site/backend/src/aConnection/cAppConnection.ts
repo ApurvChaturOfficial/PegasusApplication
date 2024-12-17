@@ -18,15 +18,12 @@ import { userRouter } from '../bLove/aMCR/cRoute/bUserAdministration/aUserRoute'
 import { roleRouter } from '../bLove/aMCR/cRoute/bUserAdministration/bRoleRoute'
 import { menuRouter } from '../bLove/aMCR/cRoute/bUserAdministration/cMenuRoute'
 
-import { productRouter } from '../bLove/aMCR/cRoute/cProductManagement/aProductRoute'
-import { categoryRouter } from '../bLove/aMCR/cRoute/cProductManagement/bCategoryRoute'
-import { tagRouter } from '../bLove/aMCR/cRoute/cProductManagement/cTagRoute'
-
 import { organizationRouter } from '../bLove/aMCR/cRoute/dPegasusMain/aOrganizationRoute'
 import { licenseRouter } from '../bLove/aMCR/cRoute/dPegasusMain/bLicenseRoute'
 import { serviceRouter } from '../bLove/aMCR/cRoute/dPegasusMain/cServiceRoute'
 import { documentRouter } from '../bLove/aMCR/cRoute/dPegasusMain/dDocumentRoute'
 import { inspectionRouter } from '../bLove/aMCR/cRoute/dPegasusMain/eInspectionRoute'
+import { enrolledServiceRouter } from '../bLove/aMCR/cRoute/dPegasusMain/fEnrolledServiceRoute'
 
 
 const appConnection = express();
@@ -57,15 +54,12 @@ appConnection.use("/api/v1/user/", userRouter);
 appConnection.use("/api/v1/role/", roleRouter);
 appConnection.use("/api/v1/menu/", menuRouter);
 
-appConnection.use("/api/v1/product/", productRouter);
-appConnection.use("/api/v1/category/", categoryRouter);
-appConnection.use("/api/v1/tag/", tagRouter);
-
 appConnection.use("/api/v1/organization/", organizationRouter);
 appConnection.use("/api/v1/license/", licenseRouter);
 appConnection.use("/api/v1/service/", serviceRouter);
 appConnection.use("/api/v1/document/", documentRouter);
 appConnection.use("/api/v1/inspection/", inspectionRouter);
+appConnection.use("/api/v1/enrolled-service/", enrolledServiceRouter);
 
 // Error Middleware
 appConnection.use(errorMiddleware);

@@ -72,11 +72,11 @@ const LicenseCompleteListPage = () => {
           <RightContainer>
             <ServiceSubContainer>
             <>
-              <Heading>Service Management</Heading>
+              <Heading>All License</Heading>
               <Form>
                 <Input2
                   type="text"
-                  placeholder="Search Your Services"
+                  placeholder="Search Your License"
                   name="search"
                   // value={searchInput}
                   // onChange={handleSearchInputChange}

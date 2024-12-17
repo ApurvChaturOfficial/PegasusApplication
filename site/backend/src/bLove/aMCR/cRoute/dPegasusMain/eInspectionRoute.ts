@@ -12,7 +12,7 @@ const router = express.Router();
 router.route("/list").get(
   rateLimiterMiddleware("inspection-list", 60, 10), 
   authenticationMiddleware,
-  checkCacheMiddleware("inspection-list", "Product", "List"), 
+  checkCacheMiddleware("inspection-list", "Inspection", "List"), 
   inspectionListValidation(), validatorMiddleware, 
   inspectionController().list
 );
@@ -28,7 +28,7 @@ router.route("/create").post(
 router.route("/retrieve/:id").get(
   rateLimiterMiddleware("inspection-retrieve", 60, 10), 
   authenticationMiddleware,
-  checkCacheMiddleware("inspection-retrieve", "Product", "Retrieve"), 
+  checkCacheMiddleware("inspection-retrieve", "Inspection", "Retrieve"), 
   inspectionRetrieveValidation(), validatorMiddleware, 
   inspectionController().retrieve
 )

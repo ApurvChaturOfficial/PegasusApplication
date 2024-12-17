@@ -111,7 +111,7 @@ const apiResponseHandler = {
         cOrganization: organizationID,
 
         dSelectedLicense: data.dSelectedLicense,
-        dLicenseNumber: data.dLicenseLicenseNumber,
+        dLicenseNumber: data.dLicenseNumber,
         dIssueDate: data.dLicenseIssueDate,
         dExpiryDate: data.dLicenseExpiryDate,
       } });

@@ -69,57 +69,6 @@ const DocumentCreatePage = () => {
     <React.Fragment>
       {/* DocumentCreatePage */}
 
-      {/* <form onSubmit={handleSubmit} noValidate >
-        <div>
-          License Detail
-          <div>
-            <label>Select Organization</label>
-            <select name="cOrganization" onChange={(event => handleInputChange(event))} >
-              <option disabled selected >--Select--</option>
-              {APICall.organizationListAPIResponse.isLoading ? null : 
-                APICall.organizationListAPIResponse.isError ? null :
-                  APICall.organizationListAPIResponse.isSuccess ? (
-                    APICall.organizationListAPIResponse.data.success ? (
-                      APICall.organizationListAPIResponse.data.list.length > 0 ? (
-                        <React.Fragment>
-                          {
-                            APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                              <option key={index} value={each._id}>{each.dName}</option>
-                            ))
-                          }
-                        </React.Fragment>
-                      ) : []
-                    ) : []
-                  ) : []
-              }
-            </select>
-          </div>
-
-          <div>
-            <label>Document Name</label>
-            <input name="dDocumentName" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Upload Date</label>
-            <input name="dUploadDate" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Comment</label>
-            <input name="dComment" onChange={(event => handleInputChange(event))} />
-          </div>
-
-        </div>
-
-        <button type="submit" >Submit</button>
-      </form> */}
-
-
-      {/* <>
-        -----------------------------------------------------------------------------------------------------------
-      </> */}
-
       <>
         <TopNavBarComponent />
         <Container>
@@ -158,7 +107,6 @@ const DocumentCreatePage = () => {
                 }
               </Dropdown>
 
-              
               <InputHeading>Document Name</InputHeading>
               <Input
                 type="text"
@@ -214,7 +162,6 @@ const DocumentCreatePage = () => {
           </Form>
         </Container>
       </>
-
 
     </React.Fragment>
   )

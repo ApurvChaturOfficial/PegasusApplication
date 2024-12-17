@@ -8,6 +8,8 @@ import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 import inspectionAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/hInspectionAPIEndpoints";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
+import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
+import { ButtonContainer, CancelButton, Container, Dropdown, DropdownOption, FileInput, FileInputContainer, Form, Input, InputHeading, IssueDate, MainHeading, RowContainer, RowInput, SubmitButton } from "./style";
 
 
 const InspectionUpdatePage = () => {
@@ -82,63 +84,105 @@ const InspectionUpdatePage = () => {
   // JSX
   return (
     <React.Fragment>
-      InspectionUpdatePage
+      {/* InspectionUpdatePage */}
 
-      {
-        APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
-        APICall.retrieveAPIResponse.isError ? "Error..." :
-        APICall.retrieveAPIResponse.isSuccess ? (
-          <React.Fragment>
-            {
-              APICall.retrieveAPIResponse.data.success ? (
-                <React.Fragment>
-                  <form onSubmit={handleSubmit} noValidate >
-                    <div>
-                      License Detail
-                      <div>
-                        <label>Select Organization</label>
-                        <select name="cOrganization" onChange={(event => handleInputChange(event))} >
-                          <option disabled selected >--Select--</option>
-                          {APICall.organizationListAPIResponse.isLoading ? null : 
-                            APICall.organizationListAPIResponse.isError ? null :
-                              APICall.organizationListAPIResponse.isSuccess ? (
-                                APICall.organizationListAPIResponse.data.success ? (
-                                  APICall.organizationListAPIResponse.data.list.length > 0 ? (
-                                    <React.Fragment>
-                                      {
-                                        APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                                          <option key={index} selected={each._id === (formData.cOrganization as any)?._id} value={each._id}>{each.dName}</option>
-                                        ))
-                                      }
-                                    </React.Fragment>
+      <>
+        <TopNavBarComponent />
+        {
+          APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
+          APICall.retrieveAPIResponse.isError ? "Error..." :
+          APICall.retrieveAPIResponse.isSuccess ? (
+            <React.Fragment>
+              {
+                APICall.retrieveAPIResponse.data.success ? (
+                  <React.Fragment>
+                    <Container>
+                      <MainHeading>Edit Inspection Report</MainHeading>
+                      <Form onSubmit={handleSubmit}>
+                        <div>
+                          <InputHeading>Select Organization</InputHeading>
+                          <Dropdown
+                            onChange={handleInputChange}
+                            name="cOrganization"
+                          >
+                            <DropdownOption value="" disabled>
+                              Select Organization
+                            </DropdownOption>
+                            {APICall.organizationListAPIResponse.isLoading ? null : 
+                              APICall.organizationListAPIResponse.isError ? null :
+                                APICall.organizationListAPIResponse.isSuccess ? (
+                                  APICall.organizationListAPIResponse.data.success ? (
+                                    APICall.organizationListAPIResponse.data.list.length > 0 ? (
+                                      <React.Fragment>
+                                        {
+                                          APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
+                                            <DropdownOption
+                                              key={index}
+                                              value={each._id}
+                                              selected={each._id === (formData.cOrganization as any)?._id}
+                                            >
+                                              {each.dName}
+                                            </DropdownOption>                                
+                                          ))
+                                        }
+                                      </React.Fragment>
+                                    ) : []
                                   ) : []
                                 ) : []
-                              ) : []
-                          }
-                        </select>
-                      </div>
+                            }
+                          </Dropdown>
 
-                      <div>
-                        <label>License Number</label>
-                        <input name="dReportName" value={formData.dReportName} onChange={(event => handleInputChange(event))} />
-                      </div>
+                          <InputHeading>Report Name</InputHeading>
+                          <Input
+                            type="text"
+                            placeholder="Enter Report Name"
+                            name="dReportName"
+                            value={formData.dReportName}
+                            onChange={handleInputChange}
+                          />
+                          <RowContainer>
+                            <IssueDate>
+                              <InputHeading>Date of Upload</InputHeading>
+                              <RowInput
+                                type="date"
+                                name="dUploadDate"
+                                value={formData.dUploadDate}
+                                onChange={handleInputChange}
+                              />
+                            </IssueDate>
+                          </RowContainer> 
+                        
+                          <InputHeading>Upload Scan Copy</InputHeading>
+                          <FileInputContainer>
+                            {/* <FileInputLabel htmlFor={`file-upload-${index}`}>
+                              {Documents.file ? Documents.file.name : "Choose File"}
+                            </FileInputLabel> */}
+                            <FileInput
+                              type="file"
+                              id={`file-upload-${"index"}`}
+                              name="file"
+                              // onChange={(e) => handleFileChange(e, index)}
+                            />
+                          </FileInputContainer>
+                        </div>
 
-                      <div>
-                        <label>Issued Date</label>
-                        <input name="dUploadDate" value={formData.dUploadDate} onChange={(event => handleInputChange(event))} />
-                      </div>
+                        <>
+                          <ButtonContainer>
+                            <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
+                            <CancelButton type="button" onClick={() => "handleCancel"}>Cancel</CancelButton>
+                          </ButtonContainer>
+                        </>
+                      </Form>
+                    </Container>
+                  </React.Fragment>
+                ) : "Backend Error"
+              }
+            </React.Fragment>
+          ) :
+          "Let me understand first"
+        }
 
-                    </div>
-
-                    <button type="submit" >Submit</button>
-                  </form>
-                </React.Fragment>
-              ) : "Backend Error"
-            }
-          </React.Fragment>
-        ) :
-        "Let me understand first"
-      }
+      </>
 
     </React.Fragment>
   )

@@ -20,6 +20,7 @@ import { LicenseModel } from '../aMCR/aModel/dPegasusMain/bLicenseModel';
 import { ServiceModel } from '../aMCR/aModel/dPegasusMain/cServiceModel';
 import { DocumentModel } from '../aMCR/aModel/dPegasusMain/dDocumentModel';
 import { InspectionModel } from '../aMCR/aModel/dPegasusMain/eInspectionModel';
+import { EnrolledServiceModel } from '../aMCR/aModel/dPegasusMain/fEnrolledServiceModel';
 
 
 const validatorMiddleware = (request: express.Request, response: express.Response, next: express.NextFunction) => {
@@ -1098,6 +1099,53 @@ const inspectionDeleteValidation = () => [
     })
 ]
 
+// Enrolled Service
+const enrolledServiceListValidation = () => []
+
+const enrolledServiceCreateValidation = () => [
+  body("aTitle")
+    .notEmpty().withMessage("Please enter title"),
+]
+
+const enrolledServiceRetrieveValidation = () => [
+  param("id")
+    .custom(value => {
+      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
+      return true;
+    })
+    .custom(async value => {
+      const retrieve = await EnrolledServiceModel.findById(value);
+      if (!retrieve) throw new ErrorUtility("Enrolled Service Not Found", 404)
+      return true;
+    })
+]
+
+const enrolledServiceUpdateValidation = () => [
+  param("id")
+    .custom(value => {
+      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
+      return true;
+    })
+    .custom(async value => {
+     const retrieve = await EnrolledServiceModel.findById(value);
+      if (!retrieve) throw new ErrorUtility("Enrolled Service Not Found", 404)
+      return true;
+    }),
+]
+
+const enrolledServiceDeleteValidation = () => [
+  param("id")
+    .custom(value => {
+      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
+      return true;
+    })
+    .custom(async value => {
+      const retrieve = await EnrolledServiceModel.findById(value);
+      if (!retrieve) throw new ErrorUtility("Enrolled Service Not Found", 404)
+      return true;
+    })
+]
+
 export default validatorMiddleware;
 export {
   baseManyToOneListValidation,
@@ -1205,4 +1253,9 @@ export {
   inspectionUpdateValidation,
   inspectionDeleteValidation,
 
+  enrolledServiceListValidation,
+  enrolledServiceCreateValidation,
+  enrolledServiceRetrieveValidation,
+  enrolledServiceUpdateValidation,
+  enrolledServiceDeleteValidation,
 }

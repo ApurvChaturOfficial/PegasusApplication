@@ -34,40 +34,14 @@ const InspectionListPage = () => {
     <React.Fragment>
       {/* InspectionListPage */}
 
-      <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.bCreateRoute} >Create</Link>
-
-      {APICall.listAPIResponse.isLoading ? null : 
-        APICall.listAPIResponse.isError ? null :
-          APICall.listAPIResponse.isSuccess ? (
-            APICall.listAPIResponse.data.success ? (
-              APICall.listAPIResponse.data.list.length > 0 ? (
-                <React.Fragment>
-                  {
-                    APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                      <div key={index} >
-                        {each.aTitle}
-                        <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.dUpdateRoute}/${each._id}`} >Update</Link>
-                      </div> 
-                    ))
-                  }
-                </React.Fragment>
-              ) : []
-            ) : []
-          ) : []
-      }
-
-      <div>
-        ---------------------------------------------------------------------------------------
-      </div>
-
       <>
         <TopNavBarComponent />
         <MainContainer>
-          <PageHeading>All Documents</PageHeading>
+          <PageHeading>Your Inspection Reports</PageHeading>
           <Form>
             <Input
               type="text"
-              placeholder="Search Your Documents"
+              placeholder="Search Your Inspection Reports"
               // value={searchInput}
               // onChange={handleSearchInputChange}
             />
@@ -75,7 +49,7 @@ const InspectionListPage = () => {
               <Icon src={Filter} alt="Filter" />
               <span>Filter</span>
             </SearchButton>
-            <ButtonLink to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.dDocumentRoute.bCreateRoute}>
+            <ButtonLink to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.bCreateRoute}>
               <Image src={PlusSign} alt="PlusSign" />
               <Para>Add</Para>
             </ButtonLink>
@@ -84,9 +58,8 @@ const InspectionListPage = () => {
           <Table>
             <TableSection>
               <TableHeading>Organization</TableHeading>
-              <TableHeading>Document Name</TableHeading>
+              <TableHeading>Report Name</TableHeading>
               <TableHeading>Uploaded On</TableHeading>
-              <TableHeading>Comment</TableHeading>
               <TableHeading>Download</TableHeading>
               <TableHeading>Edit</TableHeading>
             </TableSection>
@@ -98,19 +71,16 @@ const InspectionListPage = () => {
                     APICall.listAPIResponse.data.list.length > 0 ? (
                       <React.Fragment>
                         {
-                          APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
+                          APICall.listAPIResponse.data.list?.filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
                             <TableSection key={index}>
                               <TableBody>{each.cOrganization.aTitle}</TableBody>
-                              <TableBody>{each.dDocumentName}</TableBody>
-              
-                              <TableBody>{each.dUploadDate}</TableBody>
-                              <TableBody>{each.dComment}</TableBody>
-              
+                              <TableBody>{each.dReportName}</TableBody>
+                              <TableBody>{each.dUploadDate}</TableBody>              
                               <TableBody>
                                 <Icon src={DownloadIcon} alt="Download" />
                               </TableBody>
                               <TableBody>
-                                <ButtonLinkone to="/documents/editdocument">
+                                <ButtonLinkone to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.dUpdateRoute}/${each._id}`}>
                                   <Icon src={EditIcon} alt="Edit" />
                                 </ButtonLinkone>
                               </TableBody>

@@ -41,32 +41,6 @@ const ServiceCompleteListPage = () => {
     <React.Fragment>
       {/* ServiceCompleteListPage */}
 
-      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.bCreateRoute} >Create</Link> */}
-
-      {/* {APICall.listAPIResponse.isLoading ? null : 
-        APICall.listAPIResponse.isError ? null :
-          APICall.listAPIResponse.isSuccess ? (
-            APICall.listAPIResponse.data.success ? (
-              APICall.listAPIResponse.data.list.length > 0 ? (
-                <React.Fragment>
-                  {
-                    APICall.listAPIResponse.data.list?.map((each: any, index: any) => (
-                      <div key={index} >
-                        {each.aTitle}
-                        <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.dUpdateRoute}/${each._id}`} >Update</Link>
-                      </div> 
-                    ))
-                  }
-                </React.Fragment>
-              ) : []
-            ) : []
-          ) : []
-      } */}
-
-      {/* <div>
-        ---------------------------------------------------------------------------------------
-      </div> */}
-
       <>
         <TopNavBarTwoComponent />
         <MainContainer>

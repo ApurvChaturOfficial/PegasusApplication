@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import endpointRoute from '@/bLove/gRoute/aEndpointRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
 // import isAllowedUtility, { menuListUtility, NoAccessMessageUtility } from '@/bLove/dUtility/dIsAllowedUtility';
 // import { useDispatch, useSelector } from 'react-redux';
 // import { RootState } from '../dReduxConnection';
@@ -84,6 +85,11 @@ const RoleUpdatePage = React.lazy(() => import('@/bLove/fPage/aGlobalPage/outlet
 
 const DashboardPage = React.lazy(() => import('@/bLove/fPage/aGlobalPage/outlet/bProtectedPage/outlet/bAuthorizationPage/outlet/bSidebarPage/page/hDashboardPage'));
 
+const PaidCustomerListPage = React.lazy(() => import("@/bLove/fPage/aGlobalPage/outlet/bProtectedPage/outlet/bAuthorizationPage/outlet/bSidebarPage/page/iCustomerPage/aPaidCustomerPage/aListPage"));
+const PaidCustomerRetrievePage = React.lazy(() => import("@/bLove/fPage/aGlobalPage/outlet/bProtectedPage/outlet/bAuthorizationPage/outlet/bSidebarPage/page/iCustomerPage/aPaidCustomerPage/cRetrievePage"));
+const UnpaidCustomerListPage = React.lazy(() => import("@/bLove/fPage/aGlobalPage/outlet/bProtectedPage/outlet/bAuthorizationPage/outlet/bSidebarPage/page/iCustomerPage/bUnpaidCustomerPage/aListPage"));
+const UnpaidCustomerRetrievePage = React.lazy(() => import("@/bLove/fPage/aGlobalPage/outlet/bProtectedPage/outlet/bAuthorizationPage/outlet/bSidebarPage/page/iCustomerPage/bUnpaidCustomerPage/cRetrievePage"));
+
 
 const AppConnection = () => {
   // Redux Call
@@ -100,7 +106,7 @@ const AppConnection = () => {
       <Helmet><title>Pegasus</title></Helmet>
       <ToastContainer />
 
-      <Suspense fallback={<div className='min-h-screen flex justify-center items-center' >Suspence Loading...</div>} >
+      <Suspense fallback={<ErrorComponent message={"Suspense Loading..."} />} >
         <Routes>
 
           {/* Global */}
@@ -189,6 +195,12 @@ const AppConnection = () => {
                   {/* <Route path={`${endpointRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.gRoleRoute.eDeleteRoute}/:id`} element={ <RoleDeletePage />} /> */}
 
                   <Route path={`${endpointRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.hDashboardRoute}`} element={ <DashboardPage />} />
+
+                  <Route path={`${endpointRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.aPaidCustomerRoute.aPaidCustomerListRoute}`} element={ <PaidCustomerListPage />} />
+                  <Route path={`${endpointRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.aPaidCustomerRoute.bPaidCustomerRetrieveRoute}/:id`} element={ <PaidCustomerRetrievePage />} />
+
+                  <Route path={`${endpointRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.bUnpaidCustomerRoute.aUnpaidCustomerListRoute}`} element={ <UnpaidCustomerListPage />} />
+                  <Route path={`${endpointRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.bUnpaidCustomerRoute.bUnpaidCustomerRetrieveRoute}/:id`} element={ <UnpaidCustomerRetrievePage />} />
 
                 </Route>
               </Route>

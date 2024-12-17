@@ -20,6 +20,7 @@ const apiConnection = createApi({
     "serviceList", "serviceRetrieve",
     "documentList", "documentRetrieve",
     "inspectionList", "inspectionRetrieve",
+    "enrolledServiceList", "enrolledServiceRetrieve",
   ],
   endpoints: () => ({})
 })

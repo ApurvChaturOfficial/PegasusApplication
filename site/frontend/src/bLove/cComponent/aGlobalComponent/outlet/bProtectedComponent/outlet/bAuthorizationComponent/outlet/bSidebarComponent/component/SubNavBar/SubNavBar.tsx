@@ -53,13 +53,25 @@ const SubNavBar = (props: any) => {
     companyTab, setCompanyTab, 
     licenseTab, setLicenseTab, licenseListAPITrigger,
     reminderTab, setReminderTab, 
-    inspectionTab, setInspectionTab, 
-    documentTab, setDocumentTab, 
-    serviceTab, setServiceTab ,
+    inspectionTab, setInspectionTab, inspectionListAPITrigger,
+    documentTab, setDocumentTab, documentListAPITrigger,
+    serviceTab, setServiceTab, enrolledServiceListAPITrigger,
 
     licenseTabList, setLicenseTabList,
     licenseTabCreate, setLicenseTabCreate,
-    licenseTabRetrieve, setLicenseTabRetrieve,
+    licenseTabUpdate, setLicenseTabUpdate,
+
+    inspectionTabList, setInspectionTabList,
+    inspectionTabCreate, setInspectionTabCreate,
+    inspectionTabUpdate, setInspectionTabUpdate,
+
+    documentTabList, setDocumentTabList,
+    documentTabCreate, setDocumentTabCreate,
+    documentTabUpdate, setDocumentTabUpdate,
+
+    serviceTabList, setServiceTabList,
+    serviceTabCreate, setServiceTabCreate,
+    serviceTabUpdate, setServiceTabUpdate,
   } = props
 
   // Event Handlers
@@ -73,7 +85,19 @@ const SubNavBar = (props: any) => {
 
     setLicenseTabList(false)
     setLicenseTabCreate(false)
-    setLicenseTabRetrieve(false)
+    setLicenseTabUpdate(false)
+    
+    setInspectionTabList(false)
+    setInspectionTabCreate(false)
+    setInspectionTabUpdate(false)
+    
+    setDocumentTabList(false)
+    setDocumentTabCreate(false)
+    setDocumentTabUpdate(false)
+    
+    setServiceTabList(false)
+    setServiceTabCreate(false)
+    setServiceTabUpdate(false)
   }
 
   const activateLicense = () => {
@@ -86,7 +110,19 @@ const SubNavBar = (props: any) => {
 
     setLicenseTabList(true)
     setLicenseTabCreate(false)
-    setLicenseTabRetrieve(false)
+    setLicenseTabUpdate(false)
+
+    setInspectionTabList(false)
+    setInspectionTabCreate(false)
+    setInspectionTabUpdate(false)
+
+    setDocumentTabList(false)
+    setDocumentTabCreate(false)
+    setDocumentTabUpdate(false)
+
+    setServiceTabList(false)
+    setServiceTabCreate(false)
+    setServiceTabUpdate(false)
 
     licenseListAPITrigger()
   }
@@ -101,7 +137,19 @@ const SubNavBar = (props: any) => {
 
     setLicenseTabList(false)
     setLicenseTabCreate(false)
-    setLicenseTabRetrieve(false)
+    setLicenseTabUpdate(false)
+
+    setInspectionTabList(false)
+    setInspectionTabCreate(false)
+    setInspectionTabUpdate(false)
+
+    setDocumentTabList(false)
+    setDocumentTabCreate(false)
+    setDocumentTabUpdate(false)
+
+    setServiceTabList(false)
+    setServiceTabCreate(false)
+    setServiceTabUpdate(false)
   }
 
   const activateInspection = () => {
@@ -114,7 +162,21 @@ const SubNavBar = (props: any) => {
 
     setLicenseTabList(false)
     setLicenseTabCreate(false)
-    setLicenseTabRetrieve(false)
+    setLicenseTabUpdate(false)
+
+    setInspectionTabList(true)
+    setInspectionTabCreate(false)
+    setInspectionTabUpdate(false)
+
+    setDocumentTabList(false)
+    setDocumentTabCreate(false)
+    setDocumentTabUpdate(false)
+
+    setServiceTabList(false)
+    setServiceTabCreate(false)
+    setServiceTabUpdate(false)
+
+    inspectionListAPITrigger()
   }
 
   const activateDocument = () => {
@@ -127,7 +189,21 @@ const SubNavBar = (props: any) => {
 
     setLicenseTabList(false)
     setLicenseTabCreate(false)
-    setLicenseTabRetrieve(false)
+    setLicenseTabUpdate(false)
+
+    setInspectionTabList(false)
+    setInspectionTabCreate(false)
+    setInspectionTabUpdate(false)
+
+    setDocumentTabList(true)
+    setDocumentTabCreate(false)
+    setDocumentTabUpdate(false)
+
+    setServiceTabList(false)
+    setServiceTabCreate(false)
+    setServiceTabUpdate(false)
+
+    documentListAPITrigger()
   }
 
   const activateService = () => {
@@ -140,7 +216,21 @@ const SubNavBar = (props: any) => {
 
     setLicenseTabList(false)
     setLicenseTabCreate(false)
-    setLicenseTabRetrieve(false)
+    setLicenseTabUpdate(false)
+
+    setInspectionTabList(false)
+    setInspectionTabCreate(false)
+    setInspectionTabUpdate(false)
+
+    setDocumentTabList(false)
+    setDocumentTabCreate(false)
+    setDocumentTabUpdate(false)
+
+    setServiceTabList(true)
+    setServiceTabCreate(false)
+    setServiceTabUpdate(false)
+
+    enrolledServiceListAPITrigger()
   }
 
   // JSX
@@ -148,11 +238,11 @@ const SubNavBar = (props: any) => {
     <MainContainer>
       <NavLinks>
         <Navigation to={""} style={{ color: companyTab && '#007bff' }} onClick={() => activateCompany()} >Company</Navigation>
-        <Navigation to={""} style={{ color: (licenseTab || licenseTabList || licenseTabCreate || licenseTabRetrieve) && '#007bff' }} onClick={() => activateLicense()} >Licenses</Navigation>
+        <Navigation to={""} style={{ color: (licenseTab || licenseTabList || licenseTabCreate || licenseTabUpdate) && '#007bff' }} onClick={() => activateLicense()} >Licenses</Navigation>
         <Navigation to={""} style={{ color: reminderTab && '#007bff' }} onClick={() => activateReminder()} >Reminders</Navigation>
-        <Navigation to={""} style={{ color: inspectionTab && '#007bff' }} onClick={() => activateInspection()} >Inspection Reports</Navigation>
-        <Navigation to={""} style={{ color: documentTab && '#007bff' }} onClick={() => activateDocument()} >Documents</Navigation>
-        <Navigation to={""} style={{ color: serviceTab && '#007bff' }} onClick={() => activateService()} >Services</Navigation>
+        <Navigation to={""} style={{ color: (inspectionTab || inspectionTabList || inspectionTabCreate || inspectionTabUpdate) && '#007bff' }} onClick={() => activateInspection()} >Inspection Reports</Navigation>
+        <Navigation to={""} style={{ color: (documentTab || documentTabList || documentTabCreate || documentTabUpdate) && '#007bff' }} onClick={() => activateDocument()} >Documents</Navigation>
+        <Navigation to={""} style={{ color: (serviceTab || serviceTabList || serviceTabCreate || serviceTabUpdate) && '#007bff' }} onClick={() => activateService()} >Services</Navigation>
       </NavLinks>
       <HorizontalLine />
     </MainContainer>

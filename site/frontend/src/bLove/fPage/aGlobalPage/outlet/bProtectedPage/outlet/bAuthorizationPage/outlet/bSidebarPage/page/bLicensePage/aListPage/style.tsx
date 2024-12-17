@@ -6,11 +6,10 @@ const ButtonLinkone = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 10px 5px;
+  //margin: 10px 5px;
   //padding: 8px 20px;
-  flex-basis:6.5%;
-  
-  
+  flex-basis: 6.5%;
+
   font-size: 1.1rem;
   background-color: #fff;
   text-decoration: none;
@@ -179,7 +178,7 @@ const Table = styled.table`
   th,
   td {
     padding: 10px;
-    text-align: center;
+    text-align: left;
     vertical-align: middle;
   }
 
@@ -221,6 +220,27 @@ const Icon = styled.img`
   display: block;
 `;
 
+const ButtonLink3 = styled.button`
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  text-decoration: none;
+  width: 50px;
+  background-color: transparent;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const Image3 = styled.img`
+  width: 60px;
+  height: 30px;
+  margin-right: 10px;
+  padding-right: 10px;
+`;
+
+
 export {
   ButtonLinkone,
   ButtonLink,
@@ -241,4 +261,6 @@ export {
   TableHeading,
   TableBody,
   Icon,
+  ButtonLink3,
+  Image3,
 }

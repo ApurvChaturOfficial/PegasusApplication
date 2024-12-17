@@ -10,7 +10,8 @@ import serviceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/fS
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
 import { Bounce, toast } from "react-toastify";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
-import { ButtonContainer, CancelButton, CityInfo, ContactInfo, Container, Dropdown, DropdownOption, Form, InputHeading, InputHeadingp, MainHeading, RowContainer, RowInput, SecondaryHeading, StateInfo, SubmitButton } from "./style";
+import { AddNew, ButtonContainer, CancelButton, CityInfo, ContactInfo, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, InputHeading, InputHeadingp, IssueDate, MainHeading, RemoveButton, RowContainer, RowInput, SecondaryHeading, StateInfo, SubmitButton } from "./style";
+import enrolledServiceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/iEnrolledServiceAPIEndpoints";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 
@@ -19,9 +20,6 @@ const ServiceCreatePage = () => {
   const navigate = useNavigate();
 
   // State Variable
-  const [formData, setFormData] = useState({
-    cService: "",
-  })
   const [organizationRetireve, setOrganizationRetireve] = useState({
     _id: "",
 
@@ -37,6 +35,17 @@ const ServiceCreatePage = () => {
     dPanNumber: "",
   })
 
+  const [formData, setFormData] = useState({
+    cEnrolledService: [{
+      cService: "",
+
+      dLicenseNumber: "",
+      dIssueDate: "",
+      dExpiryDate: "",
+      dUploadDate: "",
+    }],
+  })
+  
   // Redux Call
   const ReduxCall = {
     state: useSelector((fullState: RootState) => fullState.globalSlice),
@@ -56,32 +65,67 @@ const ServiceCreatePage = () => {
 
     organizationRetrieveAPITrigger: organizationAPIEndpoint.useLazyOrganizationRetrievePIQuery()[0],
     organizationRetrieveAPIResponse: organizationAPIEndpoint.useLazyOrganizationRetrievePIQuery()[1],
+
+    enrolledServiceCreateAPITrigger: enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation()[0],
+    enrolledServiceCreateAPIResponse: enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation()[1],
   }
 
   // Event Handlers
   // Handle Input Change
   const handleOrganizationInputChange = (event: any) => {
     const { value } = event.target;
-    
-    // setFormData({ ...formData, [name]: value });
-    // console.log(value)
     organizationRetrieveAPIHandler(value)
-
   };
-  
-  // Handle Input Change
-  const handleInputChange = (event: any) => {
+
+  // Add License
+  const addService = () => {
+    setFormData({
+      ...formData, cEnrolledService: [
+        ...formData.cEnrolledService, {
+          cService: "",
+          dLicenseNumber: "",
+          dIssueDate: "",
+          dExpiryDate: "",
+          dUploadDate: ""
+        }
+      ],
+    });
+  };
+
+  // Remove License
+  const removeService = (index: number) => {
+    const updatedLicenses = formData.cEnrolledService.filter((_, i) => i !== index);
+    setFormData({ ...formData, cEnrolledService: updatedLicenses });
+  };
+
+  // Handle Service Input Change
+  const handleServiceInputChange = (event: any, index: number) => {
     const { name, value } = event.target;
 
-    setFormData({ ...formData, [name]: value });
-  };
+    setFormData((prevFormData) => {
+      const updatedEnrolledServices = (prevFormData.cEnrolledService.length > 0) ? [...(prevFormData as any).cEnrolledService] : [];
+      
+      updatedEnrolledServices[index] = {
+        ...updatedEnrolledServices[index],
+        [name]: value,
+      };
+  
+      return {
+        ...prevFormData,
+        cEnrolledService: updatedEnrolledServices,
+      };
+    });
+  };  
   
   // Submit handler
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    console.log("formDataObj", formData);
-    apiResponseHandler.updateAPIResponseHandler(formData, APICall.updateAPITrigger, navigate, organizationRetireve)
+    // console.log("formDataObj", formData);
+    apiResponseHandler.updateAPIResponseHandler(formData, APICall.updateAPITrigger, navigate, APICall.enrolledServiceCreateAPITrigger, organizationRetireve)
+
+
+
   };
 
   const organizationRetrieveAPIHandler = async (id: string) => {
@@ -161,97 +205,6 @@ const ServiceCreatePage = () => {
     <React.Fragment>
       {/* ServiceCreatePage */}
 
-      {/* <form onSubmit={handleSubmit} noValidate >
-        <div>
-          Service Detail
-          <div>
-            <label>Select Organization</label>
-            <select name="cOrganization" onChange={(event => handleInputChange(event))} >
-              <option disabled selected >--Select--</option>
-              {APICall.organizationListAPIResponse.isLoading ? null : 
-                APICall.organizationListAPIResponse.isError ? null :
-                  APICall.organizationListAPIResponse.isSuccess ? (
-                    APICall.organizationListAPIResponse.data.success ? (
-                      APICall.organizationListAPIResponse.data.list.length > 0 ? (
-                        <React.Fragment>
-                          {
-                            APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                              <option key={index} value={each._id}>{each.dName}</option>
-                            ))
-                          }
-                        </React.Fragment>
-                      ) : []
-                    ) : []
-                  ) : []
-              }
-            </select>
-          </div>
-
-          <div>
-            <label>Form Number</label>
-            <input name="dFormNumber" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Form Type</label>
-            <select name="dFormType" onChange={(event => handleInputChange(event))} >
-              <option disabled selected >--Select--</option>
-              <option value="Type 1" >Type 1</option>
-              <option value="Type 2" >Type 2</option>
-              <option value="Type 3" >Type 3</option>
-              <option value="Type 4" >Type 4</option>
-            </select>
-          </div>
-
-          <div>
-            <label>Category</label>
-            <select name="dCategory" onChange={(event => handleInputChange(event))} >
-              <option disabled selected >--Select--</option>
-              <option value="Category 1" >Category 1</option>
-              <option value="Category 2" >Category 2</option>
-              <option value="Category 3" >Category 3</option>
-              <option value="Category 4" >Category 4</option>
-            </select>
-          </div>
-
-          <div>
-            <label>Own / Loan</label>
-            <select name="dOwnLoan" onChange={(event => handleInputChange(event))} >
-              <option disabled selected >--Select--</option>
-              <option value="Own 1" >Own 1</option>
-              <option value="Loan 2" >Loan 2</option>
-            </select>
-          </div>
-
-          <div>
-            <label>Govt. Fees</label>
-            <input name="dGovtFees" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Our Fees</label>
-            <input name="dOurFees" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Added Date</label>
-            <input name="dAddedDate" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Service Validiy</label>
-            <input name="dServiceValidity" onChange={(event => handleInputChange(event))} />
-          </div>
-
-        </div>
-
-        <button type="submit" >Submit</button>
-      </form> */}
-
-      {/* <div>
-        --------------------------------------------------------------
-      </div> */}
-
       <>
         <TopNavBarComponent />
         <Container>
@@ -286,18 +239,16 @@ const ServiceCreatePage = () => {
                     ) : []
                 }
               </Dropdown>
-
               <React.Fragment>
                 <SecondaryHeading>Confirm Firm Details</SecondaryHeading>
                 
                 <InputHeading>Type of Firm</InputHeading>
                 <RowInput
                   type="text"
-                  placeholder="Firm Type"
+                  placeholder="XXXX XXXX"
                   name="dType"
                   value={organizationRetireve.dType || ""}
                   disabled
-                  // onChange={(e) => handleInputChange(e, index)}
                 />
 
                 <RowContainer>
@@ -305,11 +256,10 @@ const ServiceCreatePage = () => {
                     <InputHeadingp>Phone</InputHeadingp>
                     <RowInput
                       type="text"
-                      placeholder="+91-9911991191"
+                      placeholder="XXXX XXXX"
                       name="dPhoneNumber"
                       value={organizationRetireve.dPhoneNumber || ""}
                       disabled
-                      // onChange={(e) => handleInputChange(e, index)}
                     />
                   </div>
 
@@ -317,11 +267,10 @@ const ServiceCreatePage = () => {
                     <InputHeading>Email</InputHeading>
                     <RowInput
                       type="text"
-                      placeholder="jdsfsnk@gmail.com"
+                      placeholder="XXXX XXXX"
                       name="dCompanyEmail"
                       value={organizationRetireve.dCompanyEmail || ""}
                       disabled
-                      // onChange={(e) => handleInputChange(e, index)}
                     />
                   </div>
                 </RowContainer>
@@ -329,31 +278,20 @@ const ServiceCreatePage = () => {
                 <InputHeading>Address</InputHeading>
                 <RowInput
                   type="text"
-                  placeholder="Enter Address"
+                  placeholder="XXXX XXXX"
                   name="address"
                   value={organizationRetireve.dAddress || ""}
                   disabled
-                  // onChange={(e) => handleInputChange(e, index)}
                 />
                 <ContactInfo>
                   <StateInfo>
                     <InputHeading>Select State</InputHeading>
-                    {/* <Dropdown
-                      value={organizationRetireve.dSelectedState}
-                      // onChange={handleStateChange}
-                      name="selectedState"
-                    >
-                      <DropdownOption value="" disabled>
-                        Select State
-                      </DropdownOption>
-                    </Dropdown> */}
                     <RowInput
                       type="text"
-                      placeholder="Enter Address"
+                      placeholder="XXXX XXXX"
                       name="address"
                       value={organizationRetireve.dSelectedState || ""}
                       disabled
-                      // onChange={(e) => handleInputChange(e, index)}
                     />
                   </StateInfo>
                   <CityInfo>
@@ -361,30 +299,11 @@ const ServiceCreatePage = () => {
 
                     <RowInput
                       type="text"
-                      placeholder="Enter Address"
+                      placeholder="XXXX XXXX"
                       name="address"
                       value={organizationRetireve.dSelectedCity || ""}
                       disabled
-                      // onChange={(e) => handleInputChange(e, index)}
                     />
-
-                    {/* <Dropdown
-                      value={organizationRetireve.dSelectedCity}
-                      // onChange={handleCityChange}
-                      name="selectedCity"
-                    >
-                      <DropdownOption value="" disabled>
-                        Select City
-                      </DropdownOption>
-                      {statesAndCities[formData.selectedState]?.map((city) => (
-                        <DropdownOption
-                          key={city}
-                          value={city.toLowerCase().replace(/\s+/g, "-")}
-                        >
-                          {city}
-                        </DropdownOption>
-                      ))}
-                    </Dropdown> */}
                   </CityInfo>
                 </ContactInfo>
             
@@ -393,11 +312,10 @@ const ServiceCreatePage = () => {
                     <InputHeadingp>Enter Pin Code</InputHeadingp>
                     <RowInput
                       type="text"
-                      placeholder="Enter pin code"
+                      placeholder="XXXX XXXX"
                       name="phone"
                       value={organizationRetireve.dPin}
                       disabled
-                      // onChange={(e) => handleInputChange(e, index)}
                     />
                   </div>
 
@@ -405,110 +323,118 @@ const ServiceCreatePage = () => {
                     <InputHeading>Enter PAN Card Number</InputHeading>
                     <RowInput
                       type="text"
-                      placeholder="Enter Pan Card Number"
+                      placeholder="XXXX XXXX"
                       name="email"
                       value={organizationRetireve.dPanNumber}
                       disabled
-                      // onChange={(e) => handleInputChange(e, index)}
                     />
                   </div>
                 </RowContainer>
               </React.Fragment>
 
-              <SecondaryHeading>Add Service</SecondaryHeading>
+              <br/>
+              <br/>
 
-              <InputHeading>Select Service</InputHeading>
-              <Dropdown
-                // value={Documents.selectedOrganization}
-                onChange={handleInputChange}
+              <SecondaryHeading>Add Services</SecondaryHeading>
 
-                name="cService"
-              >
-                <DropdownOption selected disabled>
-                  Select Service
-                </DropdownOption>
-                {/* {license.map((license) => (
-                  <DropdownOption key={license} value={license}>
-                    {license}
-                  </DropdownOption>
-                ))} */}
+              {formData.cEnrolledService.map((each, index: any) => (
+                <React.Fragment>
+                  <div>
+                    <InputHeading style={{ color: "tomato", display: "flex", justifyContent: "space-between", alignItems: "center" }} >
+                      Service {index + 1}
 
-                {APICall.serviceListAPIResponse.isLoading ? null : 
-                  APICall.serviceListAPIResponse.isError ? null :
-                    APICall.serviceListAPIResponse.isSuccess ? (
-                      APICall.serviceListAPIResponse.data.success ? (
-                        APICall.serviceListAPIResponse.data.list.length > 0 ? (
-                          <React.Fragment>
-                            {
-                              APICall.serviceListAPIResponse.data.list?.map((each: any, index: any) => (
-                                <DropdownOption key={index} value={each._id}>
-                                  {each.aTitle}
-                                </DropdownOption>
-                              ))
-                            }
-                          </React.Fragment>
-                        ) : []
-                      ) : []
-                    ) : []
-                }
-
-              </Dropdown>
-
-              {/* <InputHeading>Enter License Number</InputHeading>
-                  <RowInput
-                    type="text"
-                    placeholder="Enter License ID Number"
-                    name="licneseID"
-                    // value={document.Comment}
-                    // onChange={(e) => handleInputChange(e, index)}
-                  /> */}
+                      <RemoveButton type="button" onClick={() => removeService(index)}>
+                        Remove
+                      </RemoveButton>
+                    </InputHeading>
+                    <InputHeading>Select Service</InputHeading>
+                    <Dropdown
+                      onChange={(e) => handleServiceInputChange(e, index)}
+                      name="cService"
+                    >
+                      <DropdownOption selected disabled>
+                        Select Service
+                      </DropdownOption>
+                      {APICall.serviceListAPIResponse.isLoading ? null : 
+                        APICall.serviceListAPIResponse.isError ? null :
+                          APICall.serviceListAPIResponse.isSuccess ? (
+                            APICall.serviceListAPIResponse.data.success ? (
+                              APICall.serviceListAPIResponse.data.list.length > 0 ? (
+                                <React.Fragment>
+                                  {
+                                    APICall.serviceListAPIResponse.data.list?.map((each: any, index: any) => (
+                                      <DropdownOption key={index} value={each._id}>
+                                        {each.aTitle}
+                                      </DropdownOption>
+                                    ))
+                                  }
+                                </React.Fragment>
+                              ) : []
+                            ) : []
+                          ) : []
+                      }
+                    </Dropdown>
+    
+                    <InputHeading>Enter License Number</InputHeading>
+                      <RowInput
+                        type="text"
+                        placeholder="Enter License ID Number"
+                        name="dLicenseNumber"
+                        value={each.dLicenseNumber}
+                        onChange={(e) => handleServiceInputChange(e, index)}
+                      />
+                    
+                    <FinalTag>
+                      <IssueDate>
+                        <InputHeading>Issue Date</InputHeading>
+                        <ContactInput
+                          type="date"
+                          placeholder="Issue Date"
+                          name="dIssueDate"
+                          value={each.dIssueDate}
+                          onChange={(e) => handleServiceInputChange(e, index)}
+                        />
+                      </IssueDate>
+                      { <ExpiryDate>
+                        <InputHeading>Expiry Date</InputHeading>
+                        <ContactInput
+                          type="date"
+                          placeholder="Expiry Date"
+                          name="dExpiryDate"
+                          value={each.dExpiryDate}
+                          onChange={(e) => handleServiceInputChange(e, index)}
+                        />
+                      </ExpiryDate> }
+                    </FinalTag>
+                    
+                    <InputHeading>Upload Scan Copy</InputHeading>
+                    <FileInputContainer>
+                      {/* <FileInputLabel htmlFor={`file-upload-${index}`}>
+                        {Documents.file ? Documents.file.name : "Choose File"}
+                      </FileInputLabel> */}
+                      <FileInput
+                        type="file"
+                        id={`file-upload-${"index"}`}
+                        // name="file"
+                        // onChange={(e) => handleServiceInputChange(e, index)}
+                      />
+                    </FileInputContainer>
+                    <IssueDate>
+                      <InputHeading>Date of Upload</InputHeading>
+                      <RowInput
+                        type="date"
+                        name="dUploadDate"
+                        value={each.dUploadDate}
+                        onChange={(e) => handleServiceInputChange(e, index)}
+                      />
+                    </IssueDate>
+                  </div>
+                </React.Fragment>
               
-              {/* <FinalTag>
-                <IssueDate>
-                  <InputHeading>Issue Date</InputHeading>
-                  <ContactInput
-                    type="date"
-                    placeholder="Issue Date"
-                    name="issueDate"
-                    // value={license.issueDate}
-                    // onChange={(e) => handleInputChange(e, index)}
-                  />
-                </IssueDate>
-                { <ExpiryDate>
-                  <InputHeading>Expiry Date</InputHeading>
-                  <ContactInput
-                    type="date"
-                    placeholder="Expiry Date"
-                    name="expiryDate"
-                    // value={license.expiryDate}
-                    // onChange={(e) => handleInputChange(e, index)}
-                  />
-                </ExpiryDate> }
-              </FinalTag> */}
-
-              
-              {/* <InputHeading>Upload Scan Copy</InputHeading>
-              <FileInputContainer>
-                <FileInputLabel htmlFor={`file-upload-${index}`}>
-                  {Documents.file ? Documents.file.name : "Choose File"}
-                </FileInputLabel>
-                <FileInput
-                  type="file"
-                  id={`file-upload-${"index"}`}
-                  name="file"
-                  onChange={(e) => handleFileChange(e, index)}
-                />
-              </FileInputContainer>
-              <IssueDate>
-                  <InputHeading>Date of Upload</InputHeading>
-                  <RowInput
-                    type="date"
-                    name="issueDate"
-                    value={document.issueDate}
-                    onChange={(e) => handleInputChange(e, index)}
-                  />
-                </IssueDate> */}
-              
+              ))}
+              <AddNew type="button" onClick={addService}>
+                Add New
+              </AddNew>              
             </div>
 
             <>

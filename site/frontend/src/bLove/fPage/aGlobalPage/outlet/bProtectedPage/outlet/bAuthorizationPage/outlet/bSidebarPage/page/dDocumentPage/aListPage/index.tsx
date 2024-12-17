@@ -41,32 +41,6 @@ const DocumentListPage = () => {
     <React.Fragment>
       {/* DocumentListPage */}
 
-      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.dDocumentRoute.bCreateRoute} >Create</Link> */}
-
-      {/* {APICall.listAPIResponse.isLoading ? null : 
-        APICall.listAPIResponse.isError ? null :
-          APICall.listAPIResponse.isSuccess ? (
-            APICall.listAPIResponse.data.success ? (
-              APICall.listAPIResponse.data.list.length > 0 ? (
-                <React.Fragment>
-                  {
-                    APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                      <div key={index} >
-                        {each.aTitle}
-                        <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.dDocumentRoute.dUpdateRoute}/${each._id}`} >Update</Link>
-                      </div> 
-                    ))
-                  }
-                </React.Fragment>
-              ) : []
-            ) : []
-          ) : []
-      } */}
-
-      {/* <div>
-        ---------------------------------------------------------------------------------------
-      </div> */}
-
       <>
         <TopNavBarComponent />
         <MainContainer>
@@ -105,7 +79,7 @@ const DocumentListPage = () => {
                     APICall.listAPIResponse.data.list.length > 0 ? (
                       <React.Fragment>
                         {
-                          APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
+                          APICall.listAPIResponse.data.list?.filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
                             <TableSection key={index}>
                               <TableBody>{each.cOrganization.aTitle}</TableBody>
                               <TableBody>{each.dDocumentName}</TableBody>

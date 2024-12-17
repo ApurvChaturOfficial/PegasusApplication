@@ -9,15 +9,21 @@ import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eL
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
 
-import { ButtonLink, ButtonLinkone, Form, Icon, Image, Input, MainContainer, PageHeading, Para, SearchButton, Table, TableBody, TableHeading, TableSection } from "./style";
+import { ButtonLink, ButtonLink3, ButtonLinkone, Form, Icon, Image, Image3, Input, MainContainer, PageHeading, Para, SearchButton, Table, TableBody, TableHeading, TableSection } from "./style";
 import Filter from "@/bLove/hAsset/icon/filter.png";
 import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
 import DownloadIcon from "@/bLove/hAsset/icon/download.png";
 import EditIcon from "@/bLove/hAsset/icon/pencil.png";
 import UploadIcon from "@/bLove/hAsset/icon/upload-cloud.png";
+import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
+import { useNavigate } from "react-router-dom";
+import getAlertSymbolLetter2 from "@/bLove/dUtility/fGetAlertSymbolLetter2";
 
 
 const LicenseListPage = () => {
+  // Variable
+  const navigate = useNavigate()
+
   // Redux Call
   const ReduxCall = {
     state: useSelector((fullState: RootState) => fullState.globalSlice),
@@ -40,32 +46,6 @@ const LicenseListPage = () => {
   return (
     <React.Fragment>
       {/* LicenseListPage */}
-
-      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.bCreateRoute} >Create</Link>
-
-      {APICall.listAPIResponse.isLoading ? null : 
-        APICall.listAPIResponse.isError ? null :
-          APICall.listAPIResponse.isSuccess ? (
-            APICall.listAPIResponse.data.success ? (
-              APICall.listAPIResponse.data.list.length > 0 ? (
-                <React.Fragment>
-                  {
-                    APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                      <div key={index} >
-                        {each.aTitle}
-                        <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.dUpdateRoute}/${each._id}`} >Update</Link>
-                      </div> 
-                    ))
-                  }
-                </React.Fragment>
-              ) : []
-            ) : []
-          ) : []
-      }
-
-      <div>
-        ---------------------------------------------------------------------------------------
-      </div> */}
 
       <>
         <TopNavBarComponent />
@@ -94,8 +74,9 @@ const LicenseListPage = () => {
                 <TableHeading>License Number</TableHeading>
                 <TableHeading>Date of Issue</TableHeading>
                 <TableHeading>Date of Expiry</TableHeading>
-                <TableHeading>Upload</TableHeading>
+                <TableHeading>Alert</TableHeading>
                 <TableHeading>Download</TableHeading>
+                {/* <TableHeading>View</TableHeading> */}
                 <TableHeading>Edit</TableHeading>
               </TableSection>
               {APICall.listAPIResponse.isLoading ? null : 
@@ -104,16 +85,27 @@ const LicenseListPage = () => {
                     APICall.listAPIResponse.data.success ? (
                       APICall.listAPIResponse.data.list.length > 0 ? (
                         <React.Fragment>
-                            {APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
+                            {APICall.listAPIResponse.data.list?.filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
                               <TableSection key={index}>
                                 <TableBody>{each.cOrganization?.aTitle}</TableBody>
                                 <TableBody>{each.dSelectedLicense}</TableBody>
                                 <TableBody>{each.dLicenseNumber}</TableBody>
                                 <TableBody>{each.dIssueDate}</TableBody>
                                 <TableBody>{each.dExpiryDate}</TableBody>
-                                <TableBody><Icon src={UploadIcon} alt="Upload" /></TableBody>
+                                <TableBody>
+                                    {getAlertSymbolLetter2(each.dExpiryDate)}
+                                  </TableBody>
                                 <TableBody><Icon src={DownloadIcon} alt="Download" /></TableBody>
-                                <TableBody><ButtonLinkone to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.dUpdateRoute}/${each._id}`}><Icon src={EditIcon} alt="Edit" /></ButtonLinkone></TableBody>
+                                {/* <TableBody>
+                                  <ButtonLink3 onClick={() => navigate(`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.dUpdateRoute}/${each._id}`)}>
+                                    <Image3 src={ViewIcon} alt="View" />
+                                  </ButtonLink3>
+                                </TableBody> */}
+                                <TableBody>
+                                  <ButtonLinkone to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.dUpdateRoute}/${each._id}`}>
+                                    <Icon src={EditIcon} alt="Edit" />
+                                  </ButtonLinkone>
+                                </TableBody>
                               </TableSection>
                             ))
                           }
@@ -122,7 +114,7 @@ const LicenseListPage = () => {
                     ) : []
                   ) : []
               }
-          </Table>
+            </Table>
         </MainContainer>
       </>
 

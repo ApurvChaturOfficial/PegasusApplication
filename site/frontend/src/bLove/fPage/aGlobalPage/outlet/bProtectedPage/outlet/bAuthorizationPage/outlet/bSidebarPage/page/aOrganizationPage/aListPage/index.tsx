@@ -39,31 +39,6 @@ const OrganizationListPage = () => {
     <React.Fragment>
       {/* OrganizationListPage */}
 
-      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.aOrganizationRoute.bCreateRoute} >Create</Link>
-
-      {APICall.listAPIResponse.isLoading ? null : 
-        APICall.listAPIResponse.isError ? null :
-          APICall.listAPIResponse.isSuccess ? (
-            APICall.listAPIResponse.data.success ? (
-              APICall.listAPIResponse.data.list.length > 0 ? (
-                <React.Fragment>
-                  {
-                    APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                      <div key={index} >
-                        {each.dName}
-                      </div> 
-                    ))
-                  }
-                </React.Fragment>
-              ) : []
-            ) : []
-          ) : []
-      }
-
-      <div>
-        ---------------------------------------------------------------------------------------
-      </div> */}
-
       <TopNavBarComponent />
       <MainContainer>
         <br />

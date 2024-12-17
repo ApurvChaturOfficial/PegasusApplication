@@ -4,18 +4,12 @@ import { DefaultSchemaUtility, DefaultSchemaUtilityType } from '../../../cUtilit
 
 
 export type OrganizationModelType = DefaultSchemaUtilityType & {
-  // cCategory: {};
-  // cTag: {}[];
-
-  cService: {}[];
+  cEnrolledService?: string[],
+  cAssignedEmployee?: string,
 
   dName?: string,
   dType?: string,
   dCompanyEmail?: string,
-  // dLicenseNumber?: string,
-  // dIssueDate?: string,
-  // dExpiryDate?: string,
-  // dSelectedLicense?: string,
   dPhoneNumber: string,
   dAddress?: string,
   dSelectedState?: string,
@@ -29,15 +23,12 @@ export type OrganizationModelType = DefaultSchemaUtilityType & {
 const schema = new mongoose.Schema<OrganizationModelType>({
   ...DefaultSchemaUtility.schema.obj,
 
-  cService: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ServiceModel' }] ,
+  cEnrolledService: [{ type: mongoose.Schema.Types.ObjectId, ref: 'EnrolledServiceModel' }],
+  cAssignedEmployee: { type: mongoose.Schema.Types.ObjectId, ref: 'UserModel' },
 
   dName: { type: String },
   dType: { type: String },
   dCompanyEmail: { type: String },
-  // dLicenseNumber: { type: String },
-  // dIssueDate: { type: String },
-  // dExpiryDate: { type: String },
-  // dSelectedLicense: { type: String },
   dPhoneNumber: { type: String },
   dAddress: { type: String },
   dSelectedState: { type: String },

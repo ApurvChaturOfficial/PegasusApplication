@@ -82,7 +82,18 @@ const endpointRoute = {
             eDeleteRoute: "role-delete",
           },
 
-          hDashboardRoute: "dashboard"
+          hDashboardRoute: "dashboard",
+
+          iCustomerRoute: {
+            aPaidCustomerRoute: {
+              aPaidCustomerListRoute: "paid-customer-list",
+              bPaidCustomerRetrieveRoute: "paid-customer-retrieve"
+            },
+            bUnpaidCustomerRoute: {
+              aUnpaidCustomerListRoute: "unpaid-customer-list",
+              bUnpaidCustomerRetrieveRoute: "unpaid-customer-retireve",
+            }
+          }
 
         }
       }

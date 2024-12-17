@@ -2,13 +2,15 @@ import React from 'react'
 import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent';
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
 
-import { ButtonLink2, ButtonLink3, Form, Image, Image2, Image3, Input, LicenseTable, Para, SearchButton, TableBody, TableHeading, TableSection } from '../../style';
+import { ButtonLink2, ButtonLink3, Form, Image, Image2, Image3, Input, TypicalTable, Para, SearchButton, TableBody, TableHeading, TableSection, Icon, ButtonLinkone } from '../../style';
 import UploadIcon from "@/bLove/hAsset/icon/upload-cloud.png";
 import DownloadIcon from "@/bLove/hAsset/icon/download.png";
 import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
 import Filter from "@/bLove/hAsset/icon/filter.png";
 import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
-import { getAlertSymbolLetter2 } from '../..';
+import getAlertSymbolLetter2 from '@/bLove/dUtility/fGetAlertSymbolLetter2';
+import fullRoute from '@/bLove/gRoute/bFullRoute';
+import EditIcon from "@/bLove/hAsset/icon/pencil.png";
 
 
 const LicenseTabListComponent = (props: any) => {
@@ -16,7 +18,7 @@ const LicenseTabListComponent = (props: any) => {
   const { 
     setLicenseTabList,
     setLicenseTabCreate,
-    setLicenseTabRetrieve,
+    setLicenseTabUpdate,
     APICall,
     ReduxCall,
     organizationID
@@ -26,13 +28,13 @@ const LicenseTabListComponent = (props: any) => {
   const activateLicenseCreate = () => {
     setLicenseTabList(false)
     setLicenseTabCreate(true)
-    setLicenseTabRetrieve(false)
+    setLicenseTabUpdate(false)
   }
 
-  const activateLicenseRetrieve = (licenseID: string) => {
+  const activateLicenseUpdate = (licenseID: string) => {
     setLicenseTabList(false)
     setLicenseTabCreate(false)
-    setLicenseTabRetrieve(true)
+    setLicenseTabUpdate(true)
 
     APICall.licenseRetrieveAPITrigger({ params: { _id: licenseID } })
   }
@@ -67,23 +69,22 @@ const LicenseTabListComponent = (props: any) => {
                       <Para>Add</Para>
                     </ButtonLink2>
                   </Form>
-                  <LicenseTable>
+                  <TypicalTable>
                     <TableSection>
                       <TableHeading style={{  width: "150px" }}>License</TableHeading>
                       <TableHeading>License Number</TableHeading>
                       <TableHeading>Date of Issue</TableHeading>
                       <TableHeading>Date of Expiry</TableHeading>
                       <TableHeading>Alerts</TableHeading>
-                      <TableHeading>Upload</TableHeading>
                       <TableHeading>Download</TableHeading>
-                      <TableHeading>Actions</TableHeading>
+                      <TableHeading>Edit</TableHeading>
                     </TableSection>
                     {
                       APICall.licenseListAPIResponse.data.list.length > 0 ? (
                         <React.Fragment>
                           {
                             APICall.licenseListAPIResponse.data.list?.
-                              filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
+                              filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
                               filter((each: any) => each.cOrganization?._id === organizationID).
                               map((each: any, index: any) => (
                                 <TableSection key={index}>
@@ -100,17 +101,12 @@ const LicenseTabListComponent = (props: any) => {
                                   </TableBody>
                                   <TableBody>
                                     <ButtonLink3>
-                                      <Image2 src={UploadIcon} alt="Upload" />
-                                    </ButtonLink3>
-                                  </TableBody>
-                                  <TableBody>
-                                    <ButtonLink3>
                                       <Image2 src={DownloadIcon} alt="Download" />
                                     </ButtonLink3>
                                   </TableBody>
                                   <TableBody>
-                                    <ButtonLink3 onClick={() => activateLicenseRetrieve(each._id)}>
-                                      <Image3 src={ViewIcon} alt="View" />
+                                    <ButtonLink3 onClick={() => activateLicenseUpdate(each._id)}>
+                                      <Icon src={EditIcon} alt="Edit" />
                                     </ButtonLink3>
                                   </TableBody>
                                 </TableSection>
@@ -119,7 +115,7 @@ const LicenseTabListComponent = (props: any) => {
                         </React.Fragment>
                       ) : [] 
                     }
-                  </LicenseTable>
+                  </TypicalTable>
                 </React.Fragment>
               ) : <ErrorComponent message="Backend Error..." />
             }

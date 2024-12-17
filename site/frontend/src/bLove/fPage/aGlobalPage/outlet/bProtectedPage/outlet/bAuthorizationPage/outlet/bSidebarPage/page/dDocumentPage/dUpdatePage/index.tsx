@@ -88,72 +88,6 @@ const DocumentUpdatePage = () => {
     <React.Fragment>
       {/* DocumentUpdatePage */}
 
-      {/* {
-        APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
-        APICall.retrieveAPIResponse.isError ? "Error..." :
-        APICall.retrieveAPIResponse.isSuccess ? (
-          <React.Fragment>
-            {
-              APICall.retrieveAPIResponse.data.success ? (
-                <React.Fragment>
-                  <form onSubmit={handleSubmit} noValidate >
-                    <div>
-                      License Detail
-                      <div>
-                        <label>Select Organization</label>
-                        <select name="cOrganization" onChange={(event => handleInputChange(event))} >
-                          <option disabled selected >--Select--</option>
-                          {APICall.organizationListAPIResponse.isLoading ? null : 
-                            APICall.organizationListAPIResponse.isError ? null :
-                              APICall.organizationListAPIResponse.isSuccess ? (
-                                APICall.organizationListAPIResponse.data.success ? (
-                                  APICall.organizationListAPIResponse.data.list.length > 0 ? (
-                                    <React.Fragment>
-                                      {
-                                        APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                                          <option key={index} selected={each._id === (formData.cOrganization as any)?._id} value={each._id}>{each.dName}</option>
-                                        ))
-                                      }
-                                    </React.Fragment>
-                                  ) : []
-                                ) : []
-                              ) : []
-                          }
-                        </select>
-                      </div>
-
-                      <div>
-                        <label>License Number</label>
-                        <input name="dDocumentName" value={formData.dDocumentName} onChange={(event => handleInputChange(event))} />
-                      </div>
-
-                      <div>
-                        <label>Issued Date</label>
-                        <input name="dUploadDate" value={formData.dUploadDate} onChange={(event => handleInputChange(event))} />
-                      </div>
-
-                      <div>
-                        <label>Expiry Date</label>
-                        <input name="dComment" value={formData.dComment} onChange={(event => handleInputChange(event))} />
-                      </div>
-
-                    </div>
-
-                    <button type="submit" >Submit</button>
-                  </form>
-                </React.Fragment>
-              ) : "Backend Error"
-            }
-          </React.Fragment>
-        ) :
-        "Let me understand first" 
-      } */}
-
-
-      {/* <>
-        --------------------------------------------------------------------------------------------------------------------------
-      </> */}
-
       <>
         <TopNavBarComponent />
         {
@@ -269,6 +203,7 @@ const DocumentUpdatePage = () => {
         }
 
       </>
+      
     </React.Fragment>
   )
 }

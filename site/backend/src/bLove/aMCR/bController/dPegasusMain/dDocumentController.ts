@@ -14,7 +14,7 @@ const documentController = (Model=DocumentModel, Label="Document") => ({
       const list = await Model.find()
         .populate("bCreatedBy", "eFirstname eLastname eEmail")
         .populate("bUpdatedBy", "eFirstname eLastname eEmail")
-        .populate("cOrganization", "aTitle");
+        .populate("cOrganization", "aTitle bCreatedBy");
 
       // Set Cache
       await redisClient.setex(`${Label.toLowerCase()}-list`, 60, JSON.stringify(list))

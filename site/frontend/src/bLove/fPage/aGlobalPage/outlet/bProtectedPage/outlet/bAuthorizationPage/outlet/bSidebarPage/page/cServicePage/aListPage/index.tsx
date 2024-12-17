@@ -11,6 +11,7 @@ import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProt
 import { ButtonLink, Form, Icon, Image, Input, MainContainer, PageHeading, Para, SearchButton, Table, TableBody, TableHeading, TableSection, ViewButton } from "./style";
 import Filter from "@/bLove/hAsset/icon/filter.png";
 import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
+import enrolledServiceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/iEnrolledServiceAPIEndpoints";
 
 
 const ServiceListPage = () => {
@@ -26,7 +27,7 @@ const ServiceListPage = () => {
 
   // API Call
   const APICall = {
-    listAPIResponse: serviceAPIEndpoint.useServiceListAPIQuery(null),
+    listAPIResponse: enrolledServiceAPIEndpoint.useEnrolledServiceListAPIQuery(null),
   }
 
   // Event Handler
@@ -53,32 +54,6 @@ const ServiceListPage = () => {
   return (
     <React.Fragment>
       {/* ServiceListPage */}
-
-      {/* <Link to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.bCreateRoute} >Create</Link> */}
-
-      {/* {APICall.listAPIResponse.isLoading ? null : 
-        APICall.listAPIResponse.isError ? null :
-          APICall.listAPIResponse.isSuccess ? (
-            APICall.listAPIResponse.data.success ? (
-              APICall.listAPIResponse.data.list.length > 0 ? (
-                <React.Fragment>
-                  {
-                    APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                      <div key={index} >
-                        {each.aTitle}
-                        <Link to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.dUpdateRoute}/${each._id}`} >Update</Link>
-                      </div> 
-                    ))
-                  }
-                </React.Fragment>
-              ) : []
-            ) : []
-          ) : []
-      } */}
-
-      {/* <div>
-        ---------------------------------------------------------------------------------------
-      </div> */}
 
       <>
         <TopNavBarComponent />
@@ -109,9 +84,9 @@ const ServiceListPage = () => {
                 <TableHeading>Own/Loan</TableHeading>
                 <TableHeading>Form License</TableHeading>
                 <TableHeading>Govt. Fee (Rs)</TableHeading>
-                <TableHeading>Total Fee (Rs)</TableHeading>
+                <TableHeading>Our Fee (Rs)</TableHeading>
                 <TableHeading>Date Added</TableHeading>
-                <TableHeading>Expiring On</TableHeading>
+                <TableHeading>Validity</TableHeading>
                 <TableHeading>Actions</TableHeading>
               </TableSection>
             </thead>
@@ -124,25 +99,27 @@ const ServiceListPage = () => {
                       APICall.listAPIResponse.data.list.length > 0 ? (
                         <React.Fragment>
                           {
-                            APICall.listAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
+                            APICall.listAPIResponse.data.list?.
+                              filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
+                              map((each: any, index: any) => (
                               <TableSection key={index} style={{ backgroundColor: index % 2 === 0 ? '#ffffff' : '#FFF9E6' }}>
                                 <TableBody>
                                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    {each.cOrganization.aTitle}
-                                    {visibleAddresses.has(each.id) && (
+                                    {each.cOrganization?.aTitle}
+                                    {visibleAddresses.has(each._id) && (
                                       <div style={{ marginTop: '4px', fontSize: '0.9rem', color: '#666' }}>
-                                        {each.cOrganization.aTitle}
+                                        {each.cOrganization?.dAddress}
                                       </div>
                                     )}
                                   </div>
                                 </TableBody>
-                                <TableBody>{each.category}</TableBody>
-                                <TableBody>{each.owner}</TableBody>
-                                <TableBody>{each.formtype}</TableBody>
-                                <TableBody>{each.govtfee}</TableBody>
-                                <TableBody>{each.totalfee}</TableBody>
-                                <TableBody>{each.dateAdded}</TableBody>
-                                <TableBody>{each.expiringDate}</TableBody>
+                                <TableBody>{each.cService.dCategory}</TableBody>
+                                <TableBody>{each.cService.dOwnLoan}</TableBody>
+                                <TableBody>{each.cService.dFormType}</TableBody>
+                                <TableBody>{each.cService.dGovtFees}</TableBody>
+                                <TableBody>{each.cService.dOurFees}</TableBody>
+                                <TableBody>{each.cService.dAddedDate}</TableBody>
+                                <TableBody>{each.cService.dServiceValidity}</TableBody>
                                 <TableBody>
                                   <ViewButton onClick={() => toggleAddressVisibility(each._id)}>
                                     {visibleAddresses.has(each._id) ? "Hide" : "View"}

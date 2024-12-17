@@ -79,7 +79,6 @@ const LicenseUpdatePage = () => {
     ) : null
   }, [APICall.retrieveAPIResponse])
   
-
   // Extra Render
   useEffect(() => {
     console.log(formData)
@@ -90,85 +89,8 @@ const LicenseUpdatePage = () => {
     <React.Fragment>
       {/* LicenseUpdatePage */}
 
-      {/* {
-        APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
-        APICall.retrieveAPIResponse.isError ? "Error..." :
-        APICall.retrieveAPIResponse.isSuccess ? (
-          <React.Fragment>
-            {
-              APICall.retrieveAPIResponse.data.success ? (
-                <React.Fragment>
-                  <form onSubmit={handleSubmit} noValidate >
-                    <div>
-                      License Detail
-                      <div>
-                        <label>Select Organization</label>
-                        <select name="cOrganization" onChange={(event => handleInputChange(event))} >
-                          <option disabled selected >--Select--</option>
-                          {APICall.organizationListAPIResponse.isLoading ? null : 
-                            APICall.organizationListAPIResponse.isError ? null :
-                              APICall.organizationListAPIResponse.isSuccess ? (
-                                APICall.organizationListAPIResponse.data.success ? (
-                                  APICall.organizationListAPIResponse.data.list.length > 0 ? (
-                                    <React.Fragment>
-                                      {
-                                        APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                                          <option key={index} selected={each._id === (formData.cOrganization as any)?._id} value={each._id}>{each.dName}</option>
-                                        ))
-                                      }
-                                    </React.Fragment>
-                                  ) : []
-                                ) : []
-                              ) : []
-                          }
-                        </select>
-                      </div>
-
-                      <div>
-                        <label>Select License</label>
-                        <select name="dSelectedLicense" onChange={(event => handleInputChange(event))} >
-                          <option disabled selected >--Select--</option>
-                          <option value="Licence 1" selected={"Licence 1" === formData.dSelectedLicense} >License 1</option>
-                          <option value="Licence 2" selected={"Licence 2" === formData.dSelectedLicense} >License 2</option>
-                          <option value="Licence 3" selected={"Licence 3" === formData.dSelectedLicense} >License 3</option>
-                          <option value="Licence 4" selected={"Licence 4" === formData.dSelectedLicense} >License 4</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label>License Number</label>
-                        <input name="dLicenseNumber" value={formData.dLicenseNumber} onChange={(event => handleInputChange(event))} />
-                      </div>
-
-                      <div>
-                        <label>Issued Date</label>
-                        <input name="dIssueDate" value={formData.dIssueDate} onChange={(event => handleInputChange(event))} />
-                      </div>
-
-                      <div>
-                        <label>Expiry Date</label>
-                        <input name="dExpiryDate" value={formData.dExpiryDate} onChange={(event => handleInputChange(event))} />
-                      </div>
-
-                    </div>
-
-                    <button type="submit" >Submit</button>
-                  </form>
-                </React.Fragment>
-              ) : "Backend Error"
-            }
-          </React.Fragment>
-        ) :
-        "Let me understand first"
-      } */}
-
-      {/* <div>
-        -----------------------------------
-      </div> */}
-
       <>
         <TopNavBarComponent />
-
         {
           APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
           APICall.retrieveAPIResponse.isError ? "Error..." :
@@ -190,12 +112,6 @@ const LicenseUpdatePage = () => {
                             <DropdownOption selected disabled>
                               Select Organization
                             </DropdownOption>
-                            {/* {companyData.map((Organization) => (
-                              <DropdownOption key={Organization.companyName} value={Organization.companyName}>
-                                {Organization.companyName}
-                              </DropdownOption>
-                            ))} */}
-
                             {APICall.organizationListAPIResponse.isLoading ? null : 
                               APICall.organizationListAPIResponse.isError ? null :
                                 APICall.organizationListAPIResponse.isSuccess ? (
@@ -206,11 +122,8 @@ const LicenseUpdatePage = () => {
                                           APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
                                             <DropdownOption 
                                               key={index} 
-                                              // value={each._id}
+                                              value={each._id}
                                               selected={each._id === (formData.cOrganization as any)?._id}
-                                              
-                                              defaultChecked={each._id === (formData.cOrganization as any)?._id}
-                                              
                                             >
                                               {each.dName}
                                             </DropdownOption>
@@ -260,7 +173,7 @@ const LicenseUpdatePage = () => {
                               <ContactInput
                                 type="date"
                                 placeholder="Expiry Date"
-                                name="expiryDate"
+                                name="dExpiryDate"
                                 value={formData.dExpiryDate}
                                 onChange={handleInputChange}
                               />

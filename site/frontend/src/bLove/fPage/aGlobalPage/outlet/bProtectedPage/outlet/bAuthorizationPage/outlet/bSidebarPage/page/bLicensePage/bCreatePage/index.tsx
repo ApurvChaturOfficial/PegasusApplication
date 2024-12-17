@@ -11,6 +11,7 @@ import apiResponseHandler from "./extras/aAPIResponseHandler";
 
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
 import { ButtonContainer, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FinalTag, Form, Input, InputHeading, IssueDate, MainHeading, SubmitButton } from "./style";
+import allLicenseType from "@/bLove/hAsset/data/allLicenseType";
 
 
 const LicenseCreatePage = () => {
@@ -69,68 +70,7 @@ const LicenseCreatePage = () => {
   // JSX
   return (
     <React.Fragment>
-      LicenseCreatePage
-
-      <form onSubmit={handleSubmit} noValidate >
-        <div>
-          License Detail
-          <div>
-            <label>Select Organization</label>
-            <select name="cOrganization" onChange={(event => handleInputChange(event))} >
-              <option disabled selected >--Select--</option>
-              {APICall.organizationListAPIResponse.isLoading ? null : 
-                APICall.organizationListAPIResponse.isError ? null :
-                  APICall.organizationListAPIResponse.isSuccess ? (
-                    APICall.organizationListAPIResponse.data.success ? (
-                      APICall.organizationListAPIResponse.data.list.length > 0 ? (
-                        <React.Fragment>
-                          {
-                            APICall.organizationListAPIResponse.data.list?.filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
-                              <option key={index} value={each._id}>{each.dName}</option>
-                            ))
-                          }
-                        </React.Fragment>
-                      ) : []
-                    ) : []
-                  ) : []
-              }
-            </select>
-          </div>
-
-          <div>
-            <label>Select License</label>
-            <select name="dSelectedLicense" onChange={(event => handleInputChange(event))} >
-              <option disabled selected >--Select--</option>
-              <option value="Licence 1" >License 1</option>
-              <option value="Licence 2" >License 2</option>
-              <option value="Licence 3" >License 3</option>
-              <option value="Licence 4" >License 4</option>
-            </select>
-          </div>
-
-          <div>
-            <label>License Number</label>
-            <input name="dLicenseNumber" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Issued Date</label>
-            <input name="dIssueDate" onChange={(event => handleInputChange(event))} />
-          </div>
-
-          <div>
-            <label>Expiry Date</label>
-            <input name="dExpiryDate" onChange={(event => handleInputChange(event))} />
-          </div>
-
-        </div>
-
-        <button type="submit" >Submit</button>
-      </form>
-
-      <div>
-        -----------------------------------------------------
-      </div>
+      {/* LicenseCreatePage */}
 
       <>
         <TopNavBarComponent />
@@ -169,7 +109,6 @@ const LicenseCreatePage = () => {
                         ) : []
                       ) : []
                   }
-
                 </Dropdown>
 
                 <InputHeading>Select License</InputHeading>
@@ -181,8 +120,11 @@ const LicenseCreatePage = () => {
                   <DropdownOption value="" disabled>
                     Select License
                   </DropdownOption>
-                  <DropdownOption value="license1">License 1</DropdownOption>
-                  <DropdownOption value="license2">License 2</DropdownOption>
+                  {allLicenseType.map((each) => (
+                    <DropdownOption key={each} value={each} >
+                      {each}
+                    </DropdownOption>
+                  ))}
                 </Dropdown>
                 <InputHeading>Enter License Number</InputHeading>
                 <Input

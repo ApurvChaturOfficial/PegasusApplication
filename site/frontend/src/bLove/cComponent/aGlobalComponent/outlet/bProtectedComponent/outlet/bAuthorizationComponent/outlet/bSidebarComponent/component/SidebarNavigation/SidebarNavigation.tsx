@@ -246,8 +246,8 @@ const SidebarNavigation = () => {
           Service Management
         </NavItem>
         <NavItem 
-          to="/pegasus/subscribed-customers" 
-          active={checkActive("/pegasus/subscribed-customers")}
+          to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.aPaidCustomerRoute.aPaidCustomerListRoute} 
+          active={checkActive(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.aPaidCustomerRoute.aPaidCustomerListRoute)}
         >
           <Icon>
             <Image src={Customers} alt="Customers" />
@@ -255,8 +255,8 @@ const SidebarNavigation = () => {
           Subscribed Customers
         </NavItem>
         <NavItem 
-          to="/pegasus/unpaid-customers" 
-          active={checkActive("/pegasus/unpaid-customers")}
+          to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.bUnpaidCustomerRoute.aUnpaidCustomerListRoute} 
+          active={checkActive(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.bUnpaidCustomerRoute.aUnpaidCustomerListRoute)}
         >
           <Icon>
             <Image src={AttractCustomers} alt="AttractCustomers" />
@@ -282,8 +282,8 @@ const SidebarNavigation = () => {
           All Documents
         </NavItem>
         <NavItem 
-          to="/pegasus/payment-management/*" 
-          active={checkActive("/pegasus/payment-management")}
+          to="" 
+          active={checkActive("")}
         >
           <Icon>
             <Image src={CreditCard} alt="CreditCard" />
@@ -291,8 +291,8 @@ const SidebarNavigation = () => {
           Payment Management
         </NavItem>
         <NavItem 
-          to="/pegasus/custom-notifications" 
-          active={checkActive("/pegasus/custom-notifications")}
+          to="" 
+          active={checkActive("")}
         >
           <Icon>
             <Image src={Send} alt="Send" />
