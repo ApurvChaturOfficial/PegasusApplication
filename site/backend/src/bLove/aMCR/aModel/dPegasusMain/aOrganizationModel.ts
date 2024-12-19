@@ -17,6 +17,7 @@ export type OrganizationModelType = DefaultSchemaUtilityType & {
   dCountry?: string,
   dPin?: string,
   dPanNumber?: string,
+  dEnrolledServicePaymentStatus?: boolean,
 
 };
 
@@ -36,6 +37,7 @@ const schema = new mongoose.Schema<OrganizationModelType>({
   dCountry: { type: String },
   dPin: { type: String },
   dPanNumber: { type: String },
+  dEnrolledServicePaymentStatus: { type: Boolean, default: false },
 
 } as mongoose.SchemaDefinition<OrganizationModelType>)
 

@@ -6,12 +6,10 @@ import { DefaultSchemaUtility, DefaultSchemaUtilityType } from '../../../cUtilit
 export type EnrolledServiceModelType = DefaultSchemaUtilityType & {
   cOrganization?: string,
   cService?: mongoose.Types.ObjectId;
+  
+  dPaymentStatus?: boolean,
+  dActionStatus?: boolean,
 
-  dLicenseNumber: string;
-  dIssueDate: string;
-  dExpiryDate: string;
-  dUploadDate: string;
-  dPaymentStatus: boolean;
 };
 
 const schema = new mongoose.Schema<EnrolledServiceModelType>({
@@ -20,11 +18,8 @@ const schema = new mongoose.Schema<EnrolledServiceModelType>({
   cOrganization: { type: mongoose.Schema.Types.ObjectId, ref: 'OrganizationModel' } ,
   cService: { type: mongoose.Schema.Types.ObjectId, ref: 'ServiceModel' },
 
-  dLicenseNumber: { type: String },
-  dIssueDate: { type: String },
-  dExpiryDate: { type: String },      
-  dUploadDate: { type: String },  
-  dPaymentStatus: { type: Boolean, default: false }    
+  dPaymentStatus: { type: Boolean, default: false },
+  dActionStatus: { type: Boolean, default: false },
 
 } as mongoose.SchemaDefinition<EnrolledServiceModelType>)
 

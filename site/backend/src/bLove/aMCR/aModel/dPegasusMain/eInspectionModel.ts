@@ -8,6 +8,8 @@ export type InspectionModelType = DefaultSchemaUtilityType & {
 
   dReportName?: string,
   dUploadDate?: string,
+  dFileUploaded?: string,
+  dFileUploadedID?: string,
 
 };
 
@@ -18,6 +20,8 @@ const schema = new mongoose.Schema<InspectionModelType>({
   
   dReportName: { type: String },
   dUploadDate: { type: String },
+  dFileUploaded: { type: String },
+  dFileUploadedID: { type: String },
 
 } as mongoose.SchemaDefinition<InspectionModelType>)
 

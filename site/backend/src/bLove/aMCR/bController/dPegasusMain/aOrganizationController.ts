@@ -14,7 +14,8 @@ const organizationController = (Model=OrganizationModel, Label="Organization") =
       const list = await Model.find()
         .populate("bCreatedBy", "eFirstname eLastname eEmail")
         .populate("bUpdatedBy", "eFirstname eLastname eEmail")
-        .populate("cAssignedEmployee", "eFirstname eLastname eEmail");
+        .populate("cAssignedEmployee", "eFirstname eLastname eEmail")
+        .populate("cEnrolledService", "dPaymentStatus dActionStatus");
 
       // Set Cache
       await redisClient.setex(`${Label.toLowerCase()}-list`, 60, JSON.stringify(list))

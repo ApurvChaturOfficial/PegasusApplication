@@ -9,6 +9,8 @@ export type DocumentModelType = DefaultSchemaUtilityType & {
   dDocumentName?: string,
   dUploadDate?: string,
   dComment?: string,
+  dFileUploaded?: string,
+  dFileUploadedID?: string,
 
 };
 
@@ -20,6 +22,8 @@ const schema = new mongoose.Schema<DocumentModelType>({
   dDocumentName: { type: String },
   dUploadDate: { type: String },
   dComment: { type: String },
+  dFileUploaded: { type: String },
+  dFileUploadedID: { type: String },
 
 } as mongoose.SchemaDefinition<DocumentModelType>)
 
