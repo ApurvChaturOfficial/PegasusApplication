@@ -1,18 +1,16 @@
-import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
-import React, { useState } from "react";
-import { ButtonLink2, ButtonLink3, EditRoleButton, EmployeeDropdown, Form, Heading, Image3, Input, LeftContainer, MainContainer, Navigation, NavLinks, RightContainer, RoleTable, RoleTableBody, RoleTableHeading, SearchButton, SubmitButtonNew, Table, TableBody, TableHeading } from "./style";
-import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 import { RootState } from "@/aConnection/dReduxConnection";
-import FilterIcon from '@/bLove/hAsset/icon/filter.png'; // Adjust the path if needed
-import PlusSignIcon from '@/bLove/hAsset/icon/plus-circle.png'; // Adjust the path if needed
-import fullRoute from "@/bLove/gRoute/bFullRoute";
-import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import userAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/bUserAdministration/aUserAPIEndpoints";
+import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
+import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
+import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
+import FilterIcon from '@/bLove/hAsset/icon/filter.png'; // Adjust the path if needed
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
-import { SubmitButton } from "../../../eInspectionPage/bCreatePage/style";
+import { ButtonLink3, EmployeeDropdown, Form, Heading, Image3, Input, LeftContainer, MainContainer, Navigation, NavLinks, RightContainer, SearchButton, SubmitButtonNew, Table, TableBody, TableHeading } from "./style";
 
 
 const PaidCustomerListPage = () => {
