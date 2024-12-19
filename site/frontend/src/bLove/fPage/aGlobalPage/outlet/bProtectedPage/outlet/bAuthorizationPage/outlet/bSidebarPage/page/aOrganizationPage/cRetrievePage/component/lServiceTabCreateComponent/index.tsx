@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonTag, CancelButton, ContactInfo, ContactInput, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Input2, InputHeading, IssueDate, Para } from '../../style';
+import handleImageCreateForList from '@/bLove/dUtility/bImageForList/aHandleImageCreateForList';
+import handleImageUpdateForList from '@/bLove/dUtility/bImageForList/bHandleImageUpdateForList';
+import handleImageDeleteForList from '@/bLove/dUtility/bImageForList/cHandleImageDeleteForList';
+import React, { useEffect, useState } from 'react';
+import { AddNew, RemoveButton } from '../../../bCreatePage/style';
+import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonTag, CancelButton, ContactInfo, ContactInput, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Input2, InputHeading, IssueDate, Para, UploadedFile } from '../../style';
 import apiResponseHandler from './extras/aAPIResponseHandler';
-import allLicenseType from '@/bLove/hAsset/data/allLicenseType';
-import { RowInput, SecondaryHeading } from '../../../../cServicePage/bCreatePage/style';
-import { AddNew, FinalTag, RemoveButton } from '../../../bCreatePage/style';
 
 
 const ServiceTabCreateComponent = (props: any) => {
@@ -14,10 +15,11 @@ const ServiceTabCreateComponent = (props: any) => {
     setServiceTabUpdate,
     APICall,
     // ReduxCall,
-    organizationID
+    // organizationID
   } = props;
 
   // State Variable
+  const [fileLoading, setFileLoading] = useState(false)
   const [formData, setFormData] = useState({
     cEnrolledService: [{
       cService: "",
@@ -26,6 +28,8 @@ const ServiceTabCreateComponent = (props: any) => {
       dIssueDate: "",
       dExpiryDate: "",
       dUploadDate: "",
+      dFileUploaded: null,
+      dFileUploadedID: null,      
     }],
   })  
 
@@ -53,7 +57,9 @@ const ServiceTabCreateComponent = (props: any) => {
           dLicenseNumber: "",
           dIssueDate: "",
           dExpiryDate: "",
-          dUploadDate: ""
+          dUploadDate: "",
+          dFileUploaded: null,
+          dFileUploadedID: null,          
         }
       ],
     });
@@ -166,17 +172,49 @@ const ServiceTabCreateComponent = (props: any) => {
                 </ExpiryDate>
               </ContactInfo>
               <InputHeading>Upload Scan Copy License</InputHeading>
+
+              {/* --------------------------------------------------------------- */}
               <FileInputContainer>
-                <FileInputLabel htmlFor="fileInput">Choose File</FileInputLabel>
+                <div style={{ display: "flex", flexDirection: "column" }} >
+                  {formData.cEnrolledService?.[index]?.dFileUploaded && <img style={{ 
+                      height: "70px", 
+                      objectFit: "cover"
+                  }} src={formData.cEnrolledService?.[index]?.dFileUploaded} />}
+                  {formData.cEnrolledService?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileUpdate${index}`}>{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
+                  {formData.cEnrolledService?.[index]?.dFileUploaded && (
+                    <FileInputLabel 
+                      style={{ color: "tomato" }}
+                      onClick={() => handleImageDeleteForList(index, "cEnrolledService", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.cEnrolledService?.[index]?.dFileUploadedID)} 
+                    >{fileLoading ? "Loading..." : "Remove File"}</FileInputLabel>
+                  )}
+                </div>
+                {!formData.cEnrolledService?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileInput${index}`}>{fileLoading ? "Loading..." : "Choose File"}</FileInputLabel>}
                 <FileInput
                   type="file"
-                  id="fileInput"
-                  // onChange={handleFileChange}
+                  id={`fileInput${index}`}
+                  disabled={fileLoading}
+                  onChange={(event: any) => handleImageCreateForList(event, index, "cEnrolledService", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading)}
+                  name="file"
+                />
+                <FileInput
+                  type="file"
+                  id={`fileUpdate${index}`}
+                  disabled={fileLoading}
+                  onChange={(event: any) => handleImageUpdateForList(event, index, "cEnrolledService", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.cEnrolledService?.[index]?.dFileUploadedID)}
+                  name="file"
                 />
               </FileInputContainer>
-              {/* {formData.file && (
-                <UploadedFile>Uploaded File: {formData.file.name}</UploadedFile>
-              )} */}
+              {formData.cEnrolledService?.[index]?.dFileUploaded && <UploadedFile>Uploaded File: {(
+                <a
+                  href={formData.cEnrolledService?.[index]?.dFileUploaded || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  {formData.cEnrolledService?.[index]?.dFileUploaded}
+                </a> 
+              )}</UploadedFile>}
+              {/* --------------------------------------------------------------- */}
 
             </AddLicenseForm>
             </React.Fragment>

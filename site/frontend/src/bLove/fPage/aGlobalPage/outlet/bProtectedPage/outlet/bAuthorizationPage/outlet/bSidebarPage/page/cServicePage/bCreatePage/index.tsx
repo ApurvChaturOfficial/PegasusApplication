@@ -10,8 +10,12 @@ import serviceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/fS
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
 import { Bounce, toast } from "react-toastify";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
-import { AddNew, ButtonContainer, CancelButton, CityInfo, ContactInfo, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, InputHeading, InputHeadingp, IssueDate, MainHeading, RemoveButton, RowContainer, RowInput, SecondaryHeading, StateInfo, SubmitButton } from "./style";
+import { AddNew, ButtonContainer, CancelButton, CityInfo, ContactInfo, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, InputHeading, InputHeadingp, IssueDate, MainHeading, RemoveButton, RowContainer, RowInput, SecondaryHeading, StateInfo, SubmitButton, UploadedFile } from "./style";
 import enrolledServiceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/iEnrolledServiceAPIEndpoints";
+import handleImageDeleteForList from "@/bLove/dUtility/bImageForList/cHandleImageDeleteForList";
+import handleImageCreateForList from "@/bLove/dUtility/bImageForList/aHandleImageCreateForList";
+import handleImageUpdateForList from "@/bLove/dUtility/bImageForList/bHandleImageUpdateForList";
+import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 
@@ -23,7 +27,7 @@ const ServiceCreatePage = () => {
   const [organizationRetireve, setOrganizationRetireve] = useState({
     _id: "",
 
-    cService: [],
+    cEnrolledService: [],
 
     dType: "",
     dPhoneNumber: "",
@@ -35,6 +39,7 @@ const ServiceCreatePage = () => {
     dPanNumber: "",
   })
 
+  const [fileLoading, setFileLoading] = useState(false)
   const [formData, setFormData] = useState({
     cEnrolledService: [{
       cService: "",
@@ -43,6 +48,8 @@ const ServiceCreatePage = () => {
       dIssueDate: "",
       dExpiryDate: "",
       dUploadDate: "",
+      dFileUploaded: null,
+      dFileUploadedID: null,  
     }],
   })
   
@@ -68,6 +75,9 @@ const ServiceCreatePage = () => {
 
     enrolledServiceCreateAPITrigger: enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation()[0],
     enrolledServiceCreateAPIResponse: enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation()[1],
+
+    licenseCreateAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
+    licenseCreateAPIResponse: licenseAPIEndpoint.useLicenseCreateAPIMutation()[1],
   }
 
   // Event Handlers
@@ -86,7 +96,9 @@ const ServiceCreatePage = () => {
           dLicenseNumber: "",
           dIssueDate: "",
           dExpiryDate: "",
-          dUploadDate: ""
+          dUploadDate: "",
+          dFileUploaded: null,
+          dFileUploadedID: null,      
         }
       ],
     });
@@ -122,10 +134,7 @@ const ServiceCreatePage = () => {
     event.preventDefault();
 
     // console.log("formDataObj", formData);
-    apiResponseHandler.updateAPIResponseHandler(formData, APICall.updateAPITrigger, navigate, APICall.enrolledServiceCreateAPITrigger, organizationRetireve)
-
-
-
+    apiResponseHandler.updateAPIResponseHandler(formData, APICall.updateAPITrigger, navigate, APICall.enrolledServiceCreateAPITrigger, APICall.licenseCreateAPITrigger, organizationRetireve)
   };
 
   const organizationRetrieveAPIHandler = async (id: string) => {
@@ -162,7 +171,7 @@ const ServiceCreatePage = () => {
 
           _id: serverResponse.data.retrieve?._id, 
           
-          cService: serverResponse.data.retrieve?.cService, 
+          cEnrolledService: serverResponse.data.retrieve?.cEnrolledService, 
 
           dType: serverResponse.data.retrieve?.dType,
           dPhoneNumber: serverResponse.data.retrieve?.dPhoneNumber,
@@ -408,17 +417,51 @@ const ServiceCreatePage = () => {
                     </FinalTag>
                     
                     <InputHeading>Upload Scan Copy</InputHeading>
+
+                    {/* --------------------------------------------------------------- */}
                     <FileInputContainer>
-                      {/* <FileInputLabel htmlFor={`file-upload-${index}`}>
-                        {Documents.file ? Documents.file.name : "Choose File"}
-                      </FileInputLabel> */}
+                      <div style={{ display: "flex", flexDirection: "column" }} >
+                        {formData.cEnrolledService?.[index]?.dFileUploaded && <img style={{ 
+                            height: "70px", 
+                            objectFit: "cover"
+                        }} src={formData.cEnrolledService?.[index]?.dFileUploaded} />}
+                        {formData.cEnrolledService?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileUpdate${index}`}>{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
+                        {formData.cEnrolledService?.[index]?.dFileUploaded && (
+                          <FileInputLabel 
+                            style={{ color: "tomato" }}
+                            onClick={() => handleImageDeleteForList(index, "cEnrolledService", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.cEnrolledService?.[index]?.dFileUploadedID)} 
+                          >{fileLoading ? "Loading..." : "Remove File"}</FileInputLabel>
+                        )}
+                      </div>
+                      {!formData.cEnrolledService?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileInput${index}`}>{fileLoading ? "Loading..." : "Choose File"}</FileInputLabel>}
                       <FileInput
                         type="file"
-                        id={`file-upload-${"index"}`}
-                        // name="file"
-                        // onChange={(e) => handleServiceInputChange(e, index)}
+                        id={`fileInput${index}`}
+                        disabled={fileLoading}
+                        onChange={(event: any) => handleImageCreateForList(event, index, "cEnrolledService", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading)}
+                        name="file"
+                      />
+                      <FileInput
+                        type="file"
+                        id={`fileUpdate${index}`}
+                        disabled={fileLoading}
+                        onChange={(event: any) => handleImageUpdateForList(event, index, "cEnrolledService", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.cEnrolledService?.[index]?.dFileUploadedID)}
+                        name="file"
                       />
                     </FileInputContainer>
+                    {formData.cEnrolledService?.[index]?.dFileUploaded && <UploadedFile>Uploaded File: {(
+                      <a
+                        href={formData.cEnrolledService?.[index]?.dFileUploaded || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline"
+                      >
+                        {formData.cEnrolledService?.[index]?.dFileUploaded}
+                      </a> 
+                    )}</UploadedFile>}
+                    {/* --------------------------------------------------------------- */}
+
+
                     <IssueDate>
                       <InputHeading>Date of Upload</InputHeading>
                       <RowInput

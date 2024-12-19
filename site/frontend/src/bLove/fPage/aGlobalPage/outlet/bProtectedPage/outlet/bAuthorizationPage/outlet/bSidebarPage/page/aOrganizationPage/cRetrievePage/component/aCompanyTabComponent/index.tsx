@@ -16,7 +16,8 @@ const CompanyTabComponent = (props: any) => {
     setReminderTab, 
     setInspectionTab, inspectionListAPITrigger,
     setDocumentTab, documentListAPITrigger,
-    setServiceTab, serviceListAPITrigger,
+    setServiceTab, 
+    // _serviceListAPITrigger,
 
     setLicenseTabList,
     setLicenseTabCreate,
@@ -142,32 +143,32 @@ const CompanyTabComponent = (props: any) => {
     documentListAPITrigger()
   }
 
-  const activateService = () => {
-    setCompanyTab(false)
-    setLicenseTab(false)
-    setReminderTab(false)
-    setInspectionTab(false)
-    setDocumentTab(false)
-    setServiceTab(true)
+  // const activateService = () => {
+  //   setCompanyTab(false)
+  //   setLicenseTab(false)
+  //   setReminderTab(false)
+  //   setInspectionTab(false)
+  //   setDocumentTab(false)
+  //   setServiceTab(true)
 
-    setLicenseTabList(false)
-    setLicenseTabCreate(false)
-    setLicenseTabUpdate(false)
+  //   setLicenseTabList(false)
+  //   setLicenseTabCreate(false)
+  //   setLicenseTabUpdate(false)
 
-    setInspectionTabList(false)
-    setInspectionTabCreate(false)
-    setInspectionTabUpdate(false)
+  //   setInspectionTabList(false)
+  //   setInspectionTabCreate(false)
+  //   setInspectionTabUpdate(false)
 
-    setDocumentTabList(false)
-    setDocumentTabCreate(false)
-    setDocumentTabUpdate(false)
+  //   setDocumentTabList(false)
+  //   setDocumentTabCreate(false)
+  //   setDocumentTabUpdate(false)
 
-    setServiceTabList(true)
-    setServiceTabCreate(false)
-    setServiceTabUpdate(false)
+  //   setServiceTabList(true)
+  //   setServiceTabCreate(false)
+  //   setServiceTabUpdate(false)
 
-    serviceListAPITrigger()
-  }
+  //   serviceListAPITrigger()
+  // }
  
   // JSX
   return (

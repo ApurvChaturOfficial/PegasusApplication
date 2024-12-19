@@ -11,6 +11,9 @@ import apiResponseHandler from "./extras/aAPIResponseHandler";
 
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
 import { AddNew, ButtonTwo, CityInfo, ContactInfo, ContactInput, Container, Dropdown, DropdownOption, EmailInfo, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, Input, InputHeading, IssueDate, licenseTypes, MainHeading, PanCard, PhoneInfo, PinCode, RemoveButton, StateInfo, statesAndCities, UploadedFile } from "./style";
+import handleImageUpdateForList from "@/bLove/dUtility/bImageForList/bHandleImageUpdateForList";
+import handleImageCreateForList from "@/bLove/dUtility/bImageForList/aHandleImageCreateForList";
+import handleImageDeleteForList from "@/bLove/dUtility/bImageForList/cHandleImageDeleteForList";
 
 
 const OrganizationCreatePage = () => {
@@ -18,6 +21,7 @@ const OrganizationCreatePage = () => {
   const navigate = useNavigate();
 
   // State Variable
+  const [fileLoading, setFileLoading] = useState(false)
   const [formData, setFormData] = useState({
     dName: "",
     dType: "",
@@ -35,6 +39,8 @@ const OrganizationCreatePage = () => {
       dLicenseNumber: "",
       dLicenseIssueDate: "",
       dLicenseExpiryDate: "",
+      dFileUploaded: null,
+      dFileUploadedID: null,  
     }]
   })
 
@@ -65,6 +71,8 @@ const OrganizationCreatePage = () => {
           dLicenseNumber: "",
           dLicenseIssueDate: "",
           dLicenseExpiryDate: "",
+          dFileUploaded: null,
+          dFileUploadedID: null,      
         }
       ],
     });
@@ -282,17 +290,50 @@ const OrganizationCreatePage = () => {
                     </DropdownOption>
                   ))}
                 </Dropdown>
+
+                {/* --------------------------------------------------------------- */}
                 <FileInputContainer>
-                  <FileInputLabel htmlFor={`file-upload-${index}`}>
-                    Upload File
-                  </FileInputLabel>
+                  <div style={{ display: "flex", flexDirection: "column" }} >
+                    {formData.cLicenses?.[index]?.dFileUploaded && <img style={{ 
+                        height: "70px", 
+                        objectFit: "cover"
+                    }} src={formData.cLicenses?.[index]?.dFileUploaded} />}
+                    {formData.cLicenses?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileUpdate${index}`}>{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
+                    {formData.cLicenses?.[index]?.dFileUploaded && (
+                      <FileInputLabel 
+                        style={{ color: "tomato" }}
+                        onClick={() => handleImageDeleteForList(index, "cLicenses", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.cLicenses?.[index]?.dFileUploadedID)} 
+                      >{fileLoading ? "Loading..." : "Remove File"}</FileInputLabel>
+                    )}
+                  </div>
+                  {!formData.cLicenses?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileInput${index}`}>{fileLoading ? "Loading..." : "Choose File"}</FileInputLabel>}
                   <FileInput
-                    id={`file-upload-${index}`}
                     type="file"
+                    id={`fileInput${index}`}
+                    disabled={fileLoading}
+                    onChange={(event: any) => handleImageCreateForList(event, index, "cLicenses", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading)}
                     name="file"
-                    // onChange={(e) => handleFileChange(e, index)}
+                  />
+                  <FileInput
+                    type="file"
+                    id={`fileUpdate${index}`}
+                    disabled={fileLoading}
+                    onChange={(event: any) => handleImageUpdateForList(event, index, "cLicenses", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.cLicenses?.[index]?.dFileUploadedID)}
+                    name="file"
                   />
                 </FileInputContainer>
+                {formData.cLicenses?.[index]?.dFileUploaded && <UploadedFile>Uploaded File: {(
+                  <a
+                    href={formData.cLicenses?.[index]?.dFileUploaded || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                  >
+                    {formData.cLicenses?.[index]?.dFileUploaded}
+                  </a> 
+                )}</UploadedFile>}
+                {/* --------------------------------------------------------------- */}
+
                 {license.file && <UploadedFile>{license.file.name}</UploadedFile>}
                 <RemoveButton type="button" onClick={() => removeLicense(index)}>
                   Remove

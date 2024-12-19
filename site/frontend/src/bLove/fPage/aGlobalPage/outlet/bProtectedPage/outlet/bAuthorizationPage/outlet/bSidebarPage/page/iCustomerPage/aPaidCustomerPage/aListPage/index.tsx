@@ -1,18 +1,16 @@
-import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
-import React, { useState } from "react";
-import { ButtonLink2, ButtonLink3, EditRoleButton, EmployeeDropdown, Form, Heading, Image3, Input, LeftContainer, MainContainer, Navigation, NavLinks, RightContainer, RoleTable, RoleTableBody, RoleTableHeading, SearchButton, SubmitButtonNew, Table, TableBody, TableHeading } from "./style";
-import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 import { RootState } from "@/aConnection/dReduxConnection";
-import FilterIcon from '@/bLove/hAsset/icon/filter.png'; // Adjust the path if needed
-import PlusSignIcon from '@/bLove/hAsset/icon/plus-circle.png'; // Adjust the path if needed
-import fullRoute from "@/bLove/gRoute/bFullRoute";
-import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import userAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/bUserAdministration/aUserAPIEndpoints";
+import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
+import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
+import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
+import FilterIcon from '@/bLove/hAsset/icon/filter.png'; // Adjust the path if needed
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
-import { SubmitButton } from "../../../eInspectionPage/bCreatePage/style";
+import { ButtonLink3, EmployeeDropdown, Form, Heading, Image3, Input, LeftContainer, MainContainer, Navigation, NavLinks, RightContainer, SearchButton, SubmitButtonNew, Table, TableBody, TableHeading } from "./style";
 
 
 const PaidCustomerListPage = () => {
@@ -44,15 +42,11 @@ const PaidCustomerListPage = () => {
   // Event Handler
   // Handle Assign Customer To Employee
   const handleAssignCustomerToEmployee = (organizationDetail: any, customerDetail: any) => {
-    console.log("Organization Detail", organizationDetail)
-    console.log("Customer Detail", customerDetail.target.value)
-
     apiResponseHandler.updateAPIResponseHandler(
       { cAssignedEmployee: customerDetail.target.value },
       APICall.organizationUpdateAPITrigger,
       { id: organizationDetail?._id }
     )
-
   }
   
   // JSX
@@ -108,7 +102,7 @@ const PaidCustomerListPage = () => {
                               <React.Fragment>
                                 {
                                   APICall.organizationListAPIResponse.data.list
-                                    ?.filter((each: any) => each.cEnrolledService?.length > 0)
+                                    ?.filter((each: any) => each.dEnrolledServicePaymentStatus)
                                     ?.map((each: any, index: any) => (
                                     <tr key={index}>
                                       <TableBody>{each.aTitle}</TableBody>
@@ -150,7 +144,7 @@ const PaidCustomerListPage = () => {
                                               ((ReduxCall.state.receivedObject as any)?.ProfileRetrieve?.cRole?.aTitle === "Pegasus Employee" &&
                                               each.cAssignedEmployee?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id) ? (
                                                 <SubmitButtonNew onClick={() => console.log("Payment Confirmed")} >
-                                                  Confirm Payment
+                                                  View Services
                                                 </SubmitButtonNew>
                                               ) : ( each.cAssignedEmployee ? (
                                                 <ButtonLink3
@@ -163,7 +157,7 @@ const PaidCustomerListPage = () => {
                                           </TableBody>
                                         )
                                       }
-                                      <TableBody>{each.cEnrolledService?.length}</TableBody>
+                                      <TableBody>{each.cEnrolledService?.filter((each1: any) => !each1.dActionStatus)?.length}</TableBody>
                                       <TableBody>
                                         <ButtonLink3
                                           onClick={() => navigate(`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.aPaidCustomerRoute.bPaidCustomerRetrieveRoute}/${each._id}`)}
@@ -218,7 +212,7 @@ const PaidCustomerListPage = () => {
                               <React.Fragment>
                                 {
                                   APICall.organizationListAPIResponse.data.list
-                                    ?.filter((each: any) => each.cEnrolledService?.length > 0)
+                                    ?.filter((each: any) => each.dEnrolledServicePaymentStatus)
                                     ?.map((each: any, index: any) => (
                                     <tr key={index}>
                                       <TableBody>{each.aTitle}</TableBody>

@@ -103,7 +103,6 @@ const apiResponseHandler = {
   },
 
   licenseCreateAPIResponseHandler: async (data: any, createAPITrigger: any, navigate: NavigateFunction, organizationID: any) => {
-    console.log(data)
     try {
       const serverResponse = await createAPITrigger({ body: {
         aTitle: data.dSelectedLicense || "",
@@ -114,6 +113,8 @@ const apiResponseHandler = {
         dLicenseNumber: data.dLicenseNumber,
         dIssueDate: data.dLicenseIssueDate,
         dExpiryDate: data.dLicenseExpiryDate,
+        dFileUploaded: data.dFileUploaded,
+        dFileUploadedID: data.dFileUploadedID,
       } });
 
       // console.log(serverResponse)

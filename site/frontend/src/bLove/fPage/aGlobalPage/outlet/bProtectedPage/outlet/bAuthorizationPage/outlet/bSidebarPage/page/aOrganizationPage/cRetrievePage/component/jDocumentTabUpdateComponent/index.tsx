@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { AddButton, AddHeading, AddLicense, AddLicenseForm, BaseHeader, ButtonBack, ButtonLink4, ButtonTag, Buttontag3, CancelButton, ContactInfo, ContactInput, DownloadButton, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FirstRow, Input2, InputHeading, IssueDate, LastRow, LastRowInfo, LicenseFormNumber, LicenseInfoTag, LicenseInfoTag2, Para, UploadButton } from '../../style';
-import getAlertSymbolLetter from '@/bLove/dUtility/eGetAlertSymbolLetter';
+import handleImageCreateForObject from '@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject';
+import handleImageUpdateForObject from '@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject';
+import handleImageDeleteForObject from '@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject';
+import React, { useEffect, useState } from 'react';
+import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonBack, ButtonTag, CancelButton, ContactInfo, ContactInput, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FirstRow, Input2, InputHeading, IssueDate, Para, UploadedFile } from '../../style';
 import apiResponseHandler from './extras/aAPIResponseHandler';
 
 
@@ -16,12 +18,15 @@ const DocumentTabUpdateComponent = (props: any) => {
   } = props
 
   // State Variable
+  const [fileLoading, setFileLoading] = useState(false)
   const [formData, setFormData] = useState({
     cOrganization: organizationID,
 
     dDocumentName: "",
     dUploadDate: "",
     dComment: "",
+    dFileUploaded: "",
+    dFileUploadedID: "",
   })  
 
   // Event Handlers
@@ -58,6 +63,8 @@ const DocumentTabUpdateComponent = (props: any) => {
           dDocumentName: APICall.documentRetrieveAPIResponse.data.retrieve.dDocumentName,
           dUploadDate: APICall.documentRetrieveAPIResponse.data.retrieve.dUploadDate,
           dComment: APICall.documentRetrieveAPIResponse.data.retrieve.dComment,
+          dFileUploaded: APICall.documentRetrieveAPIResponse.data.retrieve.dFileUploaded,
+          dFileUploadedID: APICall.documentRetrieveAPIResponse.data.retrieve.dFileUploadedID
         })
       ) : null
     ) : null
@@ -113,17 +120,50 @@ const DocumentTabUpdateComponent = (props: any) => {
                         </ExpiryDate>
                       </ContactInfo>
                       <InputHeading>Upload Scan Copy License</InputHeading>
+
+                      {/* --------------------------------------------------------------- */}
                       <FileInputContainer>
-                        <FileInputLabel htmlFor="fileInput">Choose File</FileInputLabel>
+                        <div style={{ display: "flex", flexDirection: "column" }} >
+                          {formData.dFileUploaded && <img style={{ 
+                              height: "70px", 
+                              objectFit: "cover"
+                          }} src={formData.dFileUploaded} />}
+                          {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
+                          {formData.dFileUploaded && (
+                            <FileInputLabel 
+                              style={{ color: "tomato" }}
+                              onClick={() => handleImageDeleteForObject("dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.dFileUploadedID)} 
+                            >{fileLoading ? "Loading..." : "Remove File"}</FileInputLabel>
+                          )}
+                        </div>
+                        {!formData.dFileUploaded && <FileInputLabel htmlFor="fileInput">{fileLoading ? "Loading..." : "Choose File"}</FileInputLabel>}
                         <FileInput
                           type="file"
                           id="fileInput"
-                          // onChange={handleFileChange}
+                          disabled={fileLoading}
+                          onChange={(event: any) => handleImageCreateForObject(event, "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading)}
+                          name="file"
+                        />
+                        <FileInput
+                          type="file"
+                          id="fileUpdate"
+                          disabled={fileLoading}
+                          onChange={(event: any) => handleImageUpdateForObject(event, "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.dFileUploadedID)}
+                          name="file"
                         />
                       </FileInputContainer>
-                      {/* {formData.file && (
-                        <UploadedFile>Uploaded File: {formData.file.name}</UploadedFile>
-                      )} */}
+                      {formData.dFileUploaded && <UploadedFile>Uploaded File: {(
+                        <a
+                          href={formData.dFileUploaded || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline"
+                        >
+                          {formData.dFileUploaded}
+                        </a> 
+                      )}</UploadedFile>}
+                      {/* --------------------------------------------------------------- */}
+
 
                       <ButtonTag>
                         <AddButton type="submit" onClick={handleSubmit}>

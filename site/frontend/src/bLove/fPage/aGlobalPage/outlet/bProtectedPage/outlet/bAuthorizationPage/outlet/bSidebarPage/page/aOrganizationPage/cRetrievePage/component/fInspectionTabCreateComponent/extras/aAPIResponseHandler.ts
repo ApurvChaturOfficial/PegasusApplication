@@ -11,6 +11,8 @@ const apiResponseHandler = {
 
         dReportName: data.dReportName,
         dUploadDate: data.dUploadDate,
+        dFileUploaded: data.dFileUploaded,
+        dFileUploadedID: data.dFileUploadedID,
       } });
 
       // console.log(serverResponse)

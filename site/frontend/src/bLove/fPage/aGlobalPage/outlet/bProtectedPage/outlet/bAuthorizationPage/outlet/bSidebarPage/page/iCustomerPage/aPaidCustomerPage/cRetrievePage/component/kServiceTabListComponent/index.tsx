@@ -1,26 +1,21 @@
-import React, { useState } from 'react'
 import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent';
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
+import React, { useState } from 'react';
 
-import { ButtonLink2, ButtonLink3, Form, Image, Image2, Image3, Input, TypicalTable, Para, SearchButton, TableBody, TableHeading, TableSection } from '../../style';
-import UploadIcon from "@/bLove/hAsset/icon/upload-cloud.png";
-import DownloadIcon from "@/bLove/hAsset/icon/download.png";
-import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
 import Filter from "@/bLove/hAsset/icon/filter.png";
-import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
-import getAlertSymbolLetter2 from '@/bLove/dUtility/fGetAlertSymbolLetter2';
-import { ViewButton } from '../../../../../cServicePage/aListPage/style';
 import { TableSection2 } from '../../../../../aOrganizationPage/cRetrievePage/style';
+import { ViewButton } from '../../../../../cServicePage/aListPage/style';
+import { Form, Image, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
 
 
 const ServiceTabListComponent = (props: any) => {
   // Destructure Props
   const { 
-    setServiceTabList,
-    setServiceTabCreate,
-    setServiceTabUpdate,
+    // setServiceTabList,
+    // setServiceTabCreate,
+    // setServiceTabUpdate,
     APICall,
-    ReduxCall,
+    // ReduxCall,
     organizationID
   } = props
 
@@ -28,11 +23,11 @@ const ServiceTabListComponent = (props: any) => {
   const [visibleAddresses, setVisibleAddresses] = useState(new Set());
 
   // Event Handlers
-  const activateServiceCreate = () => {
-    setServiceTabList(false)
-    setServiceTabCreate(true)
-    setServiceTabUpdate(false)
-  }
+  // const activateServiceCreate = () => {
+  //   setServiceTabList(false)
+  //   setServiceTabCreate(true)
+  //   setServiceTabUpdate(false)
+  // }
 
   const activateServiceRetrieve = (serviceID: string) => {
     setVisibleAddresses((prev: any) => {

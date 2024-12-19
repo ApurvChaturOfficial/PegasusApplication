@@ -599,7 +599,7 @@ padding: 10px;
 border: 1px dashed #ccc;
 border-radius: 10px;
 width: 100%; // Full width for better alignment
-height: 60px;
+height: 100px;
 display: flex;
 align-items: center;
 justify-content: center;

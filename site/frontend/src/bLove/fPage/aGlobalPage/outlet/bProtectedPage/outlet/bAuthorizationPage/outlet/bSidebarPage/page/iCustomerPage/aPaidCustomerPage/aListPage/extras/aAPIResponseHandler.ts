@@ -1,5 +1,3 @@
-import { NavigateFunction } from "react-router-dom";
-import fullRoute from "@/bLove/gRoute/bFullRoute";
 import { Bounce, toast } from "react-toastify";
 
 

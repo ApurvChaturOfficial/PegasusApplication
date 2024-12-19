@@ -31,7 +31,6 @@ const ServiceTabCreateComponent = React.lazy(() => import("./component/lServiceT
 const ServiceTabUpdateComponent = React.lazy(() => import("./component/mServiceTabUpdateComponent"));
 
 
-
 const PaidCustomerRetrievePage = () => {
   // Variables
   const navigate = useNavigate();

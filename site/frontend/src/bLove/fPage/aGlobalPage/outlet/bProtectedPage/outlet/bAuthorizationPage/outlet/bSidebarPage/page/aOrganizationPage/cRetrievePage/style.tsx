@@ -511,7 +511,7 @@ const FileInputContainer = styled.div`
   border: 1px solid #b5b5b5;
   border-radius: 10px;
   width: 785px;
-  height: 30px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;

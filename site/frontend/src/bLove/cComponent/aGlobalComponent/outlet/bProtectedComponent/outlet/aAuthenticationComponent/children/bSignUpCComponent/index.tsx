@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Button, ContactInfo, ContactInput, Container, ContentWrapper, ContinueLink, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Form, HyperLink, Image, ImageWrapper, Input, InputHeading, IssueDate, MainHeading, PageLink, Para } from "./style";
+import { Button, ContactInfo, ContactInput, Container, ContentWrapper, ContinueLink, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Form, HyperLink, Image, ImageWrapper, Input, InputHeading, IssueDate, MainHeading, PageLink, Para, UploadedFile } from "./style";
 import LessThanSign from '@/bLove/hAsset/icon/LessThanSign.png'
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,10 @@ import fullRoute from "@/bLove/gRoute/bFullRoute";
 import { Bounce, toast } from "react-toastify";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
+import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
+import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
+import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
+
 
 
 const SignUpCComponent = () => {
@@ -35,12 +39,15 @@ const SignUpCComponent = () => {
   // Variable
   const location = useLocation();
 
+  // State Variable
+  const [fileLoading, setFileLoading] = useState(false)
   const [formData, setFormData] = useState({
     licenseNumber: "",
     issueDate: "",
     expiryDate: "",
     selectedLicense: "",
     file: null,
+    fileID: null,
   });
 
   const navigate = useNavigate();
@@ -49,7 +56,6 @@ const SignUpCComponent = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
 
   const registerAPIHandler = async (finalFormData: any) => {
     try {
@@ -140,14 +146,6 @@ const SignUpCComponent = () => {
   const organizationAPIHandler = async (finalFormData: any) => {
     try {
       const serverResponse = await APICall.organizationSubmitAPITrigger({ body: {
-        // eFirstname: finalFormData.username,
-        // eLastname: finalFormData.username,
-        // eMobile: finalFormData.phone_number,
-        // eEmail: finalFormData.email,
-        // ePassword: finalFormData.password,
-
-        // dRole: "user"
-
         aTitle: finalFormData.name_of_firm,
         dName: finalFormData.name_of_firm,
         dType: finalFormData.type_of_firm,
@@ -242,32 +240,15 @@ const SignUpCComponent = () => {
 
   const licenseAPIHandler = async (finalFormData: any, id: string) => {
     try {
-      const serverResponse = await APICall.licenseSubmitAPITrigger({ body: {
-        // eFirstname: finalFormData.username,
-        // eLastname: finalFormData.username,
-        // eMobile: finalFormData.phone_number,
-        // eEmail: finalFormData.email,
-        // ePassword: finalFormData.password,
-
-        // dRole: "user"
-
-        // dName: finalFormData.name_of_firm,
-        // dType: finalFormData.type_of_firm,
-        // dCompanyEmail: finalFormData.company_email,
-        // dPhoneNumber: finalFormData.phone_number,
-        // dAddress: finalFormData.address,
-        // dSelectedState: finalFormData.selectedState,
-        // dSelectedCity: finalFormData.selectedCity,
-        // dCountry: finalFormData.country,
-        // dPin: finalFormData.pin,
-        // dPanNumber: finalFormData.pan_number,
-        
+      const serverResponse = await APICall.licenseSubmitAPITrigger({ body: {        
         aTitle: finalFormData.licenseNumber,
         cOrganization: id,
         dLicenseNumber: finalFormData.licenseNumber,
         dIssueDate: finalFormData.issueDate,
         dExpiryDate: finalFormData.expiryDate,
         dSelectedLicense: finalFormData.selectedLicense,
+        dFileUploaded: finalFormData.file,
+        dFileUploadedID: finalFormData.fileID
       } });
 
       console.log(serverResponse)
@@ -430,7 +411,51 @@ const SignUpCComponent = () => {
               </ExpiryDate>
             </ContactInfo>
             <InputHeading>Upload Scan Copy License</InputHeading>
+
+            {/* --------------------------------------------------------------- */}
             <FileInputContainer>
+              <div style={{ display: "flex", flexDirection: "column" }} >
+                {formData.file && <img style={{ 
+                    height: "70px", 
+                    objectFit: "cover"
+                }} src={formData.file} />}
+                {formData.file && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
+                {formData.file && (
+                  <FileInputLabel 
+                    style={{ color: "tomato" }}
+                    onClick={() => handleImageDeleteForObject("file", "fileID", setFormData, setFileLoading, formData.fileID)} 
+                  >{fileLoading ? "Loading..." : "Remove File"}</FileInputLabel>
+                )}
+              </div>
+              {!formData.file && <FileInputLabel htmlFor="fileInput">{fileLoading ? "Loading..." : "Choose File"}</FileInputLabel>}
+              <FileInput
+                type="file"
+                id="fileInput"
+                disabled={fileLoading}
+                onChange={(event: any) => handleImageCreateForObject(event, "file", "fileID", setFormData, setFileLoading)}
+                name="file"
+              />
+              <FileInput
+                type="file"
+                id="fileUpdate"
+                disabled={fileLoading}
+                onChange={(event: any) => handleImageUpdateForObject(event, "file", "fileID", setFormData, setFileLoading, formData.fileID)}
+                name="file"
+              />
+            </FileInputContainer>
+            {formData.file && <UploadedFile>Uploaded File: {(
+              <a
+                href={formData.file || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                {formData.file}
+              </a> 
+            )}</UploadedFile>}
+            {/* --------------------------------------------------------------- */}
+            
+            {/* <FileInputContainer>
               <FileInputLabel htmlFor="fileInput">Choose File</FileInputLabel>
               <FileInput
                 type="file"
@@ -439,7 +464,7 @@ const SignUpCComponent = () => {
                 name="file"
               />
             </FileInputContainer>
-            {/* {formData.file && (
+            {formData.file && (
               <UploadedFile>Uploaded File: {formData.file.name}</UploadedFile>
             )} */}
             <ContinueLink>

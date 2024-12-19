@@ -1,29 +1,24 @@
-import React, { useEffect } from "react"
+import React, { useEffect } from "react";
 // import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import { useDispatch, useSelector } from "react-redux";
 
 import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
-import apiResponseHandler from "./extras/aAPIResponseHandler";
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
+import apiResponseHandler from "./extras/aAPIResponseHandler";
 
-import { ButtonLink, ButtonLink3, ButtonLinkone, Form, Icon, Image, Image3, Input, MainContainer, PageHeading, Para, SearchButton, Table, TableBody, TableHeading, TableSection } from "./style";
-import Filter from "@/bLove/hAsset/icon/filter.png";
-import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
-import DownloadIcon from "@/bLove/hAsset/icon/download.png";
-import EditIcon from "@/bLove/hAsset/icon/pencil.png";
-import UploadIcon from "@/bLove/hAsset/icon/upload-cloud.png";
-import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
-import { useNavigate } from "react-router-dom";
 import getAlertSymbolLetter2 from "@/bLove/dUtility/fGetAlertSymbolLetter2";
+import downloadFileUtility from "@/bLove/dUtility/gDownloadFileUtility";
+import DownloadIcon from "@/bLove/hAsset/icon/download.png";
+import Filter from "@/bLove/hAsset/icon/filter.png";
+import EditIcon from "@/bLove/hAsset/icon/pencil.png";
+import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
+import { ButtonLink, ButtonLinkone, Form, Icon, Image, Input, MainContainer, PageHeading, Para, SearchButton, Table, TableBody, TableHeading, TableSection } from "./style";
 
 
 const LicenseListPage = () => {
-  // Variable
-  const navigate = useNavigate()
-
   // Redux Call
   const ReduxCall = {
     state: useSelector((fullState: RootState) => fullState.globalSlice),
@@ -76,7 +71,6 @@ const LicenseListPage = () => {
                 <TableHeading>Date of Expiry</TableHeading>
                 <TableHeading>Alert</TableHeading>
                 <TableHeading>Download</TableHeading>
-                {/* <TableHeading>View</TableHeading> */}
                 <TableHeading>Edit</TableHeading>
               </TableSection>
               {APICall.listAPIResponse.isLoading ? null : 
@@ -88,19 +82,24 @@ const LicenseListPage = () => {
                             {APICall.listAPIResponse.data.list?.filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).map((each: any, index: any) => (
                               <TableSection key={index}>
                                 <TableBody>{each.cOrganization?.aTitle}</TableBody>
-                                <TableBody>{each.dSelectedLicense}</TableBody>
+                                <TableBody>{each.dSelectedLicense || each.cEnrolledService?.cService?.aTitle}</TableBody>
                                 <TableBody>{each.dLicenseNumber}</TableBody>
                                 <TableBody>{each.dIssueDate}</TableBody>
                                 <TableBody>{each.dExpiryDate}</TableBody>
                                 <TableBody>
                                     {getAlertSymbolLetter2(each.dExpiryDate)}
                                   </TableBody>
-                                <TableBody><Icon src={DownloadIcon} alt="Download" /></TableBody>
-                                {/* <TableBody>
-                                  <ButtonLink3 onClick={() => navigate(`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.dUpdateRoute}/${each._id}`)}>
-                                    <Image3 src={ViewIcon} alt="View" />
-                                  </ButtonLink3>
-                                </TableBody> */}
+                                <TableBody>
+                                  <div>
+                                    {each.dFileUploaded ? (
+                                      <a href={each.dFileUploaded} download onClick={event => downloadFileUtility(event, each.dFileUploaded)}>
+                                        <Icon src={DownloadIcon} alt="Download" />
+                                      </a>
+                                    ) : (
+                                      <span>No file available</span>
+                                    )}
+                                  </div>                                
+                                </TableBody>
                                 <TableBody>
                                   <ButtonLinkone to={`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.dUpdateRoute}/${each._id}`}>
                                     <Icon src={EditIcon} alt="Edit" />

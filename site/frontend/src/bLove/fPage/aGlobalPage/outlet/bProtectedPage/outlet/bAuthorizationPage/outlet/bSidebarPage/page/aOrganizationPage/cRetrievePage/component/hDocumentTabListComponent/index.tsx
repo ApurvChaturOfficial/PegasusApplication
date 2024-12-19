@@ -1,13 +1,12 @@
-import React from 'react'
 import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent';
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
+import React from 'react';
 
-import { ButtonLink2, ButtonLink3, Form, Image, Image2, Image3, Input, TypicalTable, Para, SearchButton, TableBody, TableHeading, TableSection, Icon } from '../../style';
 import DownloadIcon from "@/bLove/hAsset/icon/download.png";
-import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
 import Filter from "@/bLove/hAsset/icon/filter.png";
-import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
 import EditIcon from "@/bLove/hAsset/icon/pencil.png";
+import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
+import { ButtonLink2, ButtonLink3, Form, Icon, Image, Image2, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
 
 
 const DocumentTabListComponent = (props: any) => {
@@ -68,7 +67,7 @@ const DocumentTabListComponent = (props: any) => {
                   </Form>
                   <TypicalTable>
                     <TableSection>
-                      <TableHeading style={{  width: "150px" }}>Document Name</TableHeading>
+                      <TableHeading style={{  width: "300px" }}>Document Name</TableHeading>
                       <TableHeading>Uploaded On</TableHeading>
                       <TableHeading>Comment</TableHeading>
                       <TableHeading>Download</TableHeading>

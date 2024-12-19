@@ -1,16 +1,13 @@
-import React from 'react'
 import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent';
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
+import React from 'react';
 
-import { ButtonLink2, ButtonLink3, Form, Image, Image2, Image3, Input, TypicalTable, Para, SearchButton, TableBody, TableHeading, TableSection, Icon, ButtonLinkone } from '../../style';
-import UploadIcon from "@/bLove/hAsset/icon/upload-cloud.png";
-import DownloadIcon from "@/bLove/hAsset/icon/download.png";
-import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
-import Filter from "@/bLove/hAsset/icon/filter.png";
-import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
 import getAlertSymbolLetter2 from '@/bLove/dUtility/fGetAlertSymbolLetter2';
-import fullRoute from '@/bLove/gRoute/bFullRoute';
+import DownloadIcon from "@/bLove/hAsset/icon/download.png";
+import Filter from "@/bLove/hAsset/icon/filter.png";
 import EditIcon from "@/bLove/hAsset/icon/pencil.png";
+import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
+import { ButtonLink2, ButtonLink3, Form, Icon, Image, Image2, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
 
 
 const LicenseTabListComponent = (props: any) => {

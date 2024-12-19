@@ -13,6 +13,8 @@ const apiResponseHandler = {
         dLicenseNumber: data.dLicenseNumber,
         dIssueDate: data.dIssueDate,
         dExpiryDate: data.dExpiryDate,
+        dFileUploaded: data.dFileUploaded,
+        dFileUploadedID: data.dFileUploadedID,
       } });
 
       // console.log(serverResponse)

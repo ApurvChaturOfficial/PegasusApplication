@@ -1,15 +1,12 @@
-import React from 'react'
 import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent';
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
+import React from 'react';
 
-import { ButtonLink2, ButtonLink3, ButtonLinkReport2, Form, FormReport, Image, Image2, Image3, Input, InputReport, TypicalTable, Para, ParaReport, ReportSubContainer, ReportTable, SearchButton, SearchButtonReport, TableBody, TableHeading, TableSection, Icon } from '../../style';
-import UploadIcon from "@/bLove/hAsset/icon/upload-cloud.png";
 import DownloadIcon from "@/bLove/hAsset/icon/download.png";
-import ViewIcon from "@/bLove/hAsset/icon/viewButton.png";
 import Filter from "@/bLove/hAsset/icon/filter.png";
-import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
 import EditIcon from "@/bLove/hAsset/icon/pencil.png";
-import getAlertSymbolLetter2 from '@/bLove/dUtility/fGetAlertSymbolLetter2';
+import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
+import { ButtonLink2, ButtonLink3, Form, Icon, Image, Image2, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
 
 
 const InspectionTabListComponent = (props: any) => {

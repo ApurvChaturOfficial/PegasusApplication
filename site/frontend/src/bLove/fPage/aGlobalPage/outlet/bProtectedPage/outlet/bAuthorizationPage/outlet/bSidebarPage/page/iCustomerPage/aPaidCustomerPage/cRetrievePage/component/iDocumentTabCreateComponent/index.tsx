@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonTag, CancelButton, ContactInfo, ContactInput, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Input2, InputHeading, IssueDate, Para } from '../../style';
+import handleImageCreateForObject from '@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject';
+import handleImageUpdateForObject from '@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject';
+import handleImageDeleteForObject from '@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject';
+import React, { useEffect, useState } from 'react';
+import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonTag, CancelButton, ContactInfo, ContactInput, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Input2, InputHeading, IssueDate, Para, UploadedFile } from '../../style';
 import apiResponseHandler from './extras/aAPIResponseHandler';
-import allLicenseType from '@/bLove/hAsset/data/allLicenseType';
 
 
 const DocumentTabCreateComponent = (props: any) => {
@@ -16,12 +18,15 @@ const DocumentTabCreateComponent = (props: any) => {
   } = props;
 
   // State Variable
+  const [fileLoading, setFileLoading] = useState(false)
   const [formData, setFormData] = useState({
     cOrganization: organizationID,
 
     dDocumentName: "",
     dUploadDate: "",
     dComment: "",
+    dFileUploaded: null,
+    dFileUploadedID: null,
   })  
 
   // Event Handlers
@@ -92,17 +97,49 @@ const DocumentTabCreateComponent = (props: any) => {
             </ExpiryDate>
           </ContactInfo>
           <InputHeading>Upload Scan Copy License</InputHeading>
+
+          {/* --------------------------------------------------------------- */}
           <FileInputContainer>
-            <FileInputLabel htmlFor="fileInput">Choose File</FileInputLabel>
+            <div style={{ display: "flex", flexDirection: "column" }} >
+              {formData.dFileUploaded && <img style={{ 
+                  height: "70px", 
+                  objectFit: "cover"
+              }} src={formData.dFileUploaded} />}
+              {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
+              {formData.dFileUploaded && (
+                <FileInputLabel 
+                  style={{ color: "tomato" }}
+                  onClick={() => handleImageDeleteForObject("dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.dFileUploadedID)} 
+                >{fileLoading ? "Loading..." : "Remove File"}</FileInputLabel>
+              )}
+            </div>
+            {!formData.dFileUploaded && <FileInputLabel htmlFor="fileInput">{fileLoading ? "Loading..." : "Choose File"}</FileInputLabel>}
             <FileInput
               type="file"
               id="fileInput"
-              // onChange={handleFileChange}
+              disabled={fileLoading}
+              onChange={(event: any) => handleImageCreateForObject(event, "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading)}
+              name="file"
+            />
+            <FileInput
+              type="file"
+              id="fileUpdate"
+              disabled={fileLoading}
+              onChange={(event: any) => handleImageUpdateForObject(event, "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.dFileUploadedID)}
+              name="file"
             />
           </FileInputContainer>
-          {/* {formData.file && (
-            <UploadedFile>Uploaded File: {formData.file.name}</UploadedFile>
-          )} */}
+          {formData.dFileUploaded && <UploadedFile>Uploaded File: {(
+            <a
+              href={formData.dFileUploaded || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              {formData.dFileUploaded}
+            </a> 
+          )}</UploadedFile>}
+          {/* --------------------------------------------------------------- */}
 
           <ButtonTag>
             <AddButton type="submit" onClick={handleSubmit}>

@@ -1,37 +1,54 @@
-import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
-import React, { useEffect } from "react"
-import { ButtonLink2, ButtonLink3, Form, Heading, Image, Input2, LeftContainer, MainContainer, Para, RightContainer, SearchButton, ServiceSubContainer, Table, TableBody, TableHeading } from "./style";
-import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
-import Filter from "@/bLove/hAsset/icon/filter.png";
-import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
-import globalSlice from "@/bLove/bRedux/aGlobalSlice";
-import fullRoute from "@/bLove/gRoute/bFullRoute";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
+import enrolledServiceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/iEnrolledServiceAPIEndpoints";
+import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
+import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
+import Filter from "@/bLove/hAsset/icon/filter.png";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { SubmitButtonNew } from "../../aPaidCustomerPage/aListPage/style";
+import apiResponseHandler from "./extras/aAPIResponseHandler";
+import { ButtonLink3, Form, Heading, Image, Input2, LeftContainer, MainContainer, Para, RightContainer, SearchButton, ServiceSubContainer, Table, TableBody, TableHeading } from "./style";
 
 
 const UnpaidCustomerListPage = () => {
-    // Variable
-    const navigate = useNavigate();
+  // Variable
+  const navigate = useNavigate();
 
-    // Redux Call
-    const ReduxCall = {
-      state: useSelector((fullState: RootState) => fullState.globalSlice),
-      dispatch: useDispatch(),
-      action: globalSlice.actions
-    }
-  
-    // API Call
-    const APICall = {
-      organizationListAPIResponse: organizationAPIEndpoint.useOrganizationListAPIQuery(null),
-    }
+  // Redux Call
+  const ReduxCall = {
+    state: useSelector((fullState: RootState) => fullState.globalSlice),
+    dispatch: useDispatch(),
+    action: globalSlice.actions
+  }
+
+  // API Call
+  const APICall = {
+    organizationListAPIResponse: organizationAPIEndpoint.useOrganizationListAPIQuery(null),
     
-    // Extra Render
-    useEffect(() => {
-      console.log(ReduxCall.state)
-    }, [ReduxCall.state])
+    // Requirements... Muaaah...
+    organizationUpdateAPITrigger: organizationAPIEndpoint.useOrganizationUpdateAPIMutation()[0],
+    organizationUpdateAPIResponse: organizationAPIEndpoint.useOrganizationUpdateAPIMutation()[1],    
+    
+    enrolledServiceUpdateAPITrigger: enrolledServiceAPIEndpoint.useEnrolledServiceUpdateAPIMutation()[0],
+    enrolledServiceUpdateAPIResponse: enrolledServiceAPIEndpoint.useEnrolledServiceUpdateAPIMutation()[1],    
+  }
+
+  // Event Handlers
+  // Handle Confirm Payment
+  const handleConfirmPayment = (organizationRetrieve: any) => {
+    // console.log(organizationRetrieve)
+
+    apiResponseHandler.updateAPIResponseHandler({}, APICall.organizationUpdateAPITrigger, APICall.enrolledServiceUpdateAPITrigger, organizationRetrieve)
+  }
+  
+  // Extra Render
+  useEffect(() => {
+    console.log(ReduxCall.state)
+  }, [ReduxCall.state])
   
   // JSX
   return (
@@ -69,7 +86,7 @@ const UnpaidCustomerListPage = () => {
                     <TableHeading>Contact Person</TableHeading>
                     <TableHeading>Contact</TableHeading>
                     <TableHeading>Email</TableHeading>
-                    <TableHeading>Pending</TableHeading>
+                    <TableHeading>Payment Pending</TableHeading>
                     <TableHeading>Action</TableHeading>
                   </tr>
                 </thead>
@@ -83,7 +100,7 @@ const UnpaidCustomerListPage = () => {
                             <React.Fragment>
                               {
                                 APICall.organizationListAPIResponse.data.list
-                                  ?.filter((each: any) => each.cEnrolledService?.length === 0)
+                                  ?.filter((each: any) => !each.dEnrolledServicePaymentStatus)
                                   ?.map((each: any, index: any) => (
                                   <tr key={index}>
                                     <TableBody>{each.aTitle}</TableBody>
@@ -91,7 +108,14 @@ const UnpaidCustomerListPage = () => {
                                     <TableBody>{each.bCreatedBy?.eFirstname}</TableBody>
                                     <TableBody>{each.dPhoneNumber}</TableBody>
                                     <TableBody>{each.dCompanyEmail}</TableBody>
-                                    <TableBody>{each.cEnrolledService?.length}</TableBody>
+                                    <TableBody>
+                                      {each.cEnrolledService?.filter((each1: any) => !each1.dPaymentStatus)?.length}
+                                      {each.cEnrolledService?.filter((each1: any) => !each1.dPaymentStatus)?.length > 0 && (
+                                        <SubmitButtonNew onClick={() => handleConfirmPayment(each)} >
+                                          Confirm Payment
+                                        </SubmitButtonNew>
+                                      )}
+                                    </TableBody>
                                     <TableBody>
                                       <ButtonLink3
                                         onClick={() => navigate(`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.bUnpaidCustomerRoute.bUnpaidCustomerRetrieveRoute}/${each._id}`)}

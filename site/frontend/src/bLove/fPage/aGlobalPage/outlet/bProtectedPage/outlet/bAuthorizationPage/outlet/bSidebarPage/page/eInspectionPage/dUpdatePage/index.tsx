@@ -9,7 +9,10 @@ import inspectionAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { ButtonContainer, CancelButton, Container, Dropdown, DropdownOption, FileInput, FileInputContainer, Form, Input, InputHeading, IssueDate, MainHeading, RowContainer, RowInput, SubmitButton } from "./style";
+import { ButtonContainer, CancelButton, Container, Dropdown, DropdownOption, FileInput, FileInputContainer, FileInputLabel, Form, Input, InputHeading, IssueDate, MainHeading, RowContainer, RowInput, SubmitButton, UploadedFile } from "./style";
+import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
+import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
+import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
 
 
 const InspectionUpdatePage = () => {
@@ -18,11 +21,14 @@ const InspectionUpdatePage = () => {
   const { id } = useParams();
 
   // State Variable
+  const [fileLoading, setFileLoading] = useState(false)
   const [formData, setFormData] = useState({
     cOrganization: "",
 
     dReportName: "",
     dUploadDate: "",
+    dFileUploaded: "",
+    dFileUploadedID: "",
   })
 
   // Redux Call
@@ -70,6 +76,8 @@ const InspectionUpdatePage = () => {
           cOrganization: APICall.retrieveAPIResponse.data.retrieve.cOrganization,
           dReportName: APICall.retrieveAPIResponse.data.retrieve.dReportName,
           dUploadDate: APICall.retrieveAPIResponse.data.retrieve.dUploadDate,
+          dFileUploaded: APICall.retrieveAPIResponse.data.retrieve.dFileUploaded,
+          dFileUploadedID: APICall.retrieveAPIResponse.data.retrieve.dFileUploadedID
         })
       ) : null
     ) : null
@@ -153,17 +161,50 @@ const InspectionUpdatePage = () => {
                           </RowContainer> 
                         
                           <InputHeading>Upload Scan Copy</InputHeading>
+
+                          {/* --------------------------------------------------------------- */}
                           <FileInputContainer>
-                            {/* <FileInputLabel htmlFor={`file-upload-${index}`}>
-                              {Documents.file ? Documents.file.name : "Choose File"}
-                            </FileInputLabel> */}
+                            <div style={{ display: "flex", flexDirection: "column" }} >
+                              {formData.dFileUploaded && <img style={{ 
+                                  height: "70px", 
+                                  objectFit: "cover"
+                              }} src={formData.dFileUploaded} />}
+                              {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
+                              {formData.dFileUploaded && (
+                                <FileInputLabel 
+                                  style={{ color: "tomato" }}
+                                  onClick={() => handleImageDeleteForObject("dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.dFileUploadedID)} 
+                                >{fileLoading ? "Loading..." : "Remove File"}</FileInputLabel>
+                              )}
+                            </div>
+                            {!formData.dFileUploaded && <FileInputLabel htmlFor="fileInput">{fileLoading ? "Loading..." : "Choose File"}</FileInputLabel>}
                             <FileInput
                               type="file"
-                              id={`file-upload-${"index"}`}
+                              id="fileInput"
+                              disabled={fileLoading}
+                              onChange={(event: any) => handleImageCreateForObject(event, "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading)}
                               name="file"
-                              // onChange={(e) => handleFileChange(e, index)}
+                            />
+                            <FileInput
+                              type="file"
+                              id="fileUpdate"
+                              disabled={fileLoading}
+                              onChange={(event: any) => handleImageUpdateForObject(event, "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.dFileUploadedID)}
+                              name="file"
                             />
                           </FileInputContainer>
+                          {formData.dFileUploaded && <UploadedFile>Uploaded File: {(
+                            <a
+                              href={formData.dFileUploaded || '#'}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline"
+                            >
+                              {formData.dFileUploaded}
+                            </a> 
+                          )}</UploadedFile>}
+                          {/* --------------------------------------------------------------- */}
+
                         </div>
 
                         <>
