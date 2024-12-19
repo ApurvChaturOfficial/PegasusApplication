@@ -1,3 +1,4 @@
+import baseURL from "@/bLove/hAsset/aBaseURl";
 import axios from "axios";
 
 
@@ -18,7 +19,8 @@ const handleImageUpdateForList = async (event: any, index: any, preFieldName: an
 
   try {
     const response = await axios.post<{ update: { url: string, pid: string } }>(
-      "http://localhost:8080/api/v1/single-image/update/",
+      // "http://localhost:8080/api/v1/single-image/update/",
+      `${baseURL}/single-image/update/`,      
       formData,
       { 
         headers: { "Content-Type": "multipart/form-data" }, 

@@ -1,3 +1,4 @@
+import baseURL from "@/bLove/hAsset/aBaseURl";
 import axios from "axios";
 
 
@@ -15,7 +16,7 @@ const handleImageCreateForObject = async (event: any, fieldName: any, fieldName2
 
   try {
     const response = await axios.post<{ create: { url: string, pid: string } }>(
-      "http://localhost:8080/api/v1/single-image/create/",
+      `${baseURL}/single-image/create/`,
       formData,
       { 
         headers: { "Content-Type": "multipart/form-data" }, 

@@ -1,3 +1,4 @@
+import baseURL from "@/bLove/hAsset/aBaseURl";
 import axios from "axios";
 
 
@@ -8,7 +9,8 @@ const handleImageDeleteForObject = async (fieldName: any, fieldName2: any, setFo
     const parts = fileID?.split("/");
 
     const response = await axios.post(
-      "http://localhost:8080/api/v1/single-image/delete/",
+      // "http://localhost:8080/api/v1/single-image/delete/",
+      `${baseURL}/single-image/delete/`,
       {
         folder: "folder",
         public_id: parts?.[parts.length - 1]
