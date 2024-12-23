@@ -38,9 +38,8 @@ const DocumentCompleteListPage = () => {
 
   // Extra Render
   useEffect(() => {
-    console.log("isFetching", APICall.listAPIResponse.isFetching)
-    console.log("isLoading", APICall.listAPIResponse.isLoading)
-  }, [APICall.listAPIResponse])
+    console.log(ReduxCall.state)
+  }, [ReduxCall.state])
   
   
   // JSX
