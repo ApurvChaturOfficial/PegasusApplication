@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express'
 
 import morganMiddleware from 'morgan'
@@ -45,13 +46,11 @@ appConnection.use(bodyParserMiddleware.json());
 appConnection.use(cookieParserMiddleware());
 appConnection.use(compressionMiddleware());
 
-// Routing Middleware
-// appConnection.use("/api/v1/base-many-to-one/", baseManyToOneRouter);
-// appConnection.use("/api/v1/base-many-to-many/", baseManyToManyRouter);
-// appConnection.use("/api/v1/base/", baseRouter);
-// appConnection.use("/api/v1/base-one-to-one/", baseOneToOneRouter);
-// appConnection.use("/api/v1/base-one-to-many/", baseOneToManyRouter);
+// Connect Frontend (For AWS Deployment)
+const buildpath = path.join(__dirname, "../../../frontend/dist")
+appConnection.use(express.static(buildpath))
 
+// Routing Middleware
 appConnection.use("/api/v1/user/", userRouter);
 appConnection.use("/api/v1/role/", roleRouter);
 appConnection.use("/api/v1/menu/", menuRouter);
