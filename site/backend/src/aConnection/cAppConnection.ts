@@ -40,6 +40,7 @@ appConnection.use(corsMiddleware({ origin: process.env.ENVIRONMENT === "Producti
   [
     "http://localhost:5173",
     "http://localhost:5174",
+    "http://13.53.36.212:8080",
   ], credentials: true }));
 appConnection.use(bodyParserMiddleware.urlencoded({ extended: true }));
 appConnection.use(bodyParserMiddleware.json());
