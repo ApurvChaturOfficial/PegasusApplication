@@ -8,14 +8,17 @@ import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProt
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 
 import enrolledServiceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/iEnrolledServiceAPIEndpoints";
-import Filter from "@/bLove/hAsset/icon/filter.png";
+import LoaderComponent from "@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent";
+import ErrorComponent from "@/bLove/cComponent/aGlobalComponent/component/bErrorComponent";
 import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
-import { ButtonLink, Form, Icon, Image, Input, MainContainer, PageHeading, Para, SearchButton, Table, TableBody, TableHeading, TableSection, ViewButton } from "./style";
+import { RefreshCwIcon } from "lucide-react";
+import { ButtonLink, Form, Image, Input, MainContainer, PageHeading, Para, SearchButton, Table, TableBody, TableHeading, TableSection, ViewButton } from "./style";
 
 
 const ServiceListPage = () => {
   // State Variable
   const [visibleAddresses, setVisibleAddresses] = useState(new Set());
+  const [searchInput, setSearchInput] = useState("")
 
   // Redux Call
   const ReduxCall = {
@@ -61,20 +64,20 @@ const ServiceListPage = () => {
           <Form>
             <Input
               type="text"
-              placeholder="Search your services"
-              // value={searchInput}
-              // onChange={(event) => setSearchInput(event.target.value)}
+              placeholder="Search your Services"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
             />
-            <SearchButton type="submit">
-              <Icon src={Filter} alt="Filter" />
-              <span>Filter</span>
+            <SearchButton type="button" onClick={() => APICall.listAPIResponse.refetch()} >
+              <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+              <Para>Refresh</Para>
             </SearchButton>
             <ButtonLink to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.bCreateRoute}>
               <Image src={PlusSign} alt="PlusSign" />
               <Para>Add</Para>
             </ButtonLink>
           </Form>
-
+          
           <Table>
             <thead>
               <TableSection>
@@ -100,6 +103,7 @@ const ServiceListPage = () => {
                           {
                             APICall.listAPIResponse.data.list?.
                               filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
+                              filter((each: any) => each.cOrganization?.aTitle?.toLowerCase().includes(searchInput?.toLowerCase())).
                               map((each: any, index: any) => (
                               <TableSection key={index} style={{ backgroundColor: index % 2 === 0 ? '#ffffff' : '#FFF9E6' }}>
                                 <TableBody>
@@ -135,6 +139,10 @@ const ServiceListPage = () => {
 
             </tbody>
           </Table>
+
+          {APICall.listAPIResponse.isLoading && <LoaderComponent />} 
+          {APICall.listAPIResponse.isError && <ErrorComponent message="Error..." />}
+
         </MainContainer>
       </>
 

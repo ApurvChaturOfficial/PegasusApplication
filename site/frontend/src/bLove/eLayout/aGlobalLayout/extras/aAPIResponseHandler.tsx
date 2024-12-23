@@ -7,7 +7,6 @@ const apiResponseHandler = {
   retrieveAPIResponseHandler: (retrieveAPIResponse: any, Redux: any) => {
     // Handle loading
     if (retrieveAPIResponse.isLoading) return;
-    console.log(retrieveAPIResponse.data)
 
     // Handle error
     if (retrieveAPIResponse.isError) {

@@ -125,7 +125,7 @@ const UnpaidCustomerRetrievePage = () => {
           </LeftContainer>
           <RightContainer>
             <ButtonTag>
-              <BackButton onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.aPaidCustomerRoute.aPaidCustomerListRoute)}>&lt; Back</BackButton>
+              <BackButton onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.bUnpaidCustomerRoute.aUnpaidCustomerListRoute)}>&lt; Back</BackButton>
             </ButtonTag>
 
             {

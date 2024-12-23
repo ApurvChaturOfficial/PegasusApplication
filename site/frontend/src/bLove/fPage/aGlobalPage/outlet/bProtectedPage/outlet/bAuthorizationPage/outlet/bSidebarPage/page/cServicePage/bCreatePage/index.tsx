@@ -16,6 +16,7 @@ import handleImageDeleteForList from "@/bLove/dUtility/bImageForList/cHandleImag
 import handleImageCreateForList from "@/bLove/dUtility/bImageForList/aHandleImageCreateForList";
 import handleImageUpdateForList from "@/bLove/dUtility/bImageForList/bHandleImageUpdateForList";
 import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 
@@ -483,7 +484,9 @@ const ServiceCreatePage = () => {
             <>
               <ButtonContainer>
                 <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
-                <CancelButton type="button" onClick={() => "handleCancel"}>Cancel</CancelButton>
+                <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.aListRoute)}>
+                  Cancel
+                </CancelButton>
               </ButtonContainer>
             </>
           </Form>

@@ -1,13 +1,14 @@
 import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent';
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
-import React from 'react';
+import React, { useState } from 'react';
 
 import getAlertSymbolLetter2 from '@/bLove/dUtility/fGetAlertSymbolLetter2';
+import downloadFileUtility from '@/bLove/dUtility/gDownloadFileUtility';
 import DownloadIcon from "@/bLove/hAsset/icon/download.png";
-import Filter from "@/bLove/hAsset/icon/filter.png";
 import EditIcon from "@/bLove/hAsset/icon/pencil.png";
 import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
-import { ButtonLink2, ButtonLink3, Form, Icon, Image, Image2, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
+import { RefreshCwIcon } from 'lucide-react';
+import { ButtonLink2, ButtonLink3, Form, Icon, Image, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
 
 
 const LicenseTabListComponent = (props: any) => {
@@ -21,6 +22,9 @@ const LicenseTabListComponent = (props: any) => {
     organizationID
   } = props
 
+  // State Variable
+  const [searchInput, setSearchInput] = useState("")
+  
   // Event Handlers
   const activateLicenseCreate = () => {
     setLicenseTabList(false)
@@ -51,14 +55,13 @@ const LicenseTabListComponent = (props: any) => {
                   <Form>
                     <Input
                       type="text"
-                      placeholder="Search Your License"
-                      name="search"
-                      // value={searchInput}
-                      // onChange={handleSearchInputChange}
+                      placeholder="Search License by License Name"
+                      value={searchInput}
+                      onChange={(event) => setSearchInput(event.target.value)}
                     />
-                    <SearchButton type="submit">
-                      <Image src={Filter} alt="Filter" />
-                      <Para>Filter</Para>
+                    <SearchButton type="button" onClick={() => APICall.licenseListAPITrigger()} >
+                      <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                      <Para>Refresh</Para>
                     </SearchButton>
 
                     <ButtonLink2 onClick={() => activateLicenseCreate()}>
@@ -68,7 +71,7 @@ const LicenseTabListComponent = (props: any) => {
                   </Form>
                   <TypicalTable>
                     <TableSection>
-                      <TableHeading style={{  width: "150px" }}>License</TableHeading>
+                      <TableHeading style={{  width: "200px" }}>License</TableHeading>
                       <TableHeading>License Number</TableHeading>
                       <TableHeading>Date of Issue</TableHeading>
                       <TableHeading>Date of Expiry</TableHeading>
@@ -83,9 +86,13 @@ const LicenseTabListComponent = (props: any) => {
                             APICall.licenseListAPIResponse.data.list?.
                               // filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
                               filter((each: any) => each.cOrganization?._id === organizationID).
+                              filter((each: any) => each.dSelectedLicense?.toLowerCase().includes(searchInput.toLowerCase()) || each.cEnrolledService?.cService?.aTitle?.toLowerCase().includes(searchInput.toLowerCase())).
                               map((each: any, index: any) => (
                                 <TableSection key={index}>
-                                  <TableBody style={{  width: "150px" }} >{each.dSelectedLicense}</TableBody>
+                                  <TableBody style={{  width: "200px" }} >
+                                    {each.dSelectedLicense || each.cEnrolledService?.cService?.aTitle} 
+                                    {each.cEnrolledService?.cService?.aTitle && <em style={{ marginLeft: "2px", color: "tomato" }} >(Enrolled)</em>}
+                                  </TableBody>
                                   <TableBody>{each.dLicenseNumber}</TableBody>
                                   <TableBody>
                                     {each.dIssueDate}
@@ -94,12 +101,18 @@ const LicenseTabListComponent = (props: any) => {
                                     {each.dExpiryDate}
                                   </TableBody>
                                   <TableBody>
-                                    {getAlertSymbolLetter2(each.dExpiryDate)}
+                                    <em>{getAlertSymbolLetter2(each.dExpiryDate)}</em>
                                   </TableBody>
                                   <TableBody>
-                                    <ButtonLink3>
-                                      <Image2 src={DownloadIcon} alt="Download" />
-                                    </ButtonLink3>
+                                    <div style={{ display: "flex" }} >
+                                      {each.dFileUploaded ? (
+                                        <a href={each.dFileUploaded} download onClick={event => downloadFileUtility(event, each.dFileUploaded)}>
+                                          <Icon src={DownloadIcon} alt="Download" />
+                                        </a>
+                                      ) : (
+                                        <span>No file available</span>
+                                      )}
+                                    </div>                                
                                   </TableBody>
                                   <TableBody>
                                     <ButtonLink3 onClick={() => activateLicenseUpdate(each._id)}>

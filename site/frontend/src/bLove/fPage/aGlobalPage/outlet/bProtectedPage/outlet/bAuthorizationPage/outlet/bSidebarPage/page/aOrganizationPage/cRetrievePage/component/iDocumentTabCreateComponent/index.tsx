@@ -141,7 +141,6 @@ const DocumentTabCreateComponent = (props: any) => {
           )}</UploadedFile>}
           {/* --------------------------------------------------------------- */}
 
-
           <ButtonTag>
             <AddButton type="submit" onClick={handleSubmit}>
               <Para>Add New Document</Para>

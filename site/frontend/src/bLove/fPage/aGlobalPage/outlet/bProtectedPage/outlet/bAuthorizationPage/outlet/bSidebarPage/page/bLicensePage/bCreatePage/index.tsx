@@ -10,11 +10,12 @@ import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementA
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { ButtonContainer, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, Input, InputHeading, IssueDate, MainHeading, SubmitButton, UploadedFile } from "./style";
+import { ButtonContainer, CancelButton, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, Input, InputHeading, IssueDate, MainHeading, SubmitButton, UploadedFile } from "./style";
 import allLicenseType from "@/bLove/hAsset/data/allLicenseType";
 import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 
 const LicenseCreatePage = () => {
@@ -219,9 +220,9 @@ const LicenseCreatePage = () => {
                 <SubmitButton type="submit" onClick={handleSubmit}>
                   Submit
                 </SubmitButton>
-                {/* <CancelButton type="button" onClick={handleCancel}>
+                <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.aListRoute)}>
                   Cancel
-                </CancelButton> */}
+                </CancelButton>
               </ButtonContainer>
             </>
           </Form>

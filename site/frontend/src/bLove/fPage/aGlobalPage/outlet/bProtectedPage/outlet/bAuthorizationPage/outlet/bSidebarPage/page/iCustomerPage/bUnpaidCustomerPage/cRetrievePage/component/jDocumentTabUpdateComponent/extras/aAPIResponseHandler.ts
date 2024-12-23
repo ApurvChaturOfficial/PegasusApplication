@@ -12,6 +12,8 @@ const apiResponseHandler = {
         dDocumentName: data.dDocumentName,
         dUploadDate: data.dUploadDate,
         dComment: data.dComment,
+        dFileUploaded: data.dFileUploaded,
+        dFileUploadedID: data.dFileUploadedID,
       } });
 
       // console.log(serverResponse)

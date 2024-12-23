@@ -2,10 +2,10 @@ import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoad
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
 import React, { useState } from 'react';
 
-import Filter from "@/bLove/hAsset/icon/filter.png";
+import { RefreshCwIcon, ThumbsDown, ThumbsUp } from 'lucide-react';
 import { TableSection2 } from '../../../../../aOrganizationPage/cRetrievePage/style';
 import { ViewButton } from '../../../../../cServicePage/aListPage/style';
-import { Form, Image, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
+import { Form, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
 
 
 const ServiceTabListComponent = (props: any) => {
@@ -21,14 +21,9 @@ const ServiceTabListComponent = (props: any) => {
 
   // State Variable
   const [visibleAddresses, setVisibleAddresses] = useState(new Set());
+  const [searchInput, setSearchInput] = useState("")
 
   // Event Handlers
-  // const _activateServiceCreate = () => {
-  //   setServiceTabList(false)
-  //   setServiceTabCreate(true)
-  //   setServiceTabUpdate(false)
-  // }
-
   const activateServiceRetrieve = (serviceID: string) => {
     setVisibleAddresses((prev: any) => {
       const newVisibility = new Set(prev);
@@ -57,13 +52,12 @@ const ServiceTabListComponent = (props: any) => {
                     <Input
                       type="text"
                       placeholder="Search Enrolled Services"
-                      name="search"
-                      // value={searchInput}
-                      // onChange={handleSearchInputChange}
+                      value={searchInput}
+                      onChange={(event) => setSearchInput(event.target.value)}
                     />
-                    <SearchButton type="submit">
-                      <Image src={Filter} alt="Filter" />
-                      <Para>Filter</Para>
+                    <SearchButton type="button" onClick={() => APICall.enrolledServiceListAPITrigger()} >
+                      <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                      <Para>Refresh</Para>
                     </SearchButton>
 
                     {/* <ButtonLink2 onClick={() => activateServiceCreate()}>
@@ -91,6 +85,7 @@ const ServiceTabListComponent = (props: any) => {
                             APICall.enrolledServiceListAPIResponse.data.list?.
                               // filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
                               filter((each: any) => each.cOrganization?._id === organizationID).
+                              filter((each: any) => each.cOrganization?.aTitle?.toLowerCase().includes(searchInput?.toLowerCase())).
                               map((each: any, index: any) => (
                                 <TableSection2 key={index}>
                                   <TableBody>
@@ -110,7 +105,11 @@ const ServiceTabListComponent = (props: any) => {
                                   <TableBody>{each.cService?.dOurFees}</TableBody>
                                   <TableBody>{each.cService?.dAddedDate}</TableBody>
                                   <TableBody>{each.cService?.dServiceValidity}</TableBody>
-                                  <TableBody>{each.dPaymentStatus ? "Done" : "Pending"}</TableBody>
+                                  <TableBody>{each.dPaymentStatus ? (
+                                    <em style={{ color: "green" }} > <ThumbsUp /> </em>
+                                  ) : (
+                                    <em style={{ color: "tomato" }} ><ThumbsDown /> </em>
+                                  )}</TableBody>
                                   <TableBody>
                                     <ViewButton onClick={() => activateServiceRetrieve(each._id)}>
                                       {visibleAddresses.has(each._id) ? "Hide" : "View"}

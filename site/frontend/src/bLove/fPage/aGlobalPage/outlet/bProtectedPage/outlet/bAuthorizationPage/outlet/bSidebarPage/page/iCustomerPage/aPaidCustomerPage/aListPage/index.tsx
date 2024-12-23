@@ -2,21 +2,25 @@ import { RootState } from "@/aConnection/dReduxConnection";
 import userAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/bUserAdministration/aUserAPIEndpoints";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import LoaderComponent from "@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent";
+import ErrorComponent from "@/bLove/cComponent/aGlobalComponent/component/bErrorComponent";
 import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
 import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
-import FilterIcon from '@/bLove/hAsset/icon/filter.png'; // Adjust the path if needed
+import { RefreshCwIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Para } from "../cRetrievePage/style";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
-import { ButtonLink3, EmployeeDropdown, Form, Heading, Image3, Input, LeftContainer, MainContainer, Navigation, NavLinks, RightContainer, SearchButton, SubmitButtonNew, Table, TableBody, TableHeading } from "./style";
+import { ButtonLink3, EmployeeDropdown, Form, Heading, Input, LeftContainer, MainContainer, Navigation, NavLinks, RightContainer, SearchButton, Table, TableBody, TableHeading } from "./style";
 
 
 const PaidCustomerListPage = () => {
   // Variable
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchInput, setSearchInput] = useState("")
 
   // State Variable
   const [activeTab, setActiveTab] = useState(location.state?.role ? "Completed" : "Pending");
@@ -73,12 +77,18 @@ const PaidCustomerListPage = () => {
             {activeTab === "Pending" && (
               <>
                 <Form>
-                  <Input type="text" placeholder="Search Your Customers" />
-                  <SearchButton>
-                    <Image3 src={FilterIcon} alt="Filter" />
-                    Filters
+                  <Input  
+                    type="text" 
+                    placeholder="Search Your Customers by Organization"
+                    value={searchInput}
+                    onChange={(event) => setSearchInput(event.target.value)}
+                  />
+                  <SearchButton type="button" onClick={() => APICall.organizationListAPIResponse.refetch()} >
+                    <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                    <Para>Refresh</Para>
                   </SearchButton>
                 </Form>
+
                 <Table>
                   <thead>
                     <tr>
@@ -101,11 +111,13 @@ const PaidCustomerListPage = () => {
                             APICall.organizationListAPIResponse.data.list.length > 0 ? (
                               <React.Fragment>
                                 {
-                                  APICall.organizationListAPIResponse.data.list
-                                    ?.filter((each: any) => each.dEnrolledServicePaymentStatus)
-                                    ?.map((each: any, index: any) => (
+                                  APICall.organizationListAPIResponse.data.list?.
+                                    filter((each: any) => each.dEnrolledServicePaymentStatus)?.
+                                    filter((each: any) => each.cEnrolledService?.some((each1: any) => each1.dActionStatus === false))?.
+                                    filter((each: any) => each.dName?.toLowerCase().includes(searchInput?.toLowerCase()))?.
+                                    map((each: any, index: any) => (
                                     <tr key={index}>
-                                      <TableBody>{each.aTitle}</TableBody>
+                                      <TableBody>{each.dName}</TableBody>
                                       <TableBody>{each.dType}</TableBody>
                                       <TableBody>{each.bCreatedBy?.eFirstname}</TableBody>
                                       <TableBody>{each.dPhoneNumber}</TableBody>
@@ -140,20 +152,11 @@ const PaidCustomerListPage = () => {
                                           </TableBody>
                                         ) : (
                                           <TableBody>
-                                            {
-                                              ((ReduxCall.state.receivedObject as any)?.ProfileRetrieve?.cRole?.aTitle === "Pegasus Employee" &&
-                                              each.cAssignedEmployee?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id) ? (
-                                                <SubmitButtonNew onClick={() => console.log("Payment Confirmed")} >
-                                                  View
-                                                </SubmitButtonNew>
-                                              ) : ( each.cAssignedEmployee ? (
-                                                <ButtonLink3
-                                                  disabled
-                                                  onClick={() => {}}
-                                                >{each.cAssignedEmployee?.eFirstname}
-                                                </ButtonLink3>
-                                              ) : null )
-                                            }
+                                            <ButtonLink3
+                                              disabled
+                                              onClick={() => console.log("first")}
+                                            >{each.cAssignedEmployee?.eFirstname}
+                                            </ButtonLink3>
                                           </TableBody>
                                         )
                                       }
@@ -185,21 +188,27 @@ const PaidCustomerListPage = () => {
 
                   </tbody>
                 </Table>
+
+                {APICall.organizationListAPIResponse.isLoading && <LoaderComponent />} 
+                {APICall.organizationListAPIResponse.isError && <ErrorComponent message="Error..." />}
+
               </>
             )}
             {activeTab === "Completed" && (
               <>
                 <Form>
-                  <Input type="text" placeholder="Search Your Customers" />
-                  <SearchButton>
-                    <Image3 src={FilterIcon} alt="Filter" />
-                    Filters
+                  <Input  
+                    type="text" 
+                    placeholder="Search Your Customers by Organization"
+                    value={searchInput}
+                    onChange={(event) => setSearchInput(event.target.value)}
+                  />
+                  <SearchButton type="button" onClick={() => APICall.organizationListAPIResponse.refetch()} >
+                    <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                    <Para>Refresh</Para>
                   </SearchButton>
-                  {/* <ButtonLink2 to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.fUserRoute.bCreateRoute}>
-                    <Image3 src={PlusSignIcon} alt="Add" />
-                    Add
-                  </ButtonLink2> */}
                 </Form>
+
                 <Table>
                   <thead>
                     <tr>
@@ -221,9 +230,11 @@ const PaidCustomerListPage = () => {
                             APICall.organizationListAPIResponse.data.list.length > 0 ? (
                               <React.Fragment>
                                 {
-                                  APICall.organizationListAPIResponse.data.list
-                                    ?.filter((each: any) => each.dEnrolledServicePaymentStatus)
-                                    ?.map((each: any, index: any) => (
+                                  APICall.organizationListAPIResponse.data.list?.
+                                    filter((each: any) => each.dEnrolledServicePaymentStatus)?.
+                                    filter((each: any) => each.cEnrolledService?.every((each1: any) => each1.dActionStatus === true))?.
+                                    filter((each: any) => each.dName?.toLowerCase().includes(searchInput?.toLowerCase()))?.
+                                    map((each: any, index: any) => (
                                     <tr key={index}>
                                       <TableBody>{each.aTitle}</TableBody>
                                       <TableBody>{each.dType}</TableBody>
@@ -248,6 +259,10 @@ const PaidCustomerListPage = () => {
 
                   </tbody>
                 </Table>
+
+                {APICall.organizationListAPIResponse.isLoading && <LoaderComponent />} 
+                {APICall.organizationListAPIResponse.isError && <ErrorComponent message="Error..." />}
+
               </>
             )}
           </RightContainer>

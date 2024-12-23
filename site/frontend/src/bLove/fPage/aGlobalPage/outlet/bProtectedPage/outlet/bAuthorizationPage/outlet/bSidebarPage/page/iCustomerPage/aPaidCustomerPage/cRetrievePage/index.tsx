@@ -109,7 +109,10 @@ const PaidCustomerRetrievePage = () => {
 
     // Enrolled Servcie
     enrolledServiceListAPITrigger: lazyEnrolledServiceListAPITrigger,
-    enrolledServiceListAPIResponse: lazyEnrolledServiceListAPIResponse,    
+    enrolledServiceListAPIResponse: lazyEnrolledServiceListAPIResponse,   
+    
+    enrolledServiceUpdateAPITrigger: enrolledServiceAPIEndpoint.useEnrolledServiceUpdateAPIMutation()[0],
+    enrolledServiceUpdateAPIResponse: enrolledServiceAPIEndpoint.useEnrolledServiceUpdateAPIMutation()[1],    
   }  
   
   // JSX

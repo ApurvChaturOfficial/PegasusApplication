@@ -164,7 +164,6 @@ const DocumentTabUpdateComponent = (props: any) => {
                       )}</UploadedFile>}
                       {/* --------------------------------------------------------------- */}
 
-
                       <ButtonTag>
                         <AddButton type="submit" onClick={handleSubmit}>
                           <Para>Update Document</Para>

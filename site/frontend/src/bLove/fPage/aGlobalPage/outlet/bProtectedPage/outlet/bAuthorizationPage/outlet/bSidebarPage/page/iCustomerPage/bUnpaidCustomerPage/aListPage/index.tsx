@@ -2,21 +2,24 @@ import { RootState } from "@/aConnection/dReduxConnection";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import enrolledServiceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/iEnrolledServiceAPIEndpoints";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import LoaderComponent from "@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent";
+import ErrorComponent from "@/bLove/cComponent/aGlobalComponent/component/bErrorComponent";
 import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
 import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
-import Filter from "@/bLove/hAsset/icon/filter.png";
-import React, { useEffect } from "react";
+import { RefreshCwIcon } from "lucide-react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SubmitButtonNew } from "../../aPaidCustomerPage/aListPage/style";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
-import { ButtonLink3, Form, Heading, Image, Input2, LeftContainer, MainContainer, Para, RightContainer, SearchButton, ServiceSubContainer, Table, TableBody, TableHeading } from "./style";
+import { ButtonLink3, Form, Heading, Input2, LeftContainer, MainContainer, Para, RightContainer, SearchButton, ServiceSubContainer, Table, TableBody, TableHeading } from "./style";
 
 
 const UnpaidCustomerListPage = () => {
   // Variable
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState("")
 
   // Redux Call
   const ReduxCall = {
@@ -41,15 +44,9 @@ const UnpaidCustomerListPage = () => {
   // Handle Confirm Payment
   const handleConfirmPayment = (organizationRetrieve: any) => {
     // console.log(organizationRetrieve)
-
     apiResponseHandler.updateAPIResponseHandler({}, APICall.organizationUpdateAPITrigger, APICall.enrolledServiceUpdateAPITrigger, organizationRetrieve)
   }
-  
-  // Extra Render
-  useEffect(() => {
-    console.log(ReduxCall.state)
-  }, [ReduxCall.state])
-  
+    
   // JSX
   return (
     <React.Fragment>
@@ -68,16 +65,16 @@ const UnpaidCustomerListPage = () => {
               <Form>
                 <Input2
                   type="text"
-                  placeholder="Search Your Customers"
-                  name="search"
-                  // value={searchInput}
-                  // onChange={handleSearchInputChange}
+                  placeholder="Search Your Customers by Organization"
+                  value={searchInput}
+                  onChange={(event) => setSearchInput(event.target.value)}
                 />
-                <SearchButton type="button" onClick={() => "handleSearch"}>
-                  <Image src={Filter} alt="Filter" />
-                  <Para>Filter</Para>
+                <SearchButton type="button" onClick={() => APICall.organizationListAPIResponse.refetch()} >
+                  <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                  <Para>Refresh</Para>
                 </SearchButton>
               </Form>
+
               <Table>
                 <thead>
                   <tr>
@@ -87,7 +84,9 @@ const UnpaidCustomerListPage = () => {
                     <TableHeading>Contact</TableHeading>
                     <TableHeading>Email</TableHeading>
                     <TableHeading>Payment Pending</TableHeading>
-                    <TableHeading>Action</TableHeading>
+                    {(ReduxCall.state.receivedObject as any)?.ProfileRetrieve?.cRole?.aTitle === "Pegasus Super Admin" && (
+                      <TableHeading>Action</TableHeading>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -99,29 +98,34 @@ const UnpaidCustomerListPage = () => {
                           APICall.organizationListAPIResponse.data.list.length > 0 ? (
                             <React.Fragment>
                               {
-                                APICall.organizationListAPIResponse.data.list
-                                  ?.filter((each: any) => !each.dEnrolledServicePaymentStatus)
-                                  ?.map((each: any, index: any) => (
+                                APICall.organizationListAPIResponse.data.list?.
+                                  filter((each: any) => !each.dEnrolledServicePaymentStatus)?.
+                                  filter((each: any) => each.dName?.toLowerCase().includes(searchInput?.toLowerCase()))?.
+                                  map((each: any, index: any) => (
                                   <tr key={index}>
-                                    <TableBody>{each.aTitle}</TableBody>
+                                    <TableBody>{each.dName}</TableBody>
                                     <TableBody>{each.dType}</TableBody>
                                     <TableBody>{each.bCreatedBy?.eFirstname}</TableBody>
                                     <TableBody>{each.dPhoneNumber}</TableBody>
                                     <TableBody>{each.dCompanyEmail}</TableBody>
                                     <TableBody>
-                                      {each.cEnrolledService?.filter((each1: any) => !each1.dPaymentStatus)?.length}
-                                      {each.cEnrolledService?.filter((each1: any) => !each1.dPaymentStatus)?.length > 0 && (
-                                        <SubmitButtonNew onClick={() => handleConfirmPayment(each)} >
-                                          Confirm Payment
-                                        </SubmitButtonNew>
+                                      <em style={{ color: "tomato" }} >({each.cEnrolledService?.filter((each1: any) => !each1.dPaymentStatus)?.length})</em>
+                                      {(ReduxCall.state.receivedObject as any)?.ProfileRetrieve?.cRole?.aTitle === "Pegasus Super Admin" && (
+                                        each.cEnrolledService?.filter((each1: any) => !each1.dPaymentStatus)?.length > 0 && (
+                                          <SubmitButtonNew onClick={() => handleConfirmPayment(each)} >
+                                            Confirm Payment
+                                          </SubmitButtonNew>
+                                        )
                                       )}
                                     </TableBody>
-                                    <TableBody>
-                                      <ButtonLink3
-                                        onClick={() => navigate(`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.bUnpaidCustomerRoute.bUnpaidCustomerRetrieveRoute}/${each._id}`)}
-                                      >View
-                                      </ButtonLink3>
-                                    </TableBody>
+                                    {(ReduxCall.state.receivedObject as any)?.ProfileRetrieve?.cRole?.aTitle === "Pegasus Super Admin" && (
+                                      <TableBody>
+                                        <ButtonLink3
+                                          onClick={() => navigate(`${fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.iCustomerRoute.bUnpaidCustomerRoute.bUnpaidCustomerRetrieveRoute}/${each._id}`)}
+                                        >View
+                                        </ButtonLink3>
+                                      </TableBody>
+                                    )}
                                   </tr> 
                                 ))
                               }
@@ -133,6 +137,10 @@ const UnpaidCustomerListPage = () => {
 
                 </tbody>
               </Table>
+
+              {APICall.organizationListAPIResponse.isLoading && <LoaderComponent />} 
+              {APICall.organizationListAPIResponse.isError && <ErrorComponent message="Error..." />}
+
             </>
             </ServiceSubContainer>
           </RightContainer>

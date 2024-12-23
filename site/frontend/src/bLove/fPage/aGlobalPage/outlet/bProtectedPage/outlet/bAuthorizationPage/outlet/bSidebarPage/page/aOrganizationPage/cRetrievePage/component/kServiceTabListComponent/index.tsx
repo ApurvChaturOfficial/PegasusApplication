@@ -2,8 +2,8 @@ import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoad
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
 import React, { useState } from 'react';
 
-import Filter from "@/bLove/hAsset/icon/filter.png";
 import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
+import { RefreshCwIcon } from 'lucide-react';
 import { ViewButton } from '../../../../cServicePage/aListPage/style';
 import { ButtonLink2, Form, Image, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TableSection2, TypicalTable } from '../../style';
 
@@ -21,6 +21,7 @@ const ServiceTabListComponent = (props: any) => {
 
   // State Variable
   const [visibleAddresses, setVisibleAddresses] = useState(new Set());
+  const [searchInput, setSearchInput] = useState("")
 
   // Event Handlers
   const activateServiceCreate = () => {
@@ -58,14 +59,13 @@ const ServiceTabListComponent = (props: any) => {
                   <Form>
                     <Input
                       type="text"
-                      placeholder="Search Your Enrolled Services"
-                      name="search"
-                      // value={searchInput}
-                      // onChange={handleSearchInputChange}
+                      placeholder="Search your Enrolled Services"
+                      value={searchInput}
+                      onChange={(event) => setSearchInput(event.target.value)}
                     />
-                    <SearchButton type="submit">
-                      <Image src={Filter} alt="Filter" />
-                      <Para>Filter</Para>
+                    <SearchButton type="button" onClick={() => APICall.enrolledServiceListAPITrigger()} >
+                      <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                      <Para>Refresh</Para>
                     </SearchButton>
 
                     <ButtonLink2 onClick={() => activateServiceCreate()}>
@@ -92,6 +92,7 @@ const ServiceTabListComponent = (props: any) => {
                             APICall.enrolledServiceListAPIResponse.data.list?.
                               filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
                               filter((each: any) => each.cOrganization?._id === organizationID).
+                              filter((each: any) => each.cOrganization?.aTitle?.toLowerCase().includes(searchInput?.toLowerCase())).
                               map((each: any, index: any) => (
                                 <TableSection2 key={index}>
                                   <TableBody>

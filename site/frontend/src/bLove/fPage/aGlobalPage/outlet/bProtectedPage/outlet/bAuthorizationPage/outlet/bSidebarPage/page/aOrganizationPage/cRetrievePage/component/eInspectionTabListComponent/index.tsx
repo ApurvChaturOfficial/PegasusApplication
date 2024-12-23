@@ -1,12 +1,13 @@
 import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent';
 import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
-import React from 'react';
+import React, { useState } from 'react';
 
+import downloadFileUtility from '@/bLove/dUtility/gDownloadFileUtility';
 import DownloadIcon from "@/bLove/hAsset/icon/download.png";
-import Filter from "@/bLove/hAsset/icon/filter.png";
 import EditIcon from "@/bLove/hAsset/icon/pencil.png";
 import PlusSign from "@/bLove/hAsset/icon/plus-circle.png";
-import { ButtonLink2, ButtonLink3, Form, Icon, Image, Image2, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
+import { RefreshCwIcon } from 'lucide-react';
+import { ButtonLink2, ButtonLink3, Form, Icon, Image, Input, Para, SearchButton, TableBody, TableHeading, TableSection, TypicalTable } from '../../style';
 
 
 const InspectionTabListComponent = (props: any) => {
@@ -19,6 +20,9 @@ const InspectionTabListComponent = (props: any) => {
     ReduxCall,
     organizationID
   } = props
+
+  // State Variable
+  const [searchInput, setSearchInput] = useState("")
 
   // Event Handlers
   const activateInspectionCreate = () => {
@@ -50,14 +54,14 @@ const InspectionTabListComponent = (props: any) => {
                   <Form>
                     <Input
                       type="text"
-                      placeholder="Search Your Inspection"
+                      placeholder="Search Your Inspection Reports by Report Name"
                       name="search"
-                      // value={searchInput}
-                      // onChange={handleSearchInputChange}
+                      value={searchInput}
+                      onChange={(event) => setSearchInput(event.target.value)}
                     />
-                    <SearchButton type="submit">
-                      <Image src={Filter} alt="Filter" />
-                      <Para>Filter</Para>
+                    <SearchButton type="button" onClick={() => APICall.inspectionListAPITrigger()} >
+                      <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                      <Para>Refresh</Para>
                     </SearchButton>
 
                     <ButtonLink2 onClick={() => activateInspectionCreate()}>
@@ -79,14 +83,21 @@ const InspectionTabListComponent = (props: any) => {
                             APICall.inspectionListAPIResponse.data.list?.
                               filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
                               filter((each: any) => each.cOrganization?._id === organizationID).
+                              filter((each: any) => each.dReportName?.toLowerCase().includes(searchInput?.toLowerCase())).
                               map((each: any, index: any) => (
                                 <TableSection key={index}>
                                   <TableBody style={{  width: "500px" }} >{each.dReportName}</TableBody>
                                   <TableBody>{each.dUploadDate}</TableBody>
                                   <TableBody>
-                                    <ButtonLink3>
-                                      <Image2 src={DownloadIcon} alt="Download" />
-                                    </ButtonLink3>
+                                    <div style={{ display: "flex" }} >
+                                      {each.dFileUploaded ? (
+                                        <a href={each.dFileUploaded} download onClick={event => downloadFileUtility(event, each.dFileUploaded)}>
+                                          <Icon src={DownloadIcon} alt="Download" />
+                                        </a>
+                                      ) : (
+                                        <span>No file available</span>
+                                      )}
+                                    </div>                                
                                   </TableBody>
                                   <TableBody>
                                     <ButtonLink3 onClick={() => activateInspectionUpdate(each._id)}>

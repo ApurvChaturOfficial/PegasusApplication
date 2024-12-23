@@ -7,7 +7,6 @@ const AlertTag2 = styled.h2`
   margin-top: 4px;
   font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 1.2px;
 `;
 
 const getAlertSymbolLetter2 = (dateOfExpiry: any) => {

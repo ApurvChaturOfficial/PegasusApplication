@@ -50,7 +50,7 @@ const LicenseTabUpdateComponent = (props: any) => {
     event.preventDefault();
 
     // console.log("formDataObj", formData);
-    apiResponseHandler.updateAPIResponseHandler(formData, APICall.licenseUpdateAPITrigger, activateLicenseList, APICall.licenseRetrieveAPIResponse.data.retrieve._id)
+    apiResponseHandler.updateAPIResponseHandler(formData, APICall.licenseUpdateAPITrigger, activateLicenseList, APICall.licenseRetrieveAPIResponse.data.retrieve._id, APICall.licenseRetrieveAPIResponse, APICall.enrolledServiceUpdateAPITrigger)
   };  
 
   // All Render
@@ -92,7 +92,7 @@ const LicenseTabUpdateComponent = (props: any) => {
                   <AddLicense>
                     <AddHeading>Update License</AddHeading>
                     <AddLicenseForm onSubmit={() => "handleSubmit"}>
-                      <InputHeading>Select License</InputHeading>
+                      <InputHeading>Select License <em>({formData.dSelectedLicense})</em> </InputHeading>
                       <Dropdown 
                         name="dSelectedLicense"
                         onChange={handleInputChange}

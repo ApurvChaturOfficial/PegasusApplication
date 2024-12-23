@@ -13,6 +13,7 @@ import { ButtonContainer, CancelButton, Container, Dropdown, DropdownOption, Fil
 import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 
 const InspectionUpdatePage = () => {
@@ -210,7 +211,7 @@ const InspectionUpdatePage = () => {
                         <>
                           <ButtonContainer>
                             <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
-                            <CancelButton type="button" onClick={() => "handleCancel"}>Cancel</CancelButton>
+                            <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.aListRoute)}>Cancel</CancelButton>
                           </ButtonContainer>
                         </>
                       </Form>

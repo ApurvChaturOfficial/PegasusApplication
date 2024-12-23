@@ -143,7 +143,7 @@ const DocumentTabCreateComponent = (props: any) => {
 
           <ButtonTag>
             <AddButton type="submit" onClick={handleSubmit}>
-              <Para>Add New License</Para>
+              <Para>Add New Document</Para>
             </AddButton>
             <CancelButton onClick={() => activateDocumentList()}>
               <Para>Cancel</Para>
