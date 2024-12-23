@@ -9,12 +9,11 @@ import { BaseManyToManyModel } from '..//aMCR/aModel/aSetting/bBaseManyToManyMod
 import { BaseModel } from '../aMCR/aModel/aSetting/cBaseModel';
 import { BaseOneToOneModel } from '../aMCR/aModel/aSetting/dBaseOneToOneModel';
 import { BaseOneToManyModel } from '../aMCR/aModel/aSetting/eBaseOneToManyModel';
+
 import { UserModel } from '../aMCR/aModel/bUserAdministration/aUserModel';
 import { MenuModel } from '../aMCR/aModel/bUserAdministration/cMenuModel';
 import { RoleModel } from '../aMCR/aModel/bUserAdministration/bRoleModel';
-import { ProductModel } from '../aMCR/aModel/cProductManagement/aProductModel';
-import { CategoryModel } from '../aMCR/aModel/cProductManagement/bCategoryModel';
-import { TagModel } from '../aMCR/aModel/cProductManagement/cTagModel';
+
 import { OrganizationModel } from '../aMCR/aModel/dPegasusMain/aOrganizationModel';
 import { LicenseModel } from '../aMCR/aModel/dPegasusMain/bLicenseModel';
 import { ServiceModel } from '../aMCR/aModel/dPegasusMain/cServiceModel';
@@ -675,195 +674,6 @@ const menuDeleteValidation = () => [
     })
 ]
 
-// Product
-const productListValidation = () => []
-
-const productCreateValidation = () => [
-  body("aTitle")
-    .notEmpty().withMessage("Please enter title"),
-  body("cCategory")
-    .notEmpty().withMessage("Please select category")
-    .isMongoId().withMessage("Invalid MongoDB ID format for Category")
-    .custom(async (value: mongoose.ObjectId) => {
-      const retrieve = await CategoryModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Category Not Found", 404)
-      return true;
-    }),
-  body("cTag")
-    .notEmpty().withMessage("Please select tag")
-    .custom(async (value: mongoose.ObjectId[]) => {
-      await Promise.all(value.map(async (each) => {
-        const idAsString = each as unknown as string;
-  
-        if (!mongoose.Types.ObjectId.isValid(idAsString)) {
-          throw new ErrorUtility("Invalid MongoDB ID format for Tag", 400);
-        }
-  
-        const retrieve = await TagModel.findById(idAsString);
-        if (!retrieve) throw new ErrorUtility("Tag Not Found", 404);
-      }));
-      return true;
-    }),
-
-]
-
-const productRetrieveValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-      const retrieve = await ProductModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Product Not Found", 404)
-      return true;
-    })
-]
-
-const productUpdateValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-     const retrieve = await ProductModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Product Not Found", 404)
-      return true;
-    }),
-  body("cCategory")
-    .notEmpty().withMessage("Please select category")
-    .isMongoId().withMessage("Invalid MongoDB ID format for Category")
-    .custom(async (value: mongoose.ObjectId) => {
-      const retrieve = await CategoryModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Category Not Found", 404)
-      return true;
-    }),
-  body("cTag")
-    .notEmpty().withMessage("Please select tag")
-    .custom(async (value: mongoose.ObjectId[]) => {
-      await Promise.all(value.map(async (each) => {
-        const idAsString = each as unknown as string;
-  
-        if (!mongoose.Types.ObjectId.isValid(idAsString)) {
-          throw new ErrorUtility("Invalid MongoDB ID format for Tag", 400);
-        }
-  
-        const retrieve = await TagModel.findById(idAsString);
-        if (!retrieve) throw new ErrorUtility("Tag Not Found", 404);
-      }));
-      return true;
-    }),
-
-]
-
-const productDeleteValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-      const retrieve = await ProductModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Product Not Found", 404)
-      return true;
-    })
-]
-
-// Category
-const categoryListValidation = () => []
-
-const categoryCreateValidation = () => [
-  body("aTitle")
-    .notEmpty().withMessage("Please enter title")
-]
-
-const categoryRetrieveValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-      const retrieve = await CategoryModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Category Not Found", 404)
-      return true;
-    })
-]
-
-const categoryUpdateValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-     const retrieve = await CategoryModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Category Not Found", 404)
-      return true;
-    })
-]
-
-const categoryDeleteValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-      const retrieve = await CategoryModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Category Not Found", 404)
-      return true;
-    })
-]
-
-// Tag
-const tagListValidation = () => []
-
-const tagCreateValidation = () => [
-  body("aTitle")
-    .notEmpty().withMessage("Please enter title")
-]
-
-const tagRetrieveValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-      const retrieve = await TagModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Tag Not Found", 404)
-      return true;
-    })
-]
-
-const tagUpdateValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-     const retrieve = await TagModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Tag Not Found", 404)
-      return true;
-    })
-]
-
-const tagDeleteValidation = () => [
-  param("id")
-    .custom(value => {
-      if (!isValidObjectId(value)) throw new ErrorUtility("Please provide valid parameter", 404)
-      return true;
-    })
-    .custom(async value => {
-      const retrieve = await TagModel.findById(value);
-      if (!retrieve) throw new ErrorUtility("Tag Not Found", 404)
-      return true;
-    })
-]
-
 // Organization
 const organizationListValidation = () => []
 
@@ -1204,24 +1014,6 @@ export {
   menuRetrieveValidation,
   menuUpdateValidation,
   menuDeleteValidation,
-
-  productListValidation,
-  productCreateValidation,
-  productRetrieveValidation,
-  productUpdateValidation,
-  productDeleteValidation,
-
-  categoryListValidation,
-  categoryCreateValidation,
-  categoryRetrieveValidation,
-  categoryUpdateValidation,
-  categoryDeleteValidation,
-
-  tagListValidation,
-  tagCreateValidation,
-  tagRetrieveValidation,
-  tagUpdateValidation,
-  tagDeleteValidation,
 
   organizationListValidation,
   organizationCreateValidation,
