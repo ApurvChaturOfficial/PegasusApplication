@@ -105,6 +105,8 @@ const SignInComponent = () => {
   
           return navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.aOrganizationRoute.aListRoute)
         } 
+
+        return null
         
       }
 

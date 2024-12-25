@@ -71,7 +71,7 @@ const LicenseTabListComponent = (props: any) => {
                   </Form>
                   <TypicalTable>
                     <TableSection>
-                      <TableHeading style={{  width: "150px" }}>License</TableHeading>
+                      <TableHeading style={{  width: "200px" }}>License</TableHeading>
                       <TableHeading>License Number</TableHeading>
                       <TableHeading>Date of Issue</TableHeading>
                       <TableHeading>Date of Expiry</TableHeading>
@@ -89,9 +89,9 @@ const LicenseTabListComponent = (props: any) => {
                               filter((each: any) => each.dSelectedLicense?.toLowerCase().includes(searchInput.toLowerCase()) || each.cEnrolledService?.cService?.aTitle?.toLowerCase().includes(searchInput.toLowerCase())).
                               map((each: any, index: any) => (
                                 <TableSection key={index}>
-                                  <TableBody style={{  width: "150px" }} >
+                                  <TableBody style={{  width: "200px" }} >
                                     {each.dSelectedLicense || each.cEnrolledService?.cService?.aTitle} 
-                                    {each.cEnrolledService?.cService?.aTitle && <em style={{ marginLeft: "2px", color: "tomato" }} >(Paid)</em>}
+                                    {each.cEnrolledService?.cService?.aTitle && <em style={{ marginLeft: "2px", color: "tomato" }} >(Enrolled)</em>}
                                   </TableBody>
                                   <TableBody>
                                     {each.dLicenseNumber}</TableBody>

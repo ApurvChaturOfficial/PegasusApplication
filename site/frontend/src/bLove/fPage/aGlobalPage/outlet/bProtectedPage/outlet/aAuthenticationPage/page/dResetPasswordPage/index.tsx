@@ -22,7 +22,7 @@ const ResetPasswordPage = () => {
   // JSX
   return (
     <React.Fragment>
-      ResetPasswordPage
+      {/* ResetPasswordPage */}
       <ResetPasswordComponent 
         // APICall={{
         //   submitAPITrigger: APICall.submitAPITrigger,

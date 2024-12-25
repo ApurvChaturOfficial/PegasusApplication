@@ -16,7 +16,7 @@ const checkCacheMiddleware = (key: string, label: string, name: string) => catch
       // Response
       response.status(200).json({
         success: true,
-        message: `${label} ${name}ed Successfully... From Cacahe`,
+        message: `${label} ${name}ed Successfully... From cache`,
         [name.toLowerCase()]: JSON.parse(oldCache),
       })
 

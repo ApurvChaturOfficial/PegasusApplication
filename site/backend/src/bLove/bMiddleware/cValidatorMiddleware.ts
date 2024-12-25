@@ -567,7 +567,13 @@ const userResetPasswordValidation = () => [
   body("ePassword")
     .notEmpty().withMessage("Please enter password"),  
   body("eConfirmPassword")
-    .notEmpty().withMessage("Please enter confirm password"),  
+    .notEmpty().withMessage("Please enter confirm password")
+    .custom((value, { req }) => {
+      if (value !== req.body.ePassword) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }),  
 ]
 
 const userLogoutValidation = () => []

@@ -68,7 +68,7 @@ const OrganizationListPage = () => {
         </Form>
         
         <Container>
-          {APICall.listAPIResponse.isLoading ? null : 
+          {(APICall.listAPIResponse.isLoading || APICall.listAPIResponse.isLoading) ? null : 
             APICall.listAPIResponse.isError ? null :
               APICall.listAPIResponse.isSuccess ? (
                 APICall.listAPIResponse.data.success ? (
@@ -101,6 +101,7 @@ const OrganizationListPage = () => {
         </Container>
 
         {APICall.listAPIResponse.isLoading && <LoaderComponent />} 
+        {APICall.listAPIResponse.isFetching && <LoaderComponent />} 
         {APICall.listAPIResponse.isError && <ErrorComponent message="Error..." />}
 
       </MainContainer>

@@ -6,6 +6,8 @@ import generateCookie from '../../../cUtility/cGenerateCookie';
 import { UserModel } from '../../aModel/bUserAdministration/aUserModel';
 import { redisClient } from '../../../../aConnection/dRedisConnection';
 import ErrorUtility from '../../../cUtility/aErrorUtility';
+import sendEmailToCompany from '../../../cUtility/dSendEmailToCompany';
+import sendEmailToUser from '../../../cUtility/eSendEmailToUser';
 
 
 const userController = (Model=UserModel, Label="User") => ({
@@ -131,6 +133,19 @@ const userController = (Model=UserModel, Label="User") => ({
       const retrieve = await Model.findOne({eEmail: request.body.eEmail})
         .populate("cRole", "aTitle");
 
+      // Send Email
+      if (retrieve) {
+        await sendEmailToCompany({
+        	subject: "Someone Signed In",
+        	text: `User ${retrieve?.eEmail} has logged in to our application.`
+        })
+        await sendEmailToUser({
+        	to: retrieve?.eEmail,
+        	subject: "You Signed In",
+        	text: `Logged in Successfully with ${retrieve?.eEmail}.`
+        })
+      }
+
       // Response
 			generateCookie(200, "User Logged In Successfully", "user_login", retrieve, response)
     }
@@ -143,6 +158,19 @@ const userController = (Model=UserModel, Label="User") => ({
       // Create
       const create = await Model.create(request.body)
 
+      // Send Email
+      if (create) {
+        await sendEmailToCompany({
+          subject: "Someone Signed Up",
+          text: `User ${create?.eEmail} has registered to our application.`
+        })
+        await sendEmailToUser({
+          to: create?.eEmail,
+          subject: "You Signed In",
+          text: `Logged in Successfully with ${create?.eEmail}.`
+        })
+      }
+      
       // Response
       generateCookie(201, `User Registered Successfully`, `user_register`, create, response)
     }
@@ -162,7 +190,25 @@ const userController = (Model=UserModel, Label="User") => ({
 			await retrieve?.save({ validateBeforeSave: false });
 
       // Message
-			const textMessage = `Reset Password Token: ${resetPasswordToken}`;
+			const textMessage = `Check you email for reset password link`;
+      
+      // Send Email
+      if (retrieve) {
+        await sendEmailToCompany({
+          subject: "Someone Forgotten Password",
+          text: `User ${retrieve?.eEmail} has forgotten password our application.`
+        })
+        await sendEmailToUser({
+          to: retrieve?.eEmail,
+          subject: "You Forgot Password",
+          text: `Reset Password Link is 
+            ${process.env.ENVIRONMENT === "Production" ? (
+              `https://pegasus-004.netlify.app/reset-password/${resetPasswordToken}`
+            ) : (
+              `http://localhost:5173/reset-password/${resetPasswordToken}`
+            )}.`
+        })
+      }
       
       // Response
       response.status(200).json({
@@ -185,7 +231,8 @@ const userController = (Model=UserModel, Label="User") => ({
       const retrieve = await Model.findOne({
         eResetPasswordToken: resetToken,
         eResetPasswordTokenExpire: { $gt: Date.now() }
-      });
+      })
+      .populate("cRole", "aTitle");
 
       if (retrieve) {
         // Reset Password

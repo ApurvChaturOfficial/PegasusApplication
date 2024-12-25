@@ -45,7 +45,7 @@ const ServiceTabCreateComponent = (props: any) => {
     event.preventDefault();
 
     // console.log("formDataObj", formData);
-    apiResponseHandler.updateAPIResponseHandler(formData, APICall.updateAPITrigger, activateServiceList, APICall.enrolledServiceCreateAPITrigger, APICall.retrieveAPIResponse?.data?.retrieve)
+    apiResponseHandler.updateAPIResponseHandler(formData, APICall.updateAPITrigger, activateServiceList, APICall.enrolledServiceCreateAPITrigger, APICall.licenseCreateAPITrigger, APICall.retrieveAPIResponse?.data?.retrieve)
   };
 
   // Add License

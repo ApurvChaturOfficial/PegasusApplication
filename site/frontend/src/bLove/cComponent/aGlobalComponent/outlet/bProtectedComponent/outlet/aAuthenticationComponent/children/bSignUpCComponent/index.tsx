@@ -15,7 +15,6 @@ import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandle
 import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
 
 
-
 const SignUpCComponent = () => {
   // Redux
   const Redux = {
