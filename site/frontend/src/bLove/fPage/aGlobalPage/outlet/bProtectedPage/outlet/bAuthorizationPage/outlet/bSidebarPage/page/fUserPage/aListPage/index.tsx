@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react"
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/aConnection/dReduxConnection";
-import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import React, { useEffect, useState } from "react";
 
 import userAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/bUserAdministration/aUserAPIEndpoints";
 import roleAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/bUserAdministration/bRoleAPIEndpoints";
 import { useLocation, useNavigate } from "react-router-dom";
 // import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { ButtonLink2, ButtonLink3, EditRoleButton, Form, Heading, Image3, Input, LeftContainer, MainContainer, Navigation, NavLinks, RightContainer, RoleTable, RoleTableBody, RoleTableHeading, SearchButton, Table, TableBody, TableHeading } from "./style";
-import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
-import FilterIcon from '@/bLove/hAsset/icon/filter.png'; // Adjust the path if needed
-import PlusSignIcon from '@/bLove/hAsset/icon/plus-circle.png'; // Adjust the path if needed
-import apiResponseHandler from "./extras/aAPIResponseHandler";
+import LoaderComponent from "@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent";
+import ErrorComponent from "@/bLove/cComponent/aGlobalComponent/component/bErrorComponent";
 import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
+import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
+import PlusSignIcon from '@/bLove/hAsset/icon/plus-circle.png'; // Adjust the path if needed
+import { RefreshCwIcon } from "lucide-react";
+import { Para } from "../../aOrganizationPage/aListPage/style";
+import apiResponseHandler from "./extras/aAPIResponseHandler";
+import { ButtonLink2, ButtonLink3, EditRoleButton, Form, Heading, Image3, Input, LeftContainer, MainContainer, Navigation, NavLinks, RightContainer, RoleTable, RoleTableBody, RoleTableHeading, SearchButton, Table, TableBody, TableHeading } from "./style";
 
 
 const UserListPage = () => {
@@ -23,13 +23,8 @@ const UserListPage = () => {
 
   // State Variable
   const [activeTab, setActiveTab] = useState(location.state?.role ? "Roles" : "Employees");
-
-  // Redux Call
-  const ReduxCall = {
-    state: useSelector((fullState: RootState) => fullState.globalSlice),
-    dispatch: useDispatch(),
-    action: globalSlice.actions
-  }
+  const [searchInput1, setSearchInput1] = useState("")
+  const [searchInput2, setSearchInput2] = useState("")
 
   // API Call
   const APICall = {
@@ -38,15 +33,15 @@ const UserListPage = () => {
   }
 
   // All Render
-  // Success Render
+  // Success Render 1
   useEffect(() => {
     apiResponseHandler.listAPIResponseHandler(APICall.userListAPIResponse)
   }, [APICall.userListAPIResponse])
-
-    // Extra Render
-    useEffect(() => {
-      console.log(ReduxCall.state)
-    }, [ReduxCall.state])
+  
+  // Success Render 2
+  useEffect(() => {
+    apiResponseHandler.listAPIResponseHandler(APICall.roleListAPIResponse)
+  }, [APICall.roleListAPIResponse])
   
   // JSX
   return (
@@ -72,10 +67,15 @@ const UserListPage = () => {
             {activeTab === "Employees" && (
               <>
                 <Form>
-                  <Input type="text" placeholder="Search your Employees" />
-                  <SearchButton>
-                    <Image3 src={FilterIcon} alt="Filter" />
-                    Filters
+                  <Input
+                    type="text"
+                    placeholder="Search Your Employees by Name"
+                    value={searchInput1}
+                    onChange={(event) => setSearchInput1(event.target.value)}
+                  />
+                  <SearchButton type="button" onClick={() => APICall.userListAPIResponse.refetch()} >
+                    <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                    <Para>Refresh</Para>
                   </SearchButton>
                   <ButtonLink2 to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.fUserRoute.bCreateRoute}>
                     <Image3 src={PlusSignIcon} alt="Add" />
@@ -95,14 +95,16 @@ const UserListPage = () => {
                   </thead>
                   <tbody>
 
-                    {APICall.userListAPIResponse.isLoading ? null : 
+                    {(APICall.userListAPIResponse.isLoading || APICall.userListAPIResponse.isFetching) ? null : 
                       APICall.userListAPIResponse.isError ? null :
                         APICall.userListAPIResponse.isSuccess ? (
                           APICall.userListAPIResponse.data.success ? (
                             APICall.userListAPIResponse.data.list.length > 0 ? (
                               <React.Fragment>
                                 {
-                                  APICall.userListAPIResponse.data.list?.map((each: any, index: any) => (
+                                  APICall.userListAPIResponse.data.list?.
+                                    filter((each: any) => each.eFirstname?.toLowerCase().includes(searchInput1?.toLowerCase())).
+                                    map((each: any, index: any) => (
                                     <tr key={index}>
                                       <TableBody>{each.eFirstname}</TableBody>
                                       <TableBody>{each.eMobile}</TableBody>
@@ -125,15 +127,28 @@ const UserListPage = () => {
 
                   </tbody>
                 </Table>
+
+                {(APICall.userListAPIResponse.isLoading || APICall.userListAPIResponse.isFetching) ? <LoaderComponent /> :
+                  APICall.userListAPIResponse.isError ? <ErrorComponent message="Error..." /> :
+                  (APICall.userListAPIResponse.data?.list?.
+                    filter((each: any) => each.eFirstname?.toLowerCase().includes(searchInput1?.toLowerCase())).
+                    length === 0) ? <ErrorComponent message="No items here..." /> : null
+                }
+
               </>
             )}
             {activeTab === "Roles" && (
               <>
                 <Form>
-                  <Input type="text" placeholder="Search your Roles" />
-                  <SearchButton>
-                    <Image3 src={FilterIcon} alt="Filter" />
-                    Filters
+                  <Input
+                    type="text"
+                    placeholder="Search Your Roles by Name"
+                    value={searchInput2}
+                    onChange={(event) => setSearchInput2(event.target.value)}
+                  />
+                  <SearchButton type="button" onClick={() => APICall.roleListAPIResponse.refetch()} >
+                    <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+                    <Para>Refresh</Para>
                   </SearchButton>
                   <ButtonLink2 to={fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.gRoleRoute.bCreateRoute}>
                     <Image3 src={PlusSignIcon} alt="Add" />
@@ -152,14 +167,16 @@ const UserListPage = () => {
                   </thead>
                   <tbody>
 
-                    {APICall.roleListAPIResponse.isLoading ? null : 
+                    {(APICall.roleListAPIResponse.isLoading || APICall.roleListAPIResponse.isFetching) ? null : 
                       APICall.roleListAPIResponse.isError ? null :
                         APICall.roleListAPIResponse.isSuccess ? (
                           APICall.roleListAPIResponse.data.success ? (
                             APICall.roleListAPIResponse.data.list.length > 0 ? (
                               <React.Fragment>
                                 {
-                                  APICall.roleListAPIResponse.data.list?.map((each: any, index: any) => (
+                                  APICall.roleListAPIResponse.data.list?.
+                                    filter((each: any) => each.aTitle?.toLowerCase().includes(searchInput2?.toLowerCase())).
+                                    map((each: any, index: any) => (
                                     <tr key={index}>
                                       <RoleTableBody>{each.aTitle}</RoleTableBody>
                                       <RoleTableBody>{each.bCreatedAt}</RoleTableBody>
@@ -180,6 +197,14 @@ const UserListPage = () => {
 
                   </tbody>
                 </RoleTable>
+
+                {(APICall.roleListAPIResponse.isLoading || APICall.roleListAPIResponse.isFetching) ? <LoaderComponent /> :
+                  APICall.roleListAPIResponse.isError ? <ErrorComponent message="Error..." /> :
+                  (APICall.roleListAPIResponse.data?.list?.
+                    filter((each: any) => each.aTitle?.toLowerCase().includes(searchInput2?.toLowerCase())).
+                    length === 0) ? <ErrorComponent message="No items here..." /> : null
+                }
+
               </>
             
             )}

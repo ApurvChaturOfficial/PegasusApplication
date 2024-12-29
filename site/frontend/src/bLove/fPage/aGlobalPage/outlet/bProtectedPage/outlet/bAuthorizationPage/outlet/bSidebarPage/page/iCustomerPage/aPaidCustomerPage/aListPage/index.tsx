@@ -8,7 +8,7 @@ import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bP
 import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
 import { RefreshCwIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Para } from "../cRetrievePage/style";
@@ -52,6 +52,12 @@ const PaidCustomerListPage = () => {
       { id: organizationDetail?._id }
     )
   }
+
+  // All Render
+  // Success Render
+  useEffect(() => {
+    apiResponseHandler.listAPIResponseHandler(APICall.organizationListAPIResponse)
+  }, [APICall.organizationListAPIResponse])
   
   // JSX
   return (
@@ -104,7 +110,7 @@ const PaidCustomerListPage = () => {
                   </thead>
                   <tbody>
 
-                    {APICall.organizationListAPIResponse.isLoading ? null : 
+                    {(APICall.organizationListAPIResponse.isLoading || APICall.organizationListAPIResponse.isFetching) ? null : 
                       APICall.organizationListAPIResponse.isError ? null :
                         APICall.organizationListAPIResponse.isSuccess ? (
                           APICall.organizationListAPIResponse.data.success ? (
@@ -130,7 +136,7 @@ const PaidCustomerListPage = () => {
                                               onChange={(event: any) => handleAssignCustomerToEmployee(each, event)}
                                             >
                                               <option selected disabled>--Select Employee--</option>
-                                              {APICall.userListAPIResponse.isLoading ? null : 
+                                              {(APICall.userListAPIResponse.isLoading || APICall.userListAPIResponse.isFetching) ? null : 
                                                 APICall.userListAPIResponse.isError ? null :
                                                   APICall.userListAPIResponse.isSuccess ? (
                                                     APICall.userListAPIResponse.data.success ? (
@@ -189,8 +195,14 @@ const PaidCustomerListPage = () => {
                   </tbody>
                 </Table>
 
-                {APICall.organizationListAPIResponse.isLoading && <LoaderComponent />} 
-                {APICall.organizationListAPIResponse.isError && <ErrorComponent message="Error..." />}
+                {(APICall.organizationListAPIResponse.isLoading || APICall.organizationListAPIResponse.isFetching) ? <LoaderComponent /> :
+                  APICall.organizationListAPIResponse.isError ? <ErrorComponent message="Error..." /> :
+                  (APICall.organizationListAPIResponse.data?.list?.
+                    filter((each: any) => each.dEnrolledServicePaymentStatus)?.
+                    filter((each: any) => each.cEnrolledService?.some((each1: any) => each1.dActionStatus === false))?.
+                    filter((each: any) => each.dName?.toLowerCase().includes(searchInput?.toLowerCase()))?.
+                    length === 0) ? <ErrorComponent message="No items here..." /> : null
+                }
 
               </>
             )}
@@ -223,7 +235,7 @@ const PaidCustomerListPage = () => {
                   </thead>
                   <tbody>
 
-                    {APICall.organizationListAPIResponse.isLoading ? null : 
+                    {(APICall.organizationListAPIResponse.isLoading || APICall.organizationListAPIResponse.isFetching) ? null : 
                       APICall.organizationListAPIResponse.isError ? null :
                         APICall.organizationListAPIResponse.isSuccess ? (
                           APICall.organizationListAPIResponse.data.success ? (
@@ -260,8 +272,14 @@ const PaidCustomerListPage = () => {
                   </tbody>
                 </Table>
 
-                {APICall.organizationListAPIResponse.isLoading && <LoaderComponent />} 
-                {APICall.organizationListAPIResponse.isError && <ErrorComponent message="Error..." />}
+                {(APICall.organizationListAPIResponse.isLoading || APICall.organizationListAPIResponse.isFetching) ? <LoaderComponent /> :
+                  APICall.organizationListAPIResponse.isError ? <ErrorComponent message="Error..." /> :
+                  (APICall.organizationListAPIResponse.data?.list?.
+                    filter((each: any) => each.dEnrolledServicePaymentStatus)?.
+                    filter((each: any) => each.cEnrolledService?.every((each1: any) => each1.dActionStatus === true))?.
+                    filter((each: any) => each.dName?.toLowerCase().includes(searchInput?.toLowerCase()))?.
+                    length === 0) ? <ErrorComponent message="No items here..." /> : null
+                }
 
               </>
             )}

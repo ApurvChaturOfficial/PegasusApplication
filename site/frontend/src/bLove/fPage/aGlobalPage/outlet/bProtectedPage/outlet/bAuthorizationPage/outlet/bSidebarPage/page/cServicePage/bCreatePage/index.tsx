@@ -1,22 +1,22 @@
 import { RootState } from "@/aConnection/dReduxConnection";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
+import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
 import serviceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/fServiceAPIEndpoints";
+import enrolledServiceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/iEnrolledServiceAPIEndpoints";
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
+import handleImageCreateForList from "@/bLove/dUtility/bImageForList/aHandleImageCreateForList";
+import handleImageUpdateForList from "@/bLove/dUtility/bImageForList/bHandleImageUpdateForList";
+import handleImageDeleteForList from "@/bLove/dUtility/bImageForList/cHandleImageDeleteForList";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
 import { Bounce, toast } from "react-toastify";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 import { AddNew, ButtonContainer, CancelButton, CityInfo, ContactInfo, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, InputHeading, InputHeadingp, IssueDate, MainHeading, RemoveButton, RowContainer, RowInput, SecondaryHeading, StateInfo, SubmitButton, UploadedFile } from "./style";
-import enrolledServiceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/iEnrolledServiceAPIEndpoints";
-import handleImageDeleteForList from "@/bLove/dUtility/bImageForList/cHandleImageDeleteForList";
-import handleImageCreateForList from "@/bLove/dUtility/bImageForList/aHandleImageCreateForList";
-import handleImageUpdateForList from "@/bLove/dUtility/bImageForList/bHandleImageUpdateForList";
-import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
-import fullRoute from "@/bLove/gRoute/bFullRoute";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 
@@ -196,19 +196,7 @@ const ServiceCreatePage = () => {
         transition: Bounce,
       });
     }    
-
   }
-
-  // All Render
-  // Extra Render
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-
-  // Extra Render
-  useEffect(() => {
-    console.log(organizationRetireve)
-  }, [organizationRetireve])
 
   // JSX
   return (
@@ -230,7 +218,11 @@ const ServiceCreatePage = () => {
                 <DropdownOption selected disabled>
                   Select Organization
                 </DropdownOption>
-                {APICall.organizationListAPIResponse.isLoading ? null : 
+                {APICall.organizationListAPIResponse.isLoading ? (
+                  <DropdownOption selected disabled>
+                    Loading...
+                  </DropdownOption>
+                ) : 
                   APICall.organizationListAPIResponse.isError ? null :
                     APICall.organizationListAPIResponse.isSuccess ? (
                       APICall.organizationListAPIResponse.data.success ? (
@@ -255,7 +247,7 @@ const ServiceCreatePage = () => {
                 <InputHeading>Type of Firm</InputHeading>
                 <RowInput
                   type="text"
-                  placeholder="XXXX XXXX"
+                  placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
                   name="dType"
                   value={organizationRetireve.dType || ""}
                   disabled
@@ -266,7 +258,7 @@ const ServiceCreatePage = () => {
                     <InputHeadingp>Phone</InputHeadingp>
                     <RowInput
                       type="text"
-                      placeholder="XXXX XXXX"
+                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
                       name="dPhoneNumber"
                       value={organizationRetireve.dPhoneNumber || ""}
                       disabled
@@ -277,7 +269,7 @@ const ServiceCreatePage = () => {
                     <InputHeading>Email</InputHeading>
                     <RowInput
                       type="text"
-                      placeholder="XXXX XXXX"
+                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
                       name="dCompanyEmail"
                       value={organizationRetireve.dCompanyEmail || ""}
                       disabled
@@ -288,7 +280,7 @@ const ServiceCreatePage = () => {
                 <InputHeading>Address</InputHeading>
                 <RowInput
                   type="text"
-                  placeholder="XXXX XXXX"
+                  placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
                   name="address"
                   value={organizationRetireve.dAddress || ""}
                   disabled
@@ -298,7 +290,7 @@ const ServiceCreatePage = () => {
                     <InputHeading>Select State</InputHeading>
                     <RowInput
                       type="text"
-                      placeholder="XXXX XXXX"
+                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
                       name="address"
                       value={organizationRetireve.dSelectedState || ""}
                       disabled
@@ -309,7 +301,7 @@ const ServiceCreatePage = () => {
 
                     <RowInput
                       type="text"
-                      placeholder="XXXX XXXX"
+                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
                       name="address"
                       value={organizationRetireve.dSelectedCity || ""}
                       disabled
@@ -322,7 +314,7 @@ const ServiceCreatePage = () => {
                     <InputHeadingp>Enter Pin Code</InputHeadingp>
                     <RowInput
                       type="text"
-                      placeholder="XXXX XXXX"
+                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
                       name="phone"
                       value={organizationRetireve.dPin}
                       disabled
@@ -333,7 +325,7 @@ const ServiceCreatePage = () => {
                     <InputHeading>Enter PAN Card Number</InputHeading>
                     <RowInput
                       type="text"
-                      placeholder="XXXX XXXX"
+                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
                       name="email"
                       value={organizationRetireve.dPanNumber}
                       disabled

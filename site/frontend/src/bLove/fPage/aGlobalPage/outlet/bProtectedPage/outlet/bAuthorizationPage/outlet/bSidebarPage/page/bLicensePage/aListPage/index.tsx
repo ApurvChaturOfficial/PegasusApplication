@@ -79,7 +79,7 @@ const LicenseListPage = () => {
                 <TableHeading>Download</TableHeading>
                 <TableHeading>Edit</TableHeading>
               </TableSection>
-              {APICall.listAPIResponse.isLoading ? null : 
+              {(APICall.listAPIResponse.isLoading || APICall.listAPIResponse.isFetching) ? null : 
                 APICall.listAPIResponse.isError ? null :
                   APICall.listAPIResponse.isSuccess ? (
                     APICall.listAPIResponse.data.success ? (
@@ -127,8 +127,13 @@ const LicenseListPage = () => {
               }
             </Table>
 
-            {APICall.listAPIResponse.isLoading && <LoaderComponent />} 
-            {APICall.listAPIResponse.isError && <ErrorComponent message="Error..." />}
+            {(APICall.listAPIResponse.isLoading || APICall.listAPIResponse.isFetching) ? <LoaderComponent /> :
+              APICall.listAPIResponse.isError ? <ErrorComponent message="Error..." /> :
+              (APICall.listAPIResponse.data?.list?.
+                filter((each: any) => each.cOrganization?.bCreatedBy === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
+                filter((each: any) => each.dSelectedLicense?.toLowerCase().includes(searchInput.toLowerCase()) || each.cEnrolledService?.cService?.aTitle?.toLowerCase().includes(searchInput.toLowerCase())).
+                length === 0) ? <ErrorComponent message="No items here..." /> : null
+            }
 
         </MainContainer>
       </>

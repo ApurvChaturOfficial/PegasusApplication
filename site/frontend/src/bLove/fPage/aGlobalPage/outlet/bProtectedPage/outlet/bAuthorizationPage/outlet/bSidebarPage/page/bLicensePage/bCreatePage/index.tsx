@@ -16,6 +16,7 @@ import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandle
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import { FileIcon } from "lucide-react";
 
 
 const LicenseCreatePage = () => {
@@ -163,15 +164,25 @@ const LicenseCreatePage = () => {
                     />
                   </ExpiryDate>
                 </FinalTag>
-                <InputHeading>Upload Scan Copy License</InputHeading>
+                <InputHeading>Upload Scan Copy License</InputHeading> <em>(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em>
 
                 {/* --------------------------------------------------------------- */}
                 <FileInputContainer>
-                  <div style={{ display: "flex", flexDirection: "column" }} >
-                    {formData.dFileUploaded && <img style={{ 
-                        height: "70px", 
-                        objectFit: "cover"
-                    }} src={formData.dFileUploaded} />}
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                    {formData.dFileUploaded && !fileLoading && (
+                      <>
+                        {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                          <img
+                            style={{
+                              height: "70px",
+                              objectFit: "cover",
+                            }}
+                            src={formData.dFileUploaded}
+                            alt="Preview"
+                          />
+                        ) : <FileIcon size={"50px"} />}
+                      </>                    
+                    )}
                     {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                     {formData.dFileUploaded && (
                       <FileInputLabel 

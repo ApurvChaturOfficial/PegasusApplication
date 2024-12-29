@@ -8,7 +8,7 @@ import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bP
 import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
 import { RefreshCwIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SubmitButtonNew } from "../../aPaidCustomerPage/aListPage/style";
@@ -46,6 +46,12 @@ const UnpaidCustomerListPage = () => {
     // console.log(organizationRetrieve)
     apiResponseHandler.updateAPIResponseHandler({}, APICall.organizationUpdateAPITrigger, APICall.enrolledServiceUpdateAPITrigger, organizationRetrieve)
   }
+
+  // All Render
+  // Success Render
+  useEffect(() => {
+    apiResponseHandler.listAPIResponseHandler(APICall.organizationListAPIResponse)
+  }, [APICall.organizationListAPIResponse])
     
   // JSX
   return (
@@ -91,7 +97,7 @@ const UnpaidCustomerListPage = () => {
                 </thead>
                 <tbody>
 
-                  {APICall.organizationListAPIResponse.isLoading ? null : 
+                  {(APICall.organizationListAPIResponse.isLoading || APICall.organizationListAPIResponse.isFetching) ? null : 
                     APICall.organizationListAPIResponse.isError ? null :
                       APICall.organizationListAPIResponse.isSuccess ? (
                         APICall.organizationListAPIResponse.data.success ? (
@@ -138,8 +144,13 @@ const UnpaidCustomerListPage = () => {
                 </tbody>
               </Table>
 
-              {APICall.organizationListAPIResponse.isLoading && <LoaderComponent />} 
-              {APICall.organizationListAPIResponse.isError && <ErrorComponent message="Error..." />}
+              {(APICall.organizationListAPIResponse.isLoading || APICall.organizationListAPIResponse.isFetching) ? <LoaderComponent /> :
+                APICall.organizationListAPIResponse.isError ? <ErrorComponent message="Error..." /> :
+                (APICall.organizationListAPIResponse.data?.list?.
+                  filter((each: any) => !each.dEnrolledServicePaymentStatus)?.
+                  filter((each: any) => each.dName?.toLowerCase().includes(searchInput?.toLowerCase()))?.
+                  length === 0) ? <ErrorComponent message="No items here..." /> : null
+              }
 
             </>
             </ServiceSubContainer>

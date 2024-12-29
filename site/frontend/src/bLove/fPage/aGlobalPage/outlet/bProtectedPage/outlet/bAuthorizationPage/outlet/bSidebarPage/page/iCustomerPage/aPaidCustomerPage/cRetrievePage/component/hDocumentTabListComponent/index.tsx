@@ -43,81 +43,85 @@ const DocumentTabListComponent = (props: any) => {
   return (
     <React.Fragment>
       {/* DocumentTabListComponent */}
-      {
-        APICall.documentListAPIResponse.isLoading ? <LoaderComponent /> : 
-        APICall.documentListAPIResponse.isError ? <ErrorComponent message="Error..." /> :
-        APICall.documentListAPIResponse.isSuccess ? (
-          <React.Fragment>
-            {
-              APICall.documentListAPIResponse.data.success ? (
-                <React.Fragment>
-                  <Form>
-                    <Input
-                      type="text"
-                      placeholder="Search Documents by Document Name"
-                      value={searchInput}
-                      onChange={(event) => setSearchInput(event.target.value)}
-                    />
-                    <SearchButton type="button" onClick={() => APICall.documentListAPITrigger()} >
-                      <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
-                      <Para>Refresh</Para>
-                    </SearchButton>
 
-                    <ButtonLink2 onClick={() => activateDocumentCreate()}>
-                      <Image src={PlusSign} alt="PlusSign" />
-                      <Para>Add</Para>
-                    </ButtonLink2>
-                  </Form>
-                  <TypicalTable>
-                    <TableSection>
-                      <TableHeading style={{  width: "300px" }}>Document Name</TableHeading>
-                      <TableHeading>Uploaded On</TableHeading>
-                      <TableHeading>Comment</TableHeading>
-                      <TableHeading>Download</TableHeading>
-                      <TableHeading>Actions</TableHeading>
-                    </TableSection>
+      <React.Fragment>
+        <Form>
+          <Input
+            type="text"
+            placeholder="Search Documents by Document Name"
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+          />
+          <SearchButton type="button" onClick={() => APICall.documentListAPITrigger()} >
+            <RefreshCwIcon style={{ width: "20px", height: "20px", marginRight: "10px" }}  />
+            <Para>Refresh</Para>
+          </SearchButton>
+
+          <ButtonLink2 onClick={() => activateDocumentCreate()}>
+            <Image src={PlusSign} alt="PlusSign" />
+            <Para>Add</Para>
+          </ButtonLink2>
+        </Form>
+        <TypicalTable>
+          <TableSection>
+            <TableHeading style={{  width: "300px" }}>Document Name</TableHeading>
+            <TableHeading>Uploaded On</TableHeading>
+            <TableHeading>Comment</TableHeading>
+            <TableHeading>Download</TableHeading>
+            <TableHeading>Actions</TableHeading>
+          </TableSection>
+
+          {
+            (APICall.documentListAPIResponse.isLoading || APICall.documentListAPIResponse.isFetching) ? null : 
+            APICall.documentListAPIResponse.isError ? null :
+            APICall.documentListAPIResponse.isSuccess ? (
+              APICall.documentListAPIResponse.data.success ? (
+                APICall.documentListAPIResponse.data.list.length > 0 ? (
+                  <React.Fragment>
                     {
-                      APICall.documentListAPIResponse.data.list.length > 0 ? (
-                        <React.Fragment>
-                          {
-                            APICall.documentListAPIResponse.data.list?.
-                              // filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
-                              filter((each: any) => each.cOrganization?._id === organizationID).
-                              filter((each: any) => each.dDocumentName?.toLowerCase().includes(searchInput?.toLowerCase())).
-                              map((each: any, index: any) => (
-                                <TableSection key={index}>
-                                  <TableBody>{each.dDocumentName}</TableBody>
-                                  <TableBody>{each.dUploadDate}</TableBody>
-                                  <TableBody>{each.dComment}</TableBody>
-                                  <TableBody>
-                                    <div style={{ display: "flex" }} >
-                                      {each.dFileUploaded ? (
-                                        <a href={each.dFileUploaded} download onClick={event => downloadFileUtility(event, each.dFileUploaded)}>
-                                          <Icon src={DownloadIcon} alt="Download" />
-                                        </a>
-                                      ) : (
-                                        <span>No file available</span>
-                                      )}
-                                    </div>                                
-                                  </TableBody>
-                                  <TableBody>
-                                    <ButtonLink3 onClick={() => activateDocumentUpdate(each._id)}>
-                                      <Icon src={EditIcon} alt="Edit" />
-                                    </ButtonLink3>
-                                  </TableBody>
-                                </TableSection>
-                              ))
-                          }
-                        </React.Fragment>
-                      ) : [] 
+                      APICall.documentListAPIResponse.data.list?.
+                        // filter((each: any) => each.bCreatedBy?._id === (ReduxCall.state.receivedObject as any)?.ProfileRetrieve?._id).
+                        filter((each: any) => each.cOrganization?._id === organizationID).
+                        filter((each: any) => each.dDocumentName?.toLowerCase().includes(searchInput?.toLowerCase())).
+                        map((each: any, index: any) => (
+                          <TableSection key={index}>
+                            <TableBody>{each.dDocumentName}</TableBody>
+                            <TableBody>{each.dUploadDate}</TableBody>
+                            <TableBody>{each.dComment}</TableBody>
+                            <TableBody>
+                              <div style={{ display: "flex" }} >
+                                {each.dFileUploaded ? (
+                                  <a href={each.dFileUploaded} download onClick={event => downloadFileUtility(event, each.dFileUploaded)}>
+                                    <Icon src={DownloadIcon} alt="Download" />
+                                  </a>
+                                ) : (
+                                  <span>No file available</span>
+                                )}
+                              </div>                                
+                            </TableBody>
+                            <TableBody>
+                              <ButtonLink3 onClick={() => activateDocumentUpdate(each._id)}>
+                                <Icon src={EditIcon} alt="Edit" />
+                              </ButtonLink3>
+                            </TableBody>
+                          </TableSection>
+                        ))
                     }
-                  </TypicalTable>
-                </React.Fragment>
-              ) : <ErrorComponent message="Backend Error..." />
-            }
-          </React.Fragment>
-        ) :
-        <ErrorComponent message="Let me understandasdsad first..." />
+                  </React.Fragment>
+                ) : [] 
+              ) : []
+            ) : []
+          }
+
+        </TypicalTable>
+      </React.Fragment>
+
+      {(APICall.documentListAPIResponse.isLoading || APICall.documentListAPIResponse.isFetching) ? <LoaderComponent /> :
+        APICall.documentListAPIResponse.isError ? <ErrorComponent message="Error..." /> :
+        (APICall.documentListAPIResponse.data?.list?.
+          filter((each: any) => each.cOrganization?._id === organizationID).
+          filter((each: any) => each.dDocumentName?.toLowerCase().includes(searchInput?.toLowerCase())).
+          length === 0) ? <ErrorComponent message="No items here..." /> : null
       }
 
     </React.Fragment>

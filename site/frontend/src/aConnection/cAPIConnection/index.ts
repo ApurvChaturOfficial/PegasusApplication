@@ -4,7 +4,11 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const apiConnection = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_ENVIRONMENT === "Production" ? "https://pegasus-backend-f4bi.onrender.com/api/v1/" : "http://localhost:8080/api/v1/",
+    baseUrl: (
+      import.meta.env.VITE_ENVIRONMENT === "Production" ? "16.16.60.12" :
+      import.meta.env.VITE_ENVIRONMENT === "Practice" ? "https://pegasus-backend-f4bi.onrender.com/api/v1/" :
+      "http://localhost:8080/api/v1/"
+    ),
     credentials: "include"
   }),
   tagTypes: [
