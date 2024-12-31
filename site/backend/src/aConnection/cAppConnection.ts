@@ -32,15 +32,25 @@ const appConnection = express();
 
 // Third Party Middleware
 appConnection.use(morganMiddleware("dev"));
-appConnection.use(corsMiddleware({ origin: process.env.ENVIRONMENT === "Production" ?
-  [
-    "https://pegasus-004.netlify.app",
-  ] : 
-  [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://13.53.36.212:8080",
-  ], credentials: true }));
+appConnection.use(corsMiddleware({ 
+  origin: process.env.ENVIRONMENT === "Production" ?
+    [
+      "http://13.60.80.5:8080",
+      "http://localhost:5173",
+      "http://localhost:5174",
+    ] : process.env.ENVIRONMENT === "Practice" ?
+    [
+      "https://pegasus-004.netlify.app",
+      "http://localhost:5173",
+      "http://localhost:5174",
+    ] : 
+    [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://13.53.36.212:8080",
+    ], 
+  credentials: true 
+}));
 appConnection.use(bodyParserMiddleware.urlencoded({ extended: true }));
 appConnection.use(bodyParserMiddleware.json());
 appConnection.use(cookieParserMiddleware());
