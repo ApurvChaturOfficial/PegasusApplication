@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/aConnection/dReduxConnection";
-import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
@@ -10,10 +7,14 @@ import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eL
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { AddNew, ButtonTwo, CityInfo, ContactInfo, ContactInput, Container, Dropdown, DropdownOption, EmailInfo, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, Input, InputHeading, IssueDate, licenseTypes, MainHeading, PanCard, PhoneInfo, PinCode, RemoveButton, StateInfo, statesAndCities, UploadedFile } from "./style";
-import handleImageUpdateForList from "@/bLove/dUtility/bImageForList/bHandleImageUpdateForList";
 import handleImageCreateForList from "@/bLove/dUtility/bImageForList/aHandleImageCreateForList";
+import handleImageUpdateForList from "@/bLove/dUtility/bImageForList/bHandleImageUpdateForList";
 import handleImageDeleteForList from "@/bLove/dUtility/bImageForList/cHandleImageDeleteForList";
+import allCategoryType from "@/bLove/hAsset/data/allCategoryType";
+import allFirmType from "@/bLove/hAsset/data/allFirmType";
+import firmBasedLicenseType from "@/bLove/hAsset/data/firmBasedLicenseType";
+import { FileIcon } from "lucide-react";
+import { AddNew, ButtonTwo, CityInfo, ContactInfo, ContactInput, Container, Dropdown, Dropdown1, DropdownOption, EmailInfo, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, Input, InputHeading, IssueDate, MainHeading, PanCard, PhoneInfo, PinCode, RemoveButton, StateInfo, statesAndCities, UploadedFile } from "./style";
 
 
 const OrganizationCreatePage = () => {
@@ -39,25 +40,24 @@ const OrganizationCreatePage = () => {
       dLicenseNumber: "",
       dLicenseIssueDate: "",
       dLicenseExpiryDate: "",
+      dCategory: "",
+      dOwnLoan: "",
       dFileUploaded: null,
       dFileUploadedID: null,  
     }]
   })
 
-  // Redux Call
-  const ReduxCall = {
-    state: useSelector((fullState: RootState) => fullState.globalSlice),
-    dispatch: useDispatch(),
-    action: globalSlice.actions
-  }
-
   // API Call
+  const organizationCreateAPI = organizationAPIEndpoint.useOrganizationCreateAPIMutation();
+  const licenseCreateAPI = licenseAPIEndpoint.useLicenseCreateAPIMutation();
+
   const APICall = {
-    createAPITrigger: organizationAPIEndpoint.useOrganizationCreateAPIMutation()[0],
-    createAPIResponse: organizationAPIEndpoint.useOrganizationCreateAPIMutation()[1],
+    createAPITrigger: organizationCreateAPI[0],
+    createAPIResponse: organizationCreateAPI[1],
 
     // Relation... Muaaah....
-    licenseCreateAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
+    licenseCreateAPITrigger: licenseCreateAPI[0],
+    licenseCreateAPIResponse: licenseCreateAPI[1],
 
   }
 
@@ -71,6 +71,8 @@ const OrganizationCreatePage = () => {
           dLicenseNumber: "",
           dLicenseIssueDate: "",
           dLicenseExpiryDate: "",
+          dCategory: "",
+          dOwnLoan: "",
           dFileUploaded: null,
           dFileUploadedID: null,      
         }
@@ -113,7 +115,7 @@ const OrganizationCreatePage = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    console.log("formDataObj", formData);
+    // console.log("formDataObj", formData);
     apiResponseHandler.createAPIResponseHandler(formData, APICall.createAPITrigger, navigate, APICall.licenseCreateAPITrigger)
   };
 
@@ -122,11 +124,6 @@ const OrganizationCreatePage = () => {
   useEffect(() => {
     console.log(formData)
   }, [formData])
-  
-    // Extra Render
-    useEffect(() => {
-      console.log(ReduxCall.state)
-    }, [ReduxCall.state])
   
   // JSX
   return (
@@ -147,13 +144,23 @@ const OrganizationCreatePage = () => {
               onChange={handleInputChange}
             />
             <InputHeading>Select type of Firm</InputHeading>
-            <Input
-              type="text"
-              placeholder="Select type of firm"
+            <Dropdown1
               name="dType"
               value={formData.dType}
               onChange={handleInputChange}
-            />
+            >
+              <DropdownOption value="" disabled>
+                Select Firm
+              </DropdownOption>
+              {allFirmType.map((each) => (
+                <DropdownOption
+                  key={each}
+                  value={each} // .toLowerCase().replace(/\s+/g, "-")
+                >
+                  {each}
+                </DropdownOption>
+              ))}
+            </Dropdown1>
             <ContactInfo>
               <PhoneInfo>
                 <InputHeading>Phone</InputHeading>
@@ -245,6 +252,10 @@ const OrganizationCreatePage = () => {
             <MainHeading>Add Licenses</MainHeading>
             {formData.cLicenses.map((license: any, index: any) => (
               <div key={index}>
+                <InputHeading style={{ color: "tomato", display: "flex", justifyContent: "space-between", alignItems: "center" }} >
+                  License {index + 1}
+                </InputHeading>
+
                 <InputHeading>License Number</InputHeading>
                 <Input
                   type="text"
@@ -253,6 +264,67 @@ const OrganizationCreatePage = () => {
                   value={license.dLicenseNumber}
                   onChange={(e) => handleLicenseInputChange(e, index)}
                 />
+
+                <InputHeading>Select type of License <em style={{ color: "tomato" }} >{formData?.dType ? null : "(Select Firm Type for Options)"}</em></InputHeading>
+                <Dropdown1
+                  onChange={(e) => handleLicenseInputChange(e, index)}
+                  name="dSelectedLicense"
+                >
+                  <DropdownOption selected disabled>
+                    Select License
+                  </DropdownOption>
+                  {
+                    firmBasedLicenseType?.
+                      filter(each => each.firm === formData?.dType)[0]?.
+                      license?.
+                      map(each => (
+                        <DropdownOption
+                          key={each}
+                          value={each}
+                        >
+                          {each}
+                        </DropdownOption>
+                      ))
+                  }
+                </Dropdown1>
+
+                <ContactInfo>
+                  <StateInfo>
+                    <InputHeading>Category</InputHeading>
+                    <Dropdown
+                      onChange={(e) => handleLicenseInputChange(e, index)}
+                      name="dCategory"
+                    >
+                      <DropdownOption selected disabled>
+                        Select Category
+                      </DropdownOption>
+                      {
+                        allCategoryType.map(each => (
+                          <DropdownOption
+                            key={each}
+                            value={each}
+                          >
+                            {each}
+                          </DropdownOption>
+                        ))
+                      }
+                    </Dropdown>
+                  </StateInfo>
+                  <CityInfo>
+                    <InputHeading>Own / Loan</InputHeading>
+                    <Dropdown
+                      onChange={(e) => handleLicenseInputChange(e, index)}
+                      name="dOwnLoan"
+                    >
+                      <DropdownOption selected disabled>
+                        Select
+                      </DropdownOption>
+                      <DropdownOption value="Own" >Own</DropdownOption>
+                      <DropdownOption value="Loan" >Loan</DropdownOption>
+                    </Dropdown>
+                  </CityInfo>
+                </ContactInfo>
+
                 <FinalTag>
                   <IssueDate>
                     <InputHeading>Issue Date</InputHeading>
@@ -275,29 +347,26 @@ const OrganizationCreatePage = () => {
                     />
                   </ExpiryDate>
                 </FinalTag>
-                <InputHeading>Select type of License</InputHeading>
-                <Dropdown
-                  value={license.dSelectedLicense}
-                  onChange={(e) => handleLicenseInputChange(e, index)}
-                  name="dSelectedLicense"
-                >
-                  <DropdownOption value="" disabled>
-                    Select type of License
-                  </DropdownOption>
-                  {licenseTypes.map((licenseType: any) => (
-                    <DropdownOption key={licenseType} value={licenseType}>
-                      {licenseType}
-                    </DropdownOption>
-                  ))}
-                </Dropdown>
 
+                <InputHeading>Upload Scan Copy License <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
+                
                 {/* --------------------------------------------------------------- */}
                 <FileInputContainer>
-                  <div style={{ display: "flex", flexDirection: "column" }} >
-                    {formData.cLicenses?.[index]?.dFileUploaded && <img style={{ 
-                        height: "70px", 
-                        objectFit: "cover"
-                    }} src={formData.cLicenses?.[index]?.dFileUploaded} />}
+                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                    {formData.cLicenses?.[index]?.dFileUploaded && !fileLoading && (
+                      <>
+                        {(formData.cLicenses?.[index]?.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                          <img
+                            style={{
+                              height: "70px",
+                              objectFit: "cover",
+                            }}
+                            src={formData.cLicenses?.[index]?.dFileUploaded}
+                            alt="Preview"
+                          />
+                        ) : <FileIcon size={"50px"} />}
+                      </>                    
+                    )}
                     {formData.cLicenses?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileUpdate${index}`}>{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                     {formData.cLicenses?.[index]?.dFileUploaded && (
                       <FileInputLabel 
@@ -335,15 +404,52 @@ const OrganizationCreatePage = () => {
                 {/* --------------------------------------------------------------- */}
 
                 {license.file && <UploadedFile>{license.file.name}</UploadedFile>}
-                <RemoveButton type="button" onClick={() => removeLicense(index)}>
-                  Remove
-                </RemoveButton>
+                <RemoveButton 
+                  type="button" 
+                  onClick={() => removeLicense(index)}
+                  disabled={
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading ||
+                    APICall.licenseCreateAPIResponse.isLoading
+                  }  
+                >{
+                  (
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading ||
+                    APICall.licenseCreateAPIResponse.isLoading
+                  ) ? "Loading..." : "Remove"
+                }</RemoveButton>
               </div>
             ))}
-            <AddNew type="button" onClick={addNewLicense}>
-              Add New
-            </AddNew>
-            <ButtonTwo type="submit">Save & Next</ButtonTwo>
+            <AddNew 
+              type="button" 
+              onClick={addNewLicense}
+              disabled={
+                fileLoading ||
+                APICall.createAPIResponse.isLoading ||
+                APICall.licenseCreateAPIResponse.isLoading
+              } 
+            >{(
+                fileLoading ||
+                APICall.createAPIResponse.isLoading ||
+                APICall.licenseCreateAPIResponse.isLoading
+              ) ? 
+              "Loading..." : "Add New"
+            }</AddNew>
+            <ButtonTwo 
+              type="submit"
+              disabled={
+                fileLoading ||
+                APICall.createAPIResponse.isLoading ||
+                APICall.licenseCreateAPIResponse.isLoading
+              } 
+            >{(
+                fileLoading ||
+                APICall.createAPIResponse.isLoading ||
+                APICall.licenseCreateAPIResponse.isLoading
+              ) ? 
+              "Loading..." : "Save & Next"
+            }</ButtonTwo>
           </Form>
         </Container>
       </>

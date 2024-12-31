@@ -31,6 +31,8 @@ import { singleImageRouter } from '../bLove/aMCR/cRoute/zFreestyleSample/aSingle
 
 const appConnection = express();
 
+const _dirname = path.resolve()
+
 // Third Party Middleware
 appConnection.use(morganMiddleware("dev"));
 appConnection.use(corsMiddleware({ origin: process.env.ENVIRONMENT === "Production" ?
@@ -47,10 +49,6 @@ appConnection.use(bodyParserMiddleware.json());
 appConnection.use(cookieParserMiddleware());
 appConnection.use(compressionMiddleware());
 
-// Connect Frontend (For AWS Deployment)
-const buildpath = path.join(__dirname, "../../../frontend/dist")
-appConnection.use(express.static(buildpath))
-
 // Routing Middleware
 appConnection.use("/api/v1/user/", userRouter);
 appConnection.use("/api/v1/role/", roleRouter);
@@ -64,8 +62,14 @@ appConnection.use("/api/v1/inspection/", inspectionRouter);
 appConnection.use("/api/v1/enrolled-service/", enrolledServiceRouter);
 
 appConnection.use('/api/v1/single-image/', singleImageRouter);
-
+ 
 // Error Middleware
 appConnection.use(errorMiddleware);
+
+// Connect Frontend (For AWS Deployment)
+appConnection.use(express.static(path.join(_dirname, "../frontend/dist")))
+appConnection.get("*", (_, response) => {
+  response.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
+})
 
 export default appConnection;

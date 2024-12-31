@@ -28,10 +28,24 @@ const storage: StorageEngine = multer.diskStorage({
 
 // 3) File filter to accept only images
 const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-  if (file.mimetype.startsWith("image/")) {
+  // List of allowed MIME types
+  const allowedMimeTypes = [
+    "image/jpeg", 
+    "image/png", 
+    "image/jpg", 
+    "application/pdf", 
+    "application/json",
+    "application/msword", // For .doc
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // For .docx
+    "application/octet-stream", // Common fallback for .doc and .docx
+    "application/zip" // Sometimes .docx is detected as a zip file
+  ];
+
+  // Check if the file's mimetype is in the allowed list
+  if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only images are allowed!"));
+    cb(new Error("Only images and document files (.pdf, .doc, .docx) are allowed!"));
   }
 };
 
@@ -45,6 +59,7 @@ export const singleImageListController = async (req: Request, res: Response): Pr
       type: "upload",    // Get uploaded images
       prefix: req.body.folder,  // Filter images uploaded to a specific folder (optional)
       max_results: 500,  // Number of images to return
+      resource_type: "auto"
     });
 
     res.status(200).json({ message: "Images fetched successfully", images: result.resources });
@@ -75,6 +90,7 @@ export const singleImageCreateController = async (req: Request, res: Response): 
       // Upload image to Cloudinary
       const result = await cloudinary.v2.uploader.upload(req.file.path, {
         folder: req.body.folder,
+        resource_type: "auto"
       });
 
       // Delete local file after upload
@@ -144,6 +160,7 @@ export const singleImageUpdateController = async (req: Request, res: Response): 
       const result = await cloudinary.v2.uploader.upload(req.file.path, {
         public_id: folderSpecificId,
         overwrite: true,
+        resource_type: "auto"
       });
 
       // Delete the temporary file
@@ -182,7 +199,9 @@ export const singleImageDeleteController = async (req: Request, res: Response): 
     const folderSpecificId = `${folder}/${public_id}`;
 
     // Delete the image from Cloudinary
-    const result = await cloudinary.v2.uploader.destroy(folderSpecificId);
+    const result = await cloudinary.v2.uploader.destroy(folderSpecificId, {
+      resource_type: "raw"
+    });
 
     if (result.result === "not found") {
       res.status(404).json({ message: "Image not found" });

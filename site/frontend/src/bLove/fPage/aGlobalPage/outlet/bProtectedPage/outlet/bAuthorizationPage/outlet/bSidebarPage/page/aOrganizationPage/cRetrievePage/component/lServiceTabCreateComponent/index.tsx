@@ -1,7 +1,8 @@
 import handleImageCreateForList from '@/bLove/dUtility/bImageForList/aHandleImageCreateForList';
 import handleImageUpdateForList from '@/bLove/dUtility/bImageForList/bHandleImageUpdateForList';
 import handleImageDeleteForList from '@/bLove/dUtility/bImageForList/cHandleImageDeleteForList';
-import React, { useEffect, useState } from 'react';
+import { FileIcon } from 'lucide-react';
+import React, { useState } from 'react';
 import { AddNew, RemoveButton } from '../../../bCreatePage/style';
 import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonTag, CancelButton, ContactInfo, ContactInput, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Input2, InputHeading, IssueDate, Para, UploadedFile } from '../../style';
 import apiResponseHandler from './extras/aAPIResponseHandler';
@@ -90,12 +91,6 @@ const ServiceTabCreateComponent = (props: any) => {
     });
   };  
   
-  // All Render
-  // Extra Render
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-
   // JSX
   return (
     <React.Fragment>
@@ -114,7 +109,7 @@ const ServiceTabCreateComponent = (props: any) => {
                   Remove
                 </RemoveButton>
               </InputHeading>
-              <InputHeading>Select Service</InputHeading>
+              <InputHeading>Select Service <em style={{ color: "tomato" }} >(Firm Type: {APICall.retrieveAPIResponse?.data?.retrieve?.dType})</em> </InputHeading>
               <Dropdown 
                 name="cService"
                 onChange={(e) => handleServiceInputChange(e, index)}
@@ -129,7 +124,9 @@ const ServiceTabCreateComponent = (props: any) => {
                           APICall.serviceListAPIResponse.data.list.length > 0 ? (
                             <React.Fragment>
                               {
-                                APICall.serviceListAPIResponse.data.list?.map((each: any, index: any) => (
+                                APICall.serviceListAPIResponse.data.list?.
+                                  filter((each : any) => each.dFormType === APICall.retrieveAPIResponse?.data?.retrieve?.dType)?.
+                                  map((each: any, index: any) => (
                                   <DropdownOption key={index} value={each._id}>
                                     {each.aTitle}
                                   </DropdownOption>
@@ -171,15 +168,26 @@ const ServiceTabCreateComponent = (props: any) => {
                   />
                 </ExpiryDate>
               </ContactInfo>
-              <InputHeading>Upload Scan Copy License</InputHeading>
+              
+              <InputHeading>Upload Scan Copy License <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
 
               {/* --------------------------------------------------------------- */}
               <FileInputContainer>
-                <div style={{ display: "flex", flexDirection: "column" }} >
-                  {formData.cEnrolledService?.[index]?.dFileUploaded && <img style={{ 
-                      height: "70px", 
-                      objectFit: "cover"
-                  }} src={formData.cEnrolledService?.[index]?.dFileUploaded} />}
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                  {formData.cEnrolledService?.[index]?.dFileUploaded && !fileLoading && (
+                    <>
+                      {(formData.cEnrolledService?.[index]?.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                        <img
+                          style={{
+                            height: "70px",
+                            objectFit: "cover",
+                          }}
+                          src={formData.cEnrolledService?.[index]?.dFileUploaded}
+                          alt="Preview"
+                        />
+                      ) : <FileIcon size={"50px"} />}
+                    </>                    
+                  )}
                   {formData.cEnrolledService?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileUpdate${index}`}>{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                   {formData.cEnrolledService?.[index]?.dFileUploaded && (
                     <FileInputLabel 
@@ -228,11 +236,42 @@ const ServiceTabCreateComponent = (props: any) => {
 
         <AddLicenseForm>
           <ButtonTag>
-            <AddButton type="submit" onClick={handleSubmit}>
-              <Para>Add New License</Para>
+            <AddButton 
+              type="submit" 
+              onClick={handleSubmit}
+              disabled={
+                fileLoading ||
+                APICall.updateAPIResponse.isLoading ||
+                APICall.enrolledServiceCreateAPIResponse.isLoading ||
+                APICall.licenseCreateAPIResponse.isLoading
+              }
+            >
+              <Para>{(
+                  fileLoading ||
+                  APICall.updateAPIResponse.isLoading ||
+                  APICall.enrolledServiceCreateAPIResponse.isLoading ||
+                  APICall.licenseCreateAPIResponse.isLoading
+                ) ? 
+                "Loading..." : "Submit"
+              }</Para>
             </AddButton>
-            <CancelButton onClick={() => activateServiceList()}>
-              <Para>Cancel</Para>
+            <CancelButton 
+              onClick={() => activateServiceList()}
+              disabled={
+                fileLoading ||
+                APICall.updateAPIResponse.isLoading ||
+                APICall.enrolledServiceCreateAPIResponse.isLoading ||
+                APICall.licenseCreateAPIResponse.isLoading
+              }
+            >
+              <Para>{(
+                  fileLoading ||
+                  APICall.updateAPIResponse.isLoading ||
+                  APICall.enrolledServiceCreateAPIResponse.isLoading ||
+                  APICall.licenseCreateAPIResponse.isLoading
+                ) ? 
+                "Loading..." : "Cancel"
+              }</Para>
             </CancelButton>
           </ButtonTag>
         </AddLicenseForm>

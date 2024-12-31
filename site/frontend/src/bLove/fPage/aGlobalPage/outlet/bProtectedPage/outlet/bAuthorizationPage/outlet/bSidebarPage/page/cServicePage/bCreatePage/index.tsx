@@ -14,6 +14,7 @@ import handleImageCreateForList from "@/bLove/dUtility/bImageForList/aHandleImag
 import handleImageUpdateForList from "@/bLove/dUtility/bImageForList/bHandleImageUpdateForList";
 import handleImageDeleteForList from "@/bLove/dUtility/bImageForList/cHandleImageDeleteForList";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import { FileIcon } from "lucide-react";
 import { Bounce, toast } from "react-toastify";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 import { AddNew, ButtonContainer, CancelButton, CityInfo, ContactInfo, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, InputHeading, InputHeadingp, IssueDate, MainHeading, RemoveButton, RowContainer, RowInput, SecondaryHeading, StateInfo, SubmitButton, UploadedFile } from "./style";
@@ -62,23 +63,30 @@ const ServiceCreatePage = () => {
   }
 
   // API Call
+  const organizationList = organizationAPIEndpoint.useOrganizationListAPIQuery(null)
+  const organizationLazyRetrieve = organizationAPIEndpoint.useLazyOrganizationRetrievePIQuery()
+
+  const organizationUpdateAPI = organizationAPIEndpoint.useOrganizationUpdateAPIMutation();
+  const enrolledServiceCreateAPI = enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation();
+  const licenseCreateAPI = licenseAPIEndpoint.useLicenseCreateAPIMutation();
+
   const APICall = {
-    updateAPITrigger: organizationAPIEndpoint.useOrganizationUpdateAPIMutation()[0],
-    updateAPIResponse: organizationAPIEndpoint.useOrganizationUpdateAPIMutation()[1],
+    updateAPITrigger: organizationUpdateAPI[0],
+    updateAPIResponse: organizationUpdateAPI[1],
 
     // Requirements... Muaaah...
     serviceListAPIResponse: serviceAPIEndpoint.useServiceListAPIQuery(null),
 
-    organizationListAPIResponse: organizationAPIEndpoint.useOrganizationListAPIQuery(null),
+    organizationListAPIResponse: organizationList,
 
-    organizationRetrieveAPITrigger: organizationAPIEndpoint.useLazyOrganizationRetrievePIQuery()[0],
-    organizationRetrieveAPIResponse: organizationAPIEndpoint.useLazyOrganizationRetrievePIQuery()[1],
+    organizationRetrieveAPITrigger: organizationLazyRetrieve[0],
+    organizationRetrieveAPIResponse: organizationLazyRetrieve[1],
 
-    enrolledServiceCreateAPITrigger: enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation()[0],
-    enrolledServiceCreateAPIResponse: enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation()[1],
+    enrolledServiceCreateAPITrigger: enrolledServiceCreateAPI[0],
+    enrolledServiceCreateAPIResponse: enrolledServiceCreateAPI[1],
 
-    licenseCreateAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
-    licenseCreateAPIResponse: licenseAPIEndpoint.useLicenseCreateAPIMutation()[1],
+    licenseCreateAPITrigger: licenseCreateAPI[0],
+    licenseCreateAPIResponse: licenseCreateAPI[1],
   }
 
   // Event Handlers
@@ -197,7 +205,7 @@ const ServiceCreatePage = () => {
       });
     }    
   }
-
+  
   // JSX
   return (
     <React.Fragment>
@@ -216,7 +224,7 @@ const ServiceCreatePage = () => {
                 name="cOrganization"
               >
                 <DropdownOption selected disabled>
-                  Select Organization
+                  --Select Organization--
                 </DropdownOption>
                 {APICall.organizationListAPIResponse.isLoading ? (
                   <DropdownOption selected disabled>
@@ -247,9 +255,9 @@ const ServiceCreatePage = () => {
                 <InputHeading>Type of Firm</InputHeading>
                 <RowInput
                   type="text"
-                  placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
+                  placeholder={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : "XXXX XXXX"}
                   name="dType"
-                  value={organizationRetireve.dType || ""}
+                  value={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : organizationRetireve.dType || ""}
                   disabled
                 />
 
@@ -258,9 +266,9 @@ const ServiceCreatePage = () => {
                     <InputHeadingp>Phone</InputHeadingp>
                     <RowInput
                       type="text"
-                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
+                      placeholder={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : "XXXX XXXX"}
                       name="dPhoneNumber"
-                      value={organizationRetireve.dPhoneNumber || ""}
+                      value={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : organizationRetireve.dPhoneNumber || ""}
                       disabled
                     />
                   </div>
@@ -269,9 +277,9 @@ const ServiceCreatePage = () => {
                     <InputHeading>Email</InputHeading>
                     <RowInput
                       type="text"
-                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
+                      placeholder={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : "XXXX XXXX"}
                       name="dCompanyEmail"
-                      value={organizationRetireve.dCompanyEmail || ""}
+                      value={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : organizationRetireve.dCompanyEmail || ""}
                       disabled
                     />
                   </div>
@@ -280,9 +288,9 @@ const ServiceCreatePage = () => {
                 <InputHeading>Address</InputHeading>
                 <RowInput
                   type="text"
-                  placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
+                  placeholder={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : "XXXX XXXX"}
                   name="address"
-                  value={organizationRetireve.dAddress || ""}
+                  value={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : organizationRetireve.dAddress || ""}
                   disabled
                 />
                 <ContactInfo>
@@ -290,9 +298,9 @@ const ServiceCreatePage = () => {
                     <InputHeading>Select State</InputHeading>
                     <RowInput
                       type="text"
-                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
+                      placeholder={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : "XXXX XXXX"}
                       name="address"
-                      value={organizationRetireve.dSelectedState || ""}
+                      value={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : organizationRetireve.dSelectedState || ""}
                       disabled
                     />
                   </StateInfo>
@@ -301,9 +309,9 @@ const ServiceCreatePage = () => {
 
                     <RowInput
                       type="text"
-                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
+                      placeholder={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : "XXXX XXXX"}
                       name="address"
-                      value={organizationRetireve.dSelectedCity || ""}
+                      value={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : organizationRetireve.dSelectedCity || ""}
                       disabled
                     />
                   </CityInfo>
@@ -314,9 +322,9 @@ const ServiceCreatePage = () => {
                     <InputHeadingp>Enter Pin Code</InputHeadingp>
                     <RowInput
                       type="text"
-                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
+                      placeholder={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : "XXXX XXXX"}
                       name="phone"
-                      value={organizationRetireve.dPin}
+                      value={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : organizationRetireve.dPin || ""}
                       disabled
                     />
                   </div>
@@ -325,9 +333,9 @@ const ServiceCreatePage = () => {
                     <InputHeading>Enter PAN Card Number</InputHeading>
                     <RowInput
                       type="text"
-                      placeholder={APICall.organizationRetrieveAPIResponse.isLoading ? "Loading..." : "XXXX XXXX"}
+                      placeholder={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : "XXXX XXXX"}
                       name="email"
-                      value={organizationRetireve.dPanNumber}
+                      value={(APICall.organizationRetrieveAPIResponse.isLoading || APICall.organizationRetrieveAPIResponse.isFetching) ? "Loading..." : organizationRetireve.dPanNumber || ""}
                       disabled
                     />
                   </div>
@@ -337,7 +345,10 @@ const ServiceCreatePage = () => {
               <br/>
               <br/>
 
-              <SecondaryHeading>Add Services</SecondaryHeading>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: "6px" }} >
+                <SecondaryHeading>Add Services</SecondaryHeading>
+                {!organizationRetireve?._id && <span style={{ marginBottom: "9px", color: "tomato" }} ><em>(Select Firm, before adding licenses)</em></span>}
+              </div>
 
               {formData.cEnrolledService.map((each, index: any) => (
                 <React.Fragment>
@@ -353,9 +364,10 @@ const ServiceCreatePage = () => {
                     <Dropdown
                       onChange={(e) => handleServiceInputChange(e, index)}
                       name="cService"
+                      disabled={!organizationRetireve?._id}
                     >
                       <DropdownOption selected disabled>
-                        Select Service
+                        --Select Service--
                       </DropdownOption>
                       {APICall.serviceListAPIResponse.isLoading ? null : 
                         APICall.serviceListAPIResponse.isError ? null :
@@ -364,7 +376,9 @@ const ServiceCreatePage = () => {
                               APICall.serviceListAPIResponse.data.list.length > 0 ? (
                                 <React.Fragment>
                                   {
-                                    APICall.serviceListAPIResponse.data.list?.map((each: any, index: any) => (
+                                    APICall.serviceListAPIResponse.data.list?.
+                                      filter((each : any) => each.dFormType === organizationRetireve.dType)?.
+                                      map((each: any, index: any) => (
                                       <DropdownOption key={index} value={each._id}>
                                         {each.aTitle}
                                       </DropdownOption>
@@ -384,6 +398,7 @@ const ServiceCreatePage = () => {
                         name="dLicenseNumber"
                         value={each.dLicenseNumber}
                         onChange={(e) => handleServiceInputChange(e, index)}
+                        disabled={!organizationRetireve?._id}
                       />
                     
                     <FinalTag>
@@ -395,6 +410,7 @@ const ServiceCreatePage = () => {
                           name="dIssueDate"
                           value={each.dIssueDate}
                           onChange={(e) => handleServiceInputChange(e, index)}
+                          disabled={!organizationRetireve?._id}
                         />
                       </IssueDate>
                       { <ExpiryDate>
@@ -405,6 +421,7 @@ const ServiceCreatePage = () => {
                           name="dExpiryDate"
                           value={each.dExpiryDate}
                           onChange={(e) => handleServiceInputChange(e, index)}
+                          disabled={!organizationRetireve?._id}
                         />
                       </ExpiryDate> }
                     </FinalTag>
@@ -413,11 +430,21 @@ const ServiceCreatePage = () => {
 
                     {/* --------------------------------------------------------------- */}
                     <FileInputContainer>
-                      <div style={{ display: "flex", flexDirection: "column" }} >
-                        {formData.cEnrolledService?.[index]?.dFileUploaded && <img style={{ 
-                            height: "70px", 
-                            objectFit: "cover"
-                        }} src={formData.cEnrolledService?.[index]?.dFileUploaded} />}
+                      <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                        {formData.cEnrolledService?.[index]?.dFileUploaded && !fileLoading && (
+                          <>
+                            {(formData.cEnrolledService?.[index]?.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                              <img
+                                style={{
+                                  height: "70px",
+                                  objectFit: "cover",
+                                }}
+                                src={formData.cEnrolledService?.[index]?.dFileUploaded}
+                                alt="Preview"
+                              />
+                            ) : <FileIcon size={"50px"} />}
+                          </>                    
+                        )}
                         {formData.cEnrolledService?.[index]?.dFileUploaded && <FileInputLabel htmlFor={`fileUpdate${index}`}>{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                         {formData.cEnrolledService?.[index]?.dFileUploaded && (
                           <FileInputLabel 
@@ -430,14 +457,14 @@ const ServiceCreatePage = () => {
                       <FileInput
                         type="file"
                         id={`fileInput${index}`}
-                        disabled={fileLoading}
+                        disabled={fileLoading || !organizationRetireve?._id}
                         onChange={(event: any) => handleImageCreateForList(event, index, "cEnrolledService", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading)}
                         name="file"
                       />
                       <FileInput
                         type="file"
                         id={`fileUpdate${index}`}
-                        disabled={fileLoading}
+                        disabled={fileLoading || !organizationRetireve?._id}
                         onChange={(event: any) => handleImageUpdateForList(event, index, "cEnrolledService", "dFileUploaded", "dFileUploadedID", setFormData, setFileLoading, formData.cEnrolledService?.[index]?.dFileUploadedID)}
                         name="file"
                       />
@@ -454,7 +481,6 @@ const ServiceCreatePage = () => {
                     )}</UploadedFile>}
                     {/* --------------------------------------------------------------- */}
 
-
                     <IssueDate>
                       <InputHeading>Date of Upload</InputHeading>
                       <RowInput
@@ -462,6 +488,7 @@ const ServiceCreatePage = () => {
                         name="dUploadDate"
                         value={each.dUploadDate}
                         onChange={(e) => handleServiceInputChange(e, index)}
+                        disabled={!organizationRetireve?._id}
                       />
                     </IssueDate>
                   </div>
@@ -475,10 +502,40 @@ const ServiceCreatePage = () => {
 
             <>
               <ButtonContainer>
-                <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
-                <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.aListRoute)}>
-                  Cancel
-                </CancelButton>
+                <SubmitButton 
+                  type="submit" 
+                  onClick={handleSubmit}
+                  disabled={
+                    fileLoading ||
+                    APICall.updateAPIResponse.isLoading ||
+                    APICall.licenseCreateAPIResponse.isLoading ||
+                    APICall.enrolledServiceCreateAPIResponse.isLoading
+                  }
+                >{(
+                    fileLoading ||
+                    APICall.updateAPIResponse.isLoading ||
+                    APICall.licenseCreateAPIResponse.isLoading ||
+                    APICall.enrolledServiceCreateAPIResponse.isLoading 
+                  ) ? 
+                  "Loading..." : "Submit"
+                }</SubmitButton>
+                <CancelButton 
+                  type="button" 
+                  onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.aListRoute)}
+                  disabled={
+                    fileLoading ||
+                    APICall.updateAPIResponse.isLoading ||
+                    APICall.licenseCreateAPIResponse.isLoading ||
+                    APICall.enrolledServiceCreateAPIResponse.isLoading 
+                  }
+                >{(
+                    fileLoading ||
+                    APICall.updateAPIResponse.isLoading ||
+                    APICall.licenseCreateAPIResponse.isLoading ||
+                    APICall.enrolledServiceCreateAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Cancel"
+                }</CancelButton>
               </ButtonContainer>
             </>
           </Form>

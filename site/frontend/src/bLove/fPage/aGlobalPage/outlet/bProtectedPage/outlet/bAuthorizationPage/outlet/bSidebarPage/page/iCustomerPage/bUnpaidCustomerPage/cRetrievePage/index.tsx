@@ -73,6 +73,12 @@ const UnpaidCustomerRetrievePage = () => {
   
   const [lazyEnrolledServiceListAPITrigger, lazyEnrolledServiceListAPIResponse] = enrolledServiceAPIEndpoint.useLazyEnrolledServiceListAPIQuery()
 
+  const licenseCreateAPI = licenseAPIEndpoint.useLicenseCreateAPIMutation()
+  const licenseUpdateAPI = licenseAPIEndpoint.useLicenseUpdateAPIMutation()
+  
+  const documentCreateAPI = documentAPIEndpoint.useDocumentCreateAPIMutation();
+  const documentUpdateAPI = documentAPIEndpoint.useDocumentUpdateAPIMutation()
+
   const APICall = {
     retrieveAPIResponse: organizationAPIEndpoint.useOrganizationRetrievePIQuery({ params: { _id: id } }),
     
@@ -81,27 +87,27 @@ const UnpaidCustomerRetrievePage = () => {
     licenseListAPITrigger: lazyLicenseListAPITrigger,
     licenseListAPIResponse: lazyLicenseListAPIResponse,
 
-    licenseCreateAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
-    licenseCreateAPIResponse: licenseAPIEndpoint.useLicenseCreateAPIMutation()[1],
+    licenseCreateAPITrigger: licenseCreateAPI[0],
+    licenseCreateAPIResponse: licenseCreateAPI[1],
 
     licenseRetrieveAPITrigger: lazyLicenseRetrieveAPITrigger,
     licenseRetrieveAPIResponse: lazyLicenseRetrieveAPIResponse,
 
-    licenseUpdateAPITrigger: licenseAPIEndpoint.useLicenseUpdateAPIMutation()[0],
-    licenseUpdateAPIResponse: licenseAPIEndpoint.useLicenseUpdateAPIMutation()[1],
+    licenseUpdateAPITrigger: licenseUpdateAPI[0],
+    licenseUpdateAPIResponse: licenseUpdateAPI[1],
 
     // Document
     documentListAPITrigger: lazyDocumentListAPITrigger,
     documentListAPIResponse: lazyDocumentListAPIResponse,
 
-    documentCreateAPITrigger: documentAPIEndpoint.useDocumentCreateAPIMutation()[0],
-    documentCreateAPIResponse: documentAPIEndpoint.useDocumentCreateAPIMutation()[1],
+    documentCreateAPITrigger: documentCreateAPI[0],
+    documentCreateAPIResponse: documentCreateAPI[1],
 
     documentRetrieveAPITrigger: lazyDocumentRetrieveAPITrigger,
     documentRetrieveAPIResponse: lazyDocumentRetrieveAPIResponse,    
 
-    documentUpdateAPITrigger: documentAPIEndpoint.useDocumentUpdateAPIMutation()[0],
-    documentUpdateAPIResponse: documentAPIEndpoint.useDocumentUpdateAPIMutation()[1],
+    documentUpdateAPITrigger: documentUpdateAPI[0],
+    documentUpdateAPIResponse: documentUpdateAPI[1],
 
     // Service
     serviceListAPITrigger: lazyServiceListAPITrigger,

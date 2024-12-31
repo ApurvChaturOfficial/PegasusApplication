@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from "react"
-import { Button, ContactInfo, ContactInput, Container, ContentWrapper, ContinueLink, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Form, HyperLink, Image, ImageWrapper, Input, InputHeading, IssueDate, MainHeading, PageLink, Para, UploadedFile } from "./style";
-import LessThanSign from '@/bLove/hAsset/icon/LessThanSign.png'
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
-import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 import userAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/bUserAdministration/aUserAPIEndpoints";
-import fullRoute from "@/bLove/gRoute/bFullRoute";
-import { Bounce, toast } from "react-toastify";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
 import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
+import globalSlice from "@/bLove/bRedux/aGlobalSlice";
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
 import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
+import firmBasedLicenseType from "@/bLove/hAsset/data/firmBasedLicenseType";
+import LessThanSign from '@/bLove/hAsset/icon/LessThanSign.png';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Bounce, toast } from "react-toastify";
+import { Button, ContactInfo, ContactInput, Container, ContentWrapper, ContinueLink, Dropdown, Dropdown1, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Form, HyperLink, Image, ImageWrapper, Input, InputHeading, IssueDate, MainHeading, PageLink, Para, UploadedFile } from "./style";
+import { FileIcon } from "lucide-react";
+import allCategoryType from "@/bLove/hAsset/data/allCategoryType";
 
 
 const SignUpCComponent = () => {
@@ -24,15 +27,19 @@ const SignUpCComponent = () => {
   }
   
   // API Call
+  const userSignUp = userAPIEndpoint.useUserSignUpAPIMutation()
+  const organizationCreate = organizationAPIEndpoint.useOrganizationCreateAPIMutation()
+  const licenseCreate = licenseAPIEndpoint.useLicenseCreateAPIMutation()
+
   const APICall = {
-    submitAPITrigger: userAPIEndpoint.useUserSignUpAPIMutation()[0],
-    submitAPIResponse: userAPIEndpoint.useUserSignUpAPIMutation()[1],
+    submitAPITrigger: userSignUp[0],
+    submitAPIResponse: userSignUp[1],
 
-    organizationSubmitAPITrigger: organizationAPIEndpoint.useOrganizationCreateAPIMutation()[0],
-    organizationSubmitAPIResponse: organizationAPIEndpoint.useOrganizationCreateAPIMutation()[1],
+    organizationSubmitAPITrigger: organizationCreate[0],
+    organizationSubmitAPIResponse: organizationCreate[1],
 
-    licenseSubmitAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
-    licenseSubmitAPIResponse: licenseAPIEndpoint.useLicenseCreateAPIMutation()[1],
+    licenseSubmitAPITrigger: licenseCreate[0],
+    licenseSubmitAPIResponse: licenseCreate[1],
   }
   
   // Variable
@@ -45,6 +52,8 @@ const SignUpCComponent = () => {
     issueDate: "",
     expiryDate: "",
     selectedLicense: "",
+    selectedCategory: "",
+    selectedOwnLoan: "",
     file: null,
     fileID: null,
   });
@@ -68,20 +77,12 @@ const SignUpCComponent = () => {
         cRole: "673f22a5fbdc2bbc7e2dbe57"
       } });
 
-      console.log(serverResponse)
-
       if (serverResponse.error && (serverResponse.error as any).originalStatus === 404) {
         return toast.error(("There was a problem with server connection."), {
           position: "bottom-right",
           autoClose: 5000,
           transition: Bounce,
         });
-
-        // return toast({
-        //   variant: "destructive",
-        //   title: "Uh oh! Cannot connect with server.",
-        //   description: "There was a problem with server connection.",
-        // })  
       } 
       
       if (serverResponse.error && (serverResponse.error as any)?.data?.success === false) {
@@ -90,12 +91,6 @@ const SignUpCComponent = () => {
           autoClose: 5000,
           transition: Bounce,
         });
-
-        // return toast({
-        //   variant: "destructive",
-        //   title: "Uh oh! Something went wrong.",
-        //   description: serverResponse.error.data.message || "There was an error occured.",
-        // })  
       }
 
       if (serverResponse.data && serverResponse.data?.success === true) {
@@ -104,13 +99,6 @@ const SignUpCComponent = () => {
           autoClose: 5000,
           transition: Bounce,
         });
-
-        // toast({
-        //   variant: "default",
-        //   title: "Yayy! Congratulations...",
-        //   description: serverResponse.data.message,
-        // })
-        // form.reset();
 
         Redux.dispatch(
           Redux.action.receivedObjectAction({
@@ -121,7 +109,6 @@ const SignUpCComponent = () => {
         )
 
         await organizationAPIHandler(finalFormData)
-        // return navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.aDashboardRoute)
       }
 
       return;
@@ -132,12 +119,6 @@ const SignUpCComponent = () => {
         autoClose: 5000,
         transition: Bounce,
       });
-
-      // return toast({
-      //   variant: "destructive",
-      //   title: "Uh oh! Bad code... Bad code.",
-      //   description: "There was a problem with try block code",
-      // })
     }    
 
   }
@@ -163,20 +144,12 @@ const SignUpCComponent = () => {
         dSelectedLicense: finalFormData.selectedLicense,
       } });
 
-      console.log(serverResponse)
-
       if (serverResponse.error && (serverResponse.error as any).originalStatus === 404) {
         return toast.error(("There was a problem with server connection."), {
           position: "bottom-right",
           autoClose: 5000,
           transition: Bounce,
         });
-
-        // return toast({
-        //   variant: "destructive",
-        //   title: "Uh oh! Cannot connect with server.",
-        //   description: "There was a problem with server connection.",
-        // })  
       } 
       
       if (serverResponse.error && (serverResponse.error as any)?.data?.success === false) {
@@ -185,12 +158,6 @@ const SignUpCComponent = () => {
           autoClose: 5000,
           transition: Bounce,
         });
-
-        // return toast({
-        //   variant: "destructive",
-        //   title: "Uh oh! Something went wrong.",
-        //   description: serverResponse.error.data.message || "There was an error occured.",
-        // })  
       }
 
       if (serverResponse.data && serverResponse.data?.success === true) {
@@ -200,23 +167,7 @@ const SignUpCComponent = () => {
           transition: Bounce,
         });
 
-        // toast({
-        //   variant: "default",
-        //   title: "Yayy! Congratulations...",
-        //   description: serverResponse.data.message,
-        // })
-        // form.reset();
-
-        // Redux.dispatch(
-        //   Redux.action.extraObjectAction({
-        //     ProfileRetrieve: {
-        //       _id: serverResponse.data.user_register._id
-        //     }
-        //   })
-        // )
-
         await licenseAPIHandler(finalFormData, (serverResponse.data as any)?.create?._id)
-        // return navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.aOrganizationRoute.aListRoute);
       }
 
       return;
@@ -227,12 +178,6 @@ const SignUpCComponent = () => {
         autoClose: 5000,
         transition: Bounce,
       });
-
-      // return toast({
-      //   variant: "destructive",
-      //   title: "Uh oh! Bad code... Bad code.",
-      //   description: "There was a problem with try block code",
-      // })
     }    
 
   }
@@ -246,11 +191,11 @@ const SignUpCComponent = () => {
         dIssueDate: finalFormData.issueDate,
         dExpiryDate: finalFormData.expiryDate,
         dSelectedLicense: finalFormData.selectedLicense,
+        dCategory: finalFormData.selectedCategory,
+        dOwnLoan: finalFormData.selectedOwnLoan,
         dFileUploaded: finalFormData.file,
         dFileUploadedID: finalFormData.fileID
       } });
-
-      console.log(serverResponse)
 
       if (serverResponse.error && (serverResponse.error as any).originalStatus === 404) {
         return toast.error(("There was a problem with server connection."), {
@@ -258,12 +203,6 @@ const SignUpCComponent = () => {
           autoClose: 5000,
           transition: Bounce,
         });
-
-        // return toast({
-        //   variant: "destructive",
-        //   title: "Uh oh! Cannot connect with server.",
-        //   description: "There was a problem with server connection.",
-        // })  
       } 
       
       if (serverResponse.error && (serverResponse.error as any)?.data?.success === false) {
@@ -272,12 +211,6 @@ const SignUpCComponent = () => {
           autoClose: 5000,
           transition: Bounce,
         });
-
-        // return toast({
-        //   variant: "destructive",
-        //   title: "Uh oh! Something went wrong.",
-        //   description: serverResponse.error.data.message || "There was an error occured.",
-        // })  
       }
 
       if (serverResponse.data && serverResponse.data?.success === true) {
@@ -286,21 +219,6 @@ const SignUpCComponent = () => {
           autoClose: 5000,
           transition: Bounce,
         });
-
-        // toast({
-        //   variant: "default",
-        //   title: "Yayy! Congratulations...",
-        //   description: serverResponse.data.message,
-        // })
-        // form.reset();
-
-        // Redux.dispatch(
-        //   Redux.action.extraObjectAction({
-        //     ProfileRetrieve: {
-        //       _id: serverResponse.data.user_register._id
-        //     }
-        //   })
-        // )
 
         return navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.aOrganizationRoute.aListRoute);
       }
@@ -313,41 +231,23 @@ const SignUpCComponent = () => {
         autoClose: 5000,
         transition: Bounce,
       });
-
-      // return toast({
-      //   variant: "destructive",
-      //   title: "Uh oh! Bad code... Bad code.",
-      //   description: "There was a problem with try block code",
-      // })
     }    
 
   }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
-
     const finalFormData = {
       ...formData,
       ...location.state.formData
     }
-
-    console.log("Form submitted:", finalFormData);
-
-    registerAPIHandler(finalFormData)
-
+    await registerAPIHandler(finalFormData)
   };
-
-  // Extra Render
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-  
 
   // JSX
   return (
     <React.Fragment>
       {/* SignUpCComponent */}
-
       <Container>
         <ImageWrapper />
         <PageLink to={fullRoute.aGlobalRoute.bProtectedRoute.aAuthenticationRoute.bSignUpBRoute}>
@@ -371,15 +271,19 @@ const SignUpCComponent = () => {
               <DropdownOption value="" disabled>
                 Select License
               </DropdownOption>
-              {/* {licenses.map((state) => ( */}
-              {["License 1", "License 2", "License 3", "License 4", "License 5", "License 6","License 7"].map((state) => (
-                <DropdownOption
-                  key={state}
-                  value={state}
-                >
-                  {state}
-                </DropdownOption>
-              ))}
+              {
+                firmBasedLicenseType?.
+                  filter(each => each.firm === location.state.formData?.type_of_firm)[0]?.
+                  license?.
+                  map(each => (
+                    <DropdownOption
+                      key={each}
+                      value={each}
+                    >
+                      {each}
+                    </DropdownOption>
+                  ))
+              }
             </Dropdown>
             <InputHeading>Enter License Number</InputHeading>
             <Input
@@ -389,6 +293,46 @@ const SignUpCComponent = () => {
               value={formData.licenseNumber}
               onChange={handleInputChange}
             />
+            <ContactInfo>
+              <IssueDate>
+                <InputHeading>Category</InputHeading>
+                <Dropdown1
+                  name="selectedCategory"
+                  value={formData.selectedCategory}
+                  onChange={handleInputChange}
+                >
+                  <DropdownOption value="" disabled>
+                    Select Category
+                  </DropdownOption>
+                  {
+                    allCategoryType.map(each => (
+                      <DropdownOption
+                        key={each}
+                        value={each}
+                      >
+                        {each}
+                      </DropdownOption>
+                    ))
+                  }
+                </Dropdown1>
+
+              </IssueDate>
+              <ExpiryDate>
+                <InputHeading>Own / Loan</InputHeading>
+                <Dropdown1
+                  name="selectedOwnLoan"
+                  value={formData.selectedOwnLoan}
+                  onChange={handleInputChange}
+                >
+                  <DropdownOption value="" disabled>
+                    Select
+                  </DropdownOption>
+                  <DropdownOption value="Own" >Own</DropdownOption>
+                  <DropdownOption value="Loan" >Loan</DropdownOption>
+                </Dropdown1>
+              </ExpiryDate>
+            </ContactInfo>
+            
             <ContactInfo>
               <IssueDate>
                 <InputHeading>Date of Issue</InputHeading>
@@ -409,15 +353,26 @@ const SignUpCComponent = () => {
                 />
               </ExpiryDate>
             </ContactInfo>
-            <InputHeading>Upload Scan Copy License</InputHeading>
+            
+            <InputHeading>Upload Scan Copy License <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
 
             {/* --------------------------------------------------------------- */}
             <FileInputContainer>
-              <div style={{ display: "flex", flexDirection: "column" }} >
-                {formData.file && <img style={{ 
-                    height: "70px", 
-                    objectFit: "cover"
-                }} src={formData.file} />}
+              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                {formData.file && !fileLoading && (
+                  <>
+                    {(formData.file as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                      <img
+                        style={{
+                          height: "70px",
+                          objectFit: "cover",
+                        }}
+                        src={formData.file}
+                        alt="Preview"
+                      />
+                    ) : <FileIcon size={"50px"} />}
+                  </>                    
+                )}
                 {formData.file && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                 {formData.file && (
                   <FileInputLabel 
@@ -454,26 +409,27 @@ const SignUpCComponent = () => {
             )}</UploadedFile>}
             {/* --------------------------------------------------------------- */}
             
-            {/* <FileInputContainer>
-              <FileInputLabel htmlFor="fileInput">Choose File</FileInputLabel>
-              <FileInput
-                type="file"
-                id="fileInput"
-                // onChange={handleFileChange}
-                name="file"
-              />
-            </FileInputContainer>
-            {formData.file && (
-              <UploadedFile>Uploaded File: {formData.file.name}</UploadedFile>
-            )} */}
             <ContinueLink>
-              <Button type="submit">Continue</Button>
+              <Button
+                type="submit"
+                disabled={
+                  fileLoading ||
+                  APICall.submitAPIResponse.isLoading ||
+                  APICall.organizationSubmitAPIResponse.isLoading ||
+                  APICall.licenseSubmitAPIResponse.isLoading
+                }
+              >{
+                (
+                  fileLoading ||
+                    APICall.submitAPIResponse.isLoading ||
+                    APICall.organizationSubmitAPIResponse.isLoading ||
+                    APICall.licenseSubmitAPIResponse.isLoading
+                ) ? "Loading..." : "Continue"
+              }</Button>
             </ContinueLink>
           </Form>
         </ContentWrapper>
       </Container>
-      
-      {/* <AuthFormComponent Redux={props.Redux} APICall={props.APICall} extras={props.extras} /> */}
     </React.Fragment>
   )
 }

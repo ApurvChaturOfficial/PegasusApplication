@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
-import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
+import licenseAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/eLicenseAPIEndpoints";
 import apiResponseHandler from "./extras/aAPIResponseHandler";
 
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { ButtonContainer, CancelButton, ContactInput, Container, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, Input, InputHeading, IssueDate, MainHeading, SubmitButton, UploadedFile } from "./style";
-import allLicenseType from "@/bLove/hAsset/data/allLicenseType";
-import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
+import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import allCategoryType from "@/bLove/hAsset/data/allCategoryType";
+import firmBasedLicenseType from "@/bLove/hAsset/data/firmBasedLicenseType";
 import { FileIcon } from "lucide-react";
+import { ButtonContainer, CancelButton, ContactInput, Container, Dropdown, Dropdown1, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, FinalTag, Form, Input, InputHeading, IssueDate, MainHeading, SubmitButton, UploadedFile } from "./style";
 
 
 const LicenseCreatePage = () => {
@@ -30,11 +31,14 @@ const LicenseCreatePage = () => {
 
     dSelectedLicense: "",
     dLicenseNumber: "",
+    dCategory: "",
+    dOwnLoan: "",
     dIssueDate: "",
     dExpiryDate: "",
     dFileUploaded: null,
     dFileUploadedID: null,
   })
+  const [organziationType, setOrganziationType] = useState("")
 
   // Redux Call
   const ReduxCall = {
@@ -44,16 +48,31 @@ const LicenseCreatePage = () => {
   }
 
   // API Call
+  const licenseAPI = licenseAPIEndpoint.useLicenseCreateAPIMutation();
+  const organziationAPI = organizationAPIEndpoint.useOrganizationListAPIQuery(null)
+
   const APICall = {
-    createAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
-    createAPIResponse: licenseAPIEndpoint.useLicenseCreateAPIMutation()[1],
+    createAPITrigger: licenseAPI[0],
+    createAPIResponse: licenseAPI[1],
 
     // Requirements... Muaaah...
-    organizationListAPIResponse: organizationAPIEndpoint.useOrganizationListAPIQuery(null),
+    organizationListAPIResponse: organziationAPI,
 
   }
 
   // Event Handlers
+  // Handle Input Change
+  const handleOrganizationInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    const selectedOrganization = APICall.organizationListAPIResponse?.data?.list?.find(
+      (each: any) => each._id === value
+    );
+
+    setFormData({ ...formData, [name]: value });
+    setOrganziationType(selectedOrganization?.dType)
+  };
+  
   // Handle Input Change
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -68,12 +87,6 @@ const LicenseCreatePage = () => {
     // console.log("formDataObj", formData);
     apiResponseHandler.createAPIResponseHandler(formData, APICall.createAPITrigger, navigate)
   };
-
-  // All Render
-  // Extra Render
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
 
   // JSX
   return (
@@ -90,7 +103,7 @@ const LicenseCreatePage = () => {
                 <InputHeading>Select Organization</InputHeading>
                 <Dropdown
                   value={formData.cOrganization}
-                  onChange={handleInputChange}
+                  onChange={handleOrganizationInputChange}
                   name="cOrganization"
                 >
                   <DropdownOption value="" disabled>
@@ -119,7 +132,7 @@ const LicenseCreatePage = () => {
                   }
                 </Dropdown>
 
-                <InputHeading>Select License</InputHeading>
+                <InputHeading>Select License <em style={{ color: "tomato" }} >{organziationType ? `(Firm Type: ${organziationType})` : "(Select Firm Type for Options)"}</em></InputHeading>
                 <Dropdown
                   name="dSelectedLicense"
                   value={formData.dSelectedLicense}
@@ -128,11 +141,19 @@ const LicenseCreatePage = () => {
                   <DropdownOption value="" disabled>
                     Select License
                   </DropdownOption>
-                  {allLicenseType.map((each) => (
-                    <DropdownOption key={each} value={each} >
-                      {each}
-                    </DropdownOption>
-                  ))}
+                  {
+                    firmBasedLicenseType?.
+                      filter(each => each.firm === organziationType)[0]?.
+                      license?.
+                      map(each => (
+                        <DropdownOption
+                          key={each}
+                          value={each}
+                        >
+                          {each}
+                        </DropdownOption>
+                      ))
+                  }
                 </Dropdown>
                 <InputHeading>Enter License Number</InputHeading>
                 <Input
@@ -142,6 +163,44 @@ const LicenseCreatePage = () => {
                   value={formData.dLicenseNumber}
                   onChange={handleInputChange}
                 />
+
+                <FinalTag>
+                  <IssueDate>
+                    <InputHeading>Category</InputHeading>
+                    <Dropdown1
+                      onChange={handleInputChange}
+                      name="dCategory"
+                    >
+                      <DropdownOption selected disabled>
+                        Select Category
+                      </DropdownOption>
+                      {
+                        allCategoryType.map(each => (
+                          <DropdownOption
+                            key={each}
+                            value={each}
+                          >
+                            {each}
+                          </DropdownOption>
+                        ))
+                      }
+                    </Dropdown1>
+                  </IssueDate>
+                  <ExpiryDate>
+                    <InputHeading>Own / Loan</InputHeading>
+                    <Dropdown1
+                      onChange={handleInputChange}
+                      name="dOwnLoan"
+                    >
+                      <DropdownOption selected disabled>
+                        Select
+                      </DropdownOption>
+                      <DropdownOption value="Own" >Own</DropdownOption>
+                      <DropdownOption value="Loan" >Loan</DropdownOption>
+                    </Dropdown1>
+                  </ExpiryDate>
+                </FinalTag>
+
                 <FinalTag>
                   <IssueDate>
                     <InputHeading>Issue Date</InputHeading>
@@ -164,7 +223,8 @@ const LicenseCreatePage = () => {
                     />
                   </ExpiryDate>
                 </FinalTag>
-                <InputHeading>Upload Scan Copy License</InputHeading> <em>(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em>
+                
+                <InputHeading>Upload Scan Copy License <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
 
                 {/* --------------------------------------------------------------- */}
                 <FileInputContainer>
@@ -228,12 +288,32 @@ const LicenseCreatePage = () => {
                 </AddNew>
               </TopButtonContainer> */}
               <ButtonContainer>
-                <SubmitButton type="submit" onClick={handleSubmit}>
-                  Submit
-                </SubmitButton>
-                <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.aListRoute)}>
-                  Cancel
-                </CancelButton>
+                <SubmitButton 
+                  type="submit" 
+                  onClick={handleSubmit}
+                  disabled={
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading
+                  }
+                >{(
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Submit"
+                }</SubmitButton>
+                <CancelButton 
+                  type="button" 
+                  onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.aListRoute)}
+                  disabled={
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading
+                  }
+                >{(
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Cancel"
+                }</CancelButton>
               </ButtonContainer>
             </>
           </Form>

@@ -14,6 +14,12 @@ import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandle
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import LoaderComponent from "@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent";
+import ErrorComponent from "@/bLove/cComponent/aGlobalComponent/component/bErrorComponent";
+import firmBasedLicenseType from "@/bLove/hAsset/data/firmBasedLicenseType";
+import { Dropdown1 } from "../bCreatePage/style";
+import allCategoryType from "@/bLove/hAsset/data/allCategoryType";
+import { FileIcon } from "lucide-react";
 
 
 const LicenseUpdatePage = () => {
@@ -28,11 +34,14 @@ const LicenseUpdatePage = () => {
 
     dSelectedLicense: "",
     dLicenseNumber: "",
+    dCategory: "",
+    dOwnLoan: "",
     dIssueDate: "",
     dExpiryDate: "",
     dFileUploaded: "",
     dFileUploadedID: "",
   })
+  const [organziationType, setOrganziationType] = useState("")
 
   // Redux Call
   const ReduxCall = {
@@ -42,17 +51,33 @@ const LicenseUpdatePage = () => {
   }
 
   // API Call
+  const licenseRetrieveAPI = licenseAPIEndpoint.useLicenseRetrievePIQuery({ params: { _id: id } });
+  const licenseUpdateAPI = licenseAPIEndpoint.useLicenseUpdateAPIMutation();
+  const organziationListAPI = organizationAPIEndpoint.useOrganizationListAPIQuery(null)
+
   const APICall = {
-    retrieveAPIResponse: licenseAPIEndpoint.useLicenseRetrievePIQuery({ params: { _id: id } }),
-    updateAPITrigger: licenseAPIEndpoint.useLicenseUpdateAPIMutation()[0],
-    updateAPIResponse: licenseAPIEndpoint.useLicenseUpdateAPIMutation()[1],
+    retrieveAPIResponse: licenseRetrieveAPI,
+    updateAPITrigger: licenseUpdateAPI[0],
+    updateAPIResponse: licenseUpdateAPI[1],
 
     // Requirements... Muaaah...
-    organizationListAPIResponse: organizationAPIEndpoint.useOrganizationListAPIQuery(null),
+    organizationListAPIResponse: organziationListAPI,
     
   }  
 
   // Event Handlers
+  // Handle Input Change
+  const handleOrganizationInputChange = (event: any) => {
+    const { name, value } = event.target;
+
+    const selectedOrganization = APICall.organizationListAPIResponse?.data?.list?.find(
+      (each: any) => each._id === value
+    );
+
+    setFormData({ ...formData, [name]: value });
+    setOrganziationType(selectedOrganization?.dType)
+  };
+  
   // Handle Input Change
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -64,7 +89,7 @@ const LicenseUpdatePage = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    console.log("formDataObj", formData);
+    // console.log("formDataObj", formData);
     apiResponseHandler.updateAPIResponseHandler(formData, APICall.updateAPITrigger, navigate, { id: id })
   };
 
@@ -79,20 +104,24 @@ const LicenseUpdatePage = () => {
           cOrganization: APICall.retrieveAPIResponse.data.retrieve.cOrganization,
           dSelectedLicense: APICall.retrieveAPIResponse.data.retrieve.dSelectedLicense,
           dLicenseNumber: APICall.retrieveAPIResponse.data.retrieve.dLicenseNumber,
+          dCategory: APICall.retrieveAPIResponse.data.retrieve.dCategory,
+          dOwnLoan: APICall.retrieveAPIResponse.data.retrieve.dOwnLoan,
           dIssueDate: APICall.retrieveAPIResponse.data.retrieve.dIssueDate,
           dExpiryDate: APICall.retrieveAPIResponse.data.retrieve.dExpiryDate,
           dFileUploaded: APICall.retrieveAPIResponse.data.retrieve.dFileUploaded,
           dFileUploadedID: APICall.retrieveAPIResponse.data.retrieve.dFileUploadedID
-        })
+        }),
+
+        setOrganziationType(
+          APICall.organizationListAPIResponse?.data?.list?.find(
+            (each: any) => each._id === APICall.retrieveAPIResponse.data.retrieve.cOrganization._id
+          )?.dType || null
+        )
+
       ) : null
     ) : null
   }, [APICall.retrieveAPIResponse])
   
-  // Extra Render
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-
   // JSX
   return (
     <React.Fragment>
@@ -101,8 +130,8 @@ const LicenseUpdatePage = () => {
       <>
         <TopNavBarComponent />
         {
-          APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
-          APICall.retrieveAPIResponse.isError ? "Error..." :
+          APICall.retrieveAPIResponse.isLoading ? <LoaderComponent /> : 
+          APICall.retrieveAPIResponse.isError ? <ErrorComponent message="Error..." /> :
           APICall.retrieveAPIResponse.isSuccess ? (
             <React.Fragment>
               {
@@ -115,7 +144,7 @@ const LicenseUpdatePage = () => {
                         <div>
                           <InputHeading>Select Organization</InputHeading>
                           <Dropdown
-                            onChange={handleInputChange}
+                            onChange={handleOrganizationInputChange}
                             name="cOrganization"
                           >
                             <DropdownOption selected disabled>
@@ -143,20 +172,30 @@ const LicenseUpdatePage = () => {
                                   ) : []
                                 ) : []
                             }
-
                           </Dropdown>
 
-                          <InputHeading>Select License</InputHeading>
+                          <InputHeading>Select License <em style={{ color: "tomato" }} >{organziationType ? `(Firm Type: ${organziationType})` : "(Select Firm Type for Options)"}</em></InputHeading>
                           <Dropdown
                             name="dSelectedLicense"
-                            value={formData.dSelectedLicense}
                             onChange={handleInputChange}
                           >
                             <DropdownOption value="" disabled>
                               Select License
                             </DropdownOption>
-                            <DropdownOption value="license1">License 1</DropdownOption>
-                            <DropdownOption value="license2">License 2</DropdownOption>
+                            {
+                              firmBasedLicenseType?.
+                                filter(each => each.firm === organziationType)[0]?.
+                                license?.
+                                map(each => (
+                                  <DropdownOption
+                                    key={each}
+                                    value={each}
+                                    selected={each === formData.dSelectedLicense}
+                                  >
+                                    {each}
+                                  </DropdownOption>
+                                ))
+                            }
                           </Dropdown>
                           <InputHeading>Enter License Number</InputHeading>
                           <Input
@@ -166,6 +205,45 @@ const LicenseUpdatePage = () => {
                             value={formData.dLicenseNumber}
                             onChange={handleInputChange}
                           />
+
+                          <FinalTag>
+                            <IssueDate>
+                              <InputHeading>Category</InputHeading>
+                              <Dropdown1
+                                onChange={handleInputChange}
+                                name="dCategory"
+                              >
+                                <DropdownOption selected disabled>
+                                  Select Category
+                                </DropdownOption>
+                                {
+                                  allCategoryType.map(each => (
+                                    <DropdownOption
+                                      key={each}
+                                      value={each}
+                                      selected={each === formData.dCategory}
+                                    >
+                                      {each}
+                                    </DropdownOption>
+                                  ))
+                                }
+                              </Dropdown1>
+                            </IssueDate>
+                            <ExpiryDate>
+                              <InputHeading>Own / Loan</InputHeading>
+                              <Dropdown1
+                                onChange={handleInputChange}
+                                name="dOwnLoan"
+                              >
+                                <DropdownOption selected disabled>
+                                  Select
+                                </DropdownOption>
+                                <DropdownOption value="Own" selected={"Own" === formData.dOwnLoan} >Own</DropdownOption>
+                                <DropdownOption value="Loan" selected={"Loan" === formData.dOwnLoan} >Loan</DropdownOption>
+                              </Dropdown1>
+                            </ExpiryDate>
+                          </FinalTag>
+
                           <FinalTag>
                             <IssueDate>
                               <InputHeading>Issue Date</InputHeading>
@@ -188,15 +266,25 @@ const LicenseUpdatePage = () => {
                               />
                             </ExpiryDate>
                           </FinalTag>
-                          <InputHeading>Upload Scan Copy License</InputHeading>
+                          <InputHeading>Upload Scan Copy License <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
 
                           {/* --------------------------------------------------------------- */}
                           <FileInputContainer>
-                            <div style={{ display: "flex", flexDirection: "column" }} >
-                              {formData.dFileUploaded && <img style={{ 
-                                  height: "70px", 
-                                  objectFit: "cover"
-                              }} src={formData.dFileUploaded} />}
+                            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                              {formData.dFileUploaded && !fileLoading && (
+                                <>
+                                  {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                                    <img
+                                      style={{
+                                        height: "70px",
+                                        objectFit: "cover",
+                                      }}
+                                      src={formData.dFileUploaded}
+                                      alt="Preview"
+                                    />
+                                  ) : <FileIcon size={"50px"} />}
+                                </>                    
+                              )}
                               {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                               {formData.dFileUploaded && (
                                 <FileInputLabel 
@@ -237,20 +325,41 @@ const LicenseUpdatePage = () => {
 
                         <>
                           <ButtonContainer>
-                            <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
-                            <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.aListRoute)}>
-                              Cancel
-                            </CancelButton>
+                            <SubmitButton 
+                              type="submit" 
+                              onClick={handleSubmit}
+                              disabled={
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              }            
+                            >{(
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              ) ? 
+                              "Loading..." : "Submit"
+                            }</SubmitButton>
+                            <CancelButton 
+                              type="button" 
+                              onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.bLicenseRoute.aListRoute)}
+                              disabled={
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              }            
+                            >{(
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              ) ? 
+                              "Loading..." : "Cancel"
+                            }</CancelButton>
                           </ButtonContainer>
                         </>
                       </Form>
                     </Container>
                   </React.Fragment>
-                ) : "Backend Error"
+                ) : <ErrorComponent message="Backend Error..." />
               }
             </React.Fragment>
-          ) :
-          "Let me understand first"
+          ) : <ErrorComponent message="Let me understand first" />
         } 
 
       </>

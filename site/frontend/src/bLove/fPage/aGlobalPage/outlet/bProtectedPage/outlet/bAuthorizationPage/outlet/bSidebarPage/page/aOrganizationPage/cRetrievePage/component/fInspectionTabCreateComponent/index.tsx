@@ -4,6 +4,7 @@ import handleImageDeleteForObject from '@/bLove/dUtility/aImageForObject/cHandle
 import React, { useEffect, useState } from 'react';
 import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonTag, CancelButton, ContactInfo, ContactInput, FileInput, FileInputContainer, FileInputLabel, Input2, InputHeading, IssueDate, Para, UploadedFile } from '../../style';
 import apiResponseHandler from './extras/aAPIResponseHandler';
+import { FileIcon } from 'lucide-react';
 
 
 const InspectionTabCreateComponent = (props: any) => {
@@ -84,15 +85,25 @@ const InspectionTabCreateComponent = (props: any) => {
               />
             </IssueDate>
           </ContactInfo>
-          <InputHeading>Upload Scan Copy License</InputHeading>
+          <InputHeading>Upload Scan Copy <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading>
 
           {/* --------------------------------------------------------------- */}
           <FileInputContainer>
-            <div style={{ display: "flex", flexDirection: "column" }} >
-              {formData.dFileUploaded && <img style={{ 
-                  height: "70px", 
-                  objectFit: "cover"
-              }} src={formData.dFileUploaded} />}
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+              {formData.dFileUploaded && !fileLoading && (
+                <>
+                  {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                    <img
+                      style={{
+                        height: "70px",
+                        objectFit: "cover",
+                      }}
+                      src={formData.dFileUploaded}
+                      alt="Preview"
+                    />
+                  ) : <FileIcon size={"50px"} />}
+                </>                    
+              )}
               {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
               {formData.dFileUploaded && (
                 <FileInputLabel 
@@ -130,11 +141,38 @@ const InspectionTabCreateComponent = (props: any) => {
           {/* --------------------------------------------------------------- */}
 
           <ButtonTag>
-            <AddButton type="submit" onClick={handleSubmit}>
-              <Para>Add New Inspection Report</Para>
+            <AddButton 
+              type="submit" 
+              onClick={handleSubmit}
+              disabled={
+                fileLoading ||
+                APICall.inspectionCreateAPIResponse.isLoading
+              }
+            >
+              <Para>
+                {(
+                    fileLoading ||
+                    APICall.inspectionCreateAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Add New Inspection Report"
+                }
+              </Para>
             </AddButton>
-            <CancelButton onClick={() => activateInspectionList()}>
-              <Para>Cancel</Para>
+            <CancelButton 
+              onClick={() => activateInspectionList()}
+              disabled={
+                fileLoading ||
+                APICall.inspectionCreateAPIResponse.isLoading
+              }
+            >
+              <Para>
+                {(
+                    fileLoading ||
+                    APICall.inspectionCreateAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Cancel"
+                }
+              </Para>
             </CancelButton>
           </ButtonTag>
         </AddLicenseForm>

@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
-import inspectionAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/hInspectionAPIEndpoints";
 import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
-import apiResponseHandler from "./extras/aAPIResponseHandler";
+import inspectionAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/hInspectionAPIEndpoints";
 import TopNavBarComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarComponent";
-import { ButtonContainer, CancelButton, Container, Dropdown, DropdownOption, FileInput, FileInputContainer, FileInputLabel, Form, Input, InputHeading, IssueDate, MainHeading, RowContainer, RowInput, SubmitButton, UploadedFile } from "./style";
-import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
+import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import { FileIcon } from "lucide-react";
+import apiResponseHandler from "./extras/aAPIResponseHandler";
+import { ButtonContainer, CancelButton, Container, Dropdown, DropdownOption, FileInput, FileInputContainer, FileInputLabel, Form, Input, InputHeading, IssueDate, MainHeading, RowContainer, RowInput, SubmitButton, UploadedFile } from "./style";
 
 
 const InspectionCreatePage = () => {
@@ -39,12 +40,15 @@ const InspectionCreatePage = () => {
   }
 
   // API Call
+  const inspectionCreateAPI = inspectionAPIEndpoint.useInspectionCreateAPIMutation();
+  const organziationListAPI = organizationAPIEndpoint.useOrganizationListAPIQuery(null)
+
   const APICall = {
-    createAPITrigger: inspectionAPIEndpoint.useInspectionCreateAPIMutation()[0],
-    createAPIResponse: inspectionAPIEndpoint.useInspectionCreateAPIMutation()[1],
+    createAPITrigger: inspectionCreateAPI[0],
+    createAPIResponse: inspectionCreateAPI[1],
 
     // Requirements... Muaaah...
-    organizationListAPIResponse: organizationAPIEndpoint.useOrganizationListAPIQuery(null),
+    organizationListAPIResponse: organziationListAPI,
 
   }
 
@@ -60,15 +64,9 @@ const InspectionCreatePage = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    console.log("formDataObj", formData);
+    // console.log("formDataObj", formData);
     apiResponseHandler.createAPIResponseHandler(formData, APICall.createAPITrigger, navigate)
   };
-
-  // All Render
-  // Extra Render
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
 
   // JSX
   return (
@@ -134,14 +132,25 @@ const InspectionCreatePage = () => {
                 </IssueDate>
               </RowContainer> 
             
-              <InputHeading>Upload Scan Copy</InputHeading>
+              <InputHeading>Upload Scan Copy License <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
+
               {/* --------------------------------------------------------------- */}
               <FileInputContainer>
-                <div style={{ display: "flex", flexDirection: "column" }} >
-                  {formData.dFileUploaded && <img style={{ 
-                      height: "70px", 
-                      objectFit: "cover"
-                  }} src={formData.dFileUploaded} />}
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                  {formData.dFileUploaded && !fileLoading && (
+                    <>
+                      {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                        <img
+                          style={{
+                            height: "70px",
+                            objectFit: "cover",
+                          }}
+                          src={formData.dFileUploaded}
+                          alt="Preview"
+                        />
+                      ) : <FileIcon size={"50px"} />}
+                    </>                    
+                  )}
                   {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                   {formData.dFileUploaded && (
                     <FileInputLabel 
@@ -182,8 +191,32 @@ const InspectionCreatePage = () => {
 
             <>
               <ButtonContainer>
-                <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
-                <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.aListRoute)}>Cancel</CancelButton>
+                <SubmitButton 
+                  type="submit" 
+                  onClick={handleSubmit}
+                  disabled={
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading
+                  }
+                >{(
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Submit"
+                }</SubmitButton>
+                <CancelButton 
+                  type="button" 
+                  onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.aListRoute)}
+                  disabled={
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading
+                  }
+                >{(
+                    fileLoading ||
+                    APICall.createAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Cancel"
+                }</CancelButton>
               </ButtonContainer>
             </>
           </Form>

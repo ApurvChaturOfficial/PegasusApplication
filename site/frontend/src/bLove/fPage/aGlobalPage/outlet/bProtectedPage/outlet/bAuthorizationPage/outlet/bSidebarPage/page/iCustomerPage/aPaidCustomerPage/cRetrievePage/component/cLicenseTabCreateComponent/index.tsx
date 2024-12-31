@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonTag, CancelButton, ContactInfo, ContactInput, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Input2, InputHeading, IssueDate, Para, UploadedFile } from '../../style';
-import apiResponseHandler from './extras/aAPIResponseHandler';
-import allLicenseType from '@/bLove/hAsset/data/allLicenseType';
-import handleImageDeleteForObject from '@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject';
 import handleImageCreateForObject from '@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject';
 import handleImageUpdateForObject from '@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject';
+import handleImageDeleteForObject from '@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject';
+import allCategoryType from '@/bLove/hAsset/data/allCategoryType';
+import firmBasedLicenseType from '@/bLove/hAsset/data/firmBasedLicenseType';
+import { FileIcon } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ContactInfo1 } from '../../../../../aOrganizationPage/cRetrievePage/style';
+import { Dropdown1 } from '../../../../../bLicensePage/bCreatePage/style';
+import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonTag, CancelButton, ContactInfo, ContactInput, Dropdown, DropdownOption, ExpiryDate, FileInput, FileInputContainer, FileInputLabel, Input2, InputHeading, IssueDate, Para, UploadedFile } from '../../style';
+import apiResponseHandler from './extras/aAPIResponseHandler';
 
 
 const LicenseTabCreateComponent = (props: any) => {
@@ -25,6 +29,8 @@ const LicenseTabCreateComponent = (props: any) => {
 
     dSelectedLicense: "",
     dLicenseNumber: "",
+    dCategory: "",
+    dOwnLoan: "",
     dIssueDate: "",
     dExpiryDate: "",
     dFileUploaded: null,
@@ -67,7 +73,7 @@ const LicenseTabCreateComponent = (props: any) => {
       <AddLicense>
         <AddHeading>Add License</AddHeading>
         <AddLicenseForm onSubmit={() => "handleSubmit"}>
-          <InputHeading>Select License</InputHeading>
+          <InputHeading>Select License<em style={{ color: "tomato" }} >{` (Firm Type: ${APICall.retrieveAPIResponse.data?.retrieve?.dType})`}</em></InputHeading>
           <Dropdown 
             name="dSelectedLicense"
             onChange={handleInputChange}
@@ -75,11 +81,19 @@ const LicenseTabCreateComponent = (props: any) => {
             <DropdownOption selected disabled>
               Select License
             </DropdownOption>
-            {allLicenseType.map((each) => (
-              <DropdownOption key={each} value={each} >
-                {each}
-              </DropdownOption>
-            ))}
+            {
+              firmBasedLicenseType?.
+                filter(each => each.firm === APICall.retrieveAPIResponse.data?.retrieve?.dType)[0]?.
+                license?.
+                map(each => (
+                  <DropdownOption
+                    key={each}
+                    value={each}
+                  >
+                    {each}
+                  </DropdownOption>
+                ))
+            }
           </Dropdown>
           <InputHeading>Enter License Number</InputHeading>
           <Input2
@@ -89,6 +103,44 @@ const LicenseTabCreateComponent = (props: any) => {
             value={formData.dLicenseNumber}
             onChange={handleInputChange}
           />
+
+          <ContactInfo1>
+            <IssueDate>
+              <InputHeading>Category</InputHeading>
+              <Dropdown1 
+                name="dCategory"
+                onChange={handleInputChange}
+              >
+                <DropdownOption selected disabled>
+                  Select Category
+                </DropdownOption>
+                {
+                  allCategoryType.map(each => (
+                    <DropdownOption
+                      key={each}
+                      value={each}
+                    >
+                      {each}
+                    </DropdownOption>
+                  ))
+                }
+              </Dropdown1>
+            </IssueDate>
+            <ExpiryDate>
+              <InputHeading>Own / Loan</InputHeading>
+              <Dropdown1 
+                name="dOwnLoan"
+                onChange={handleInputChange}
+              >
+                <DropdownOption selected disabled>
+                  Select
+                </DropdownOption>
+                <DropdownOption value="Own" >Own</DropdownOption>
+                <DropdownOption value="Loan" >Loan</DropdownOption>
+              </Dropdown1>
+            </ExpiryDate>
+          </ContactInfo1>
+
           <ContactInfo>
             <IssueDate>
               <InputHeading>Date of Issue</InputHeading>
@@ -111,15 +163,26 @@ const LicenseTabCreateComponent = (props: any) => {
               />
             </ExpiryDate>
           </ContactInfo>
-          <InputHeading>Upload Scan Copy License</InputHeading>
+
+          <InputHeading>Upload Scan Copy License <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
 
           {/* --------------------------------------------------------------- */}
           <FileInputContainer>
-            <div style={{ display: "flex", flexDirection: "column" }} >
-              {formData.dFileUploaded && <img style={{ 
-                  height: "70px", 
-                  objectFit: "cover"
-              }} src={formData.dFileUploaded} />}
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+              {formData.dFileUploaded && !fileLoading && (
+                <>
+                  {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                    <img
+                      style={{
+                        height: "70px",
+                        objectFit: "cover",
+                      }}
+                      src={formData.dFileUploaded}
+                      alt="Preview"
+                    />
+                  ) : <FileIcon size={"50px"} />}
+                </>                    
+              )}
               {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
               {formData.dFileUploaded && (
                 <FileInputLabel 
@@ -157,11 +220,38 @@ const LicenseTabCreateComponent = (props: any) => {
           {/* --------------------------------------------------------------- */}
 
           <ButtonTag>
-            <AddButton type="submit" onClick={handleSubmit}>
-              <Para>Add New License</Para>
+            <AddButton 
+              type="submit" 
+              onClick={handleSubmit}
+              disabled={
+                fileLoading ||
+                APICall.licenseCreateAPIResponse.isLoading
+              }
+            >
+              <Para>
+                {(
+                    fileLoading ||
+                    APICall.licenseCreateAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Add New License"
+                }
+              </Para>
             </AddButton>
-            <CancelButton onClick={() => activateLicenseList()}>
-              <Para>Cancel</Para>
+            <CancelButton 
+              onClick={() => activateLicenseList()}
+              disabled={
+                fileLoading ||
+                APICall.licenseCreateAPIResponse.isLoading
+              }
+            >
+              <Para>
+                {(
+                    fileLoading ||
+                    APICall.licenseCreateAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Cancel"
+                }
+              </Para>
             </CancelButton>
           </ButtonTag>
         </AddLicenseForm>

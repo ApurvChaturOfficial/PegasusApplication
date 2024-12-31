@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/aConnection/dReduxConnection";
 import globalSlice from "@/bLove/bRedux/aGlobalSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 // import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 import serviceAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/fServiceAPIEndpoints";
 // import organizationAPIEndpoint from "@/bLove/aAPI/aGlobalAPI/cProductManagementAPI/dOrganizationAPIEndpoints";
-import apiResponseHandler from "./extras/aAPIResponseHandler";
 import TopNavBarTwoComponent from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/component/aTopNavBarTwoComponent";
-import { AddButton, AddHeading, AddService, AddServiceForm, CancelButton, categoryOptions, DropTag, FeeTag, FirmTypeOptions, Input, InputHeading, InputTag, InputTag2, InputTag3, LeftContainer, MainContainer, ownLoanOptions, RightContainer, Select, Select2, ServiceSubContainer, SubmitTag, ValidityTag } from "./style";
 import SidebarNavigation from "@/bLove/cComponent/aGlobalComponent/outlet/bProtectedComponent/outlet/bAuthorizationComponent/outlet/bSidebarComponent/component/SidebarNavigation/SidebarNavigation";
+import allCategoryType from "@/bLove/hAsset/data/allCategoryType";
+import allFirmType from "@/bLove/hAsset/data/allFirmType";
+import allLicenseType from "@/bLove/hAsset/data/allLicenseType";
+import apiResponseHandler from "./extras/aAPIResponseHandler";
+import { AddButton, AddHeading, AddService, AddServiceForm, CancelButton, DropTag, FeeTag, Input, InputHeading, InputTag, InputTag2, InputTag3, LeftContainer, MainContainer, ownLoanOptions, RightContainer, Select, Select2, ServiceSubContainer, SubmitTag, ValidityTag } from "./style";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
 
 
 const ServiceCreatePage = () => {
@@ -85,18 +89,23 @@ const ServiceCreatePage = () => {
               <AddService>
                 <AddHeading>Add New Service</AddHeading>
                 <AddServiceForm onSubmit={handleSubmit}>
+
                   <InputTag>
                     <InputHeading>Form Number</InputHeading>
-                    <Input
-                      type="text"
+                    <Select
                       id="formNumber"
-                      placeholder="Enter form number"
-                      // value={formNumber}
-                      // onChange={handleChange}
                       name="dFormNumber" 
                       onChange={(event => handleInputChange(event))}
-                    />
+                    >
+                      <option selected disabled>--Select Form Number--</option>
+                      {allLicenseType.map((option, index) => (
+                        <option key={index} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </Select>
                   </InputTag>
+
                   <DropTag>
                     <InputTag2>
                       <InputHeading>Select type of firm</InputHeading>
@@ -107,7 +116,8 @@ const ServiceCreatePage = () => {
                         name="dFormType" 
                         onChange={(event => handleInputChange(event))}
                       >
-                        {FirmTypeOptions.map((option, index) => (
+                        <option selected disabled>--Select--</option>
+                        {allFirmType.map((option, index) => (
                           <option key={index} value={option}>
                             {option}
                           </option>
@@ -124,7 +134,8 @@ const ServiceCreatePage = () => {
                         name="dCategory" 
                         onChange={(event => handleInputChange(event))}
                       >
-                        {categoryOptions.map((option, index) => (
+                        <option selected disabled>--Select--</option>
+                        {allCategoryType.map((option, index) => (
                           <option key={index} value={option}>
                             {option}
                           </option>
@@ -141,6 +152,7 @@ const ServiceCreatePage = () => {
                       name="dOwnLoan" 
                       onChange={(event => handleInputChange(event))}
                     >
+                      <option selected disabled>--Select--</option>
                       {ownLoanOptions.map((option, index) => (
                         <option key={index} value={option}>
                           {option}
@@ -202,7 +214,7 @@ const ServiceCreatePage = () => {
                   </ValidityTag>
                   <SubmitTag>
                     <AddButton type="submit">Add Service</AddButton>
-                    <CancelButton type="button" onClick={() => "toggleNewService"}>
+                    <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.cServiceRoute.fCompleteListRoute)}>
                       Cancel
                     </CancelButton>
                   </SubmitTag>

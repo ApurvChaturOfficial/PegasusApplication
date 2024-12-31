@@ -13,6 +13,10 @@ import { ButtonContainer, CancelButton, Container, Dropdown, DropdownOption, Fil
 import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject";
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
+import fullRoute from "@/bLove/gRoute/bFullRoute";
+import { FileIcon } from "lucide-react";
+import LoaderComponent from "@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent";
+import ErrorComponent from "@/bLove/cComponent/aGlobalComponent/component/bErrorComponent";
 
 
 const DocumentUpdatePage = () => {
@@ -40,13 +44,17 @@ const DocumentUpdatePage = () => {
   }
 
   // API Call
+  const documentRetrieveAPI = documentAPIEndpoint.useDocumentRetrievePIQuery({ params: { _id: id } });
+  const documentUpdateAPI = documentAPIEndpoint.useDocumentUpdateAPIMutation();
+  const organziationListAPI = organizationAPIEndpoint.useOrganizationListAPIQuery(null)
+
   const APICall = {
-    retrieveAPIResponse: documentAPIEndpoint.useDocumentRetrievePIQuery({ params: { _id: id } }),
-    updateAPITrigger: documentAPIEndpoint.useDocumentUpdateAPIMutation()[0],
-    updateAPIResponse: documentAPIEndpoint.useDocumentUpdateAPIMutation()[1],
+    retrieveAPIResponse: documentRetrieveAPI,
+    updateAPITrigger: documentUpdateAPI[0],
+    updateAPIResponse: documentUpdateAPI[1],
 
     // Requirements... Muaaah...
-    organizationListAPIResponse: organizationAPIEndpoint.useOrganizationListAPIQuery(null),
+    organizationListAPIResponse: organziationListAPI,
 
   }  
 
@@ -85,12 +93,6 @@ const DocumentUpdatePage = () => {
     ) : null
   }, [APICall.retrieveAPIResponse])
   
-
-  // Extra Render
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-
   // JSX
   return (
     <React.Fragment>
@@ -99,8 +101,8 @@ const DocumentUpdatePage = () => {
       <>
         <TopNavBarComponent />
         {
-          APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
-          APICall.retrieveAPIResponse.isError ? "Error..." :
+          APICall.retrieveAPIResponse.isLoading ? <LoaderComponent /> : 
+          APICall.retrieveAPIResponse.isError ? <ErrorComponent message="Error..." /> :
           APICall.retrieveAPIResponse.isSuccess ? (
             <React.Fragment>
               {
@@ -140,13 +142,7 @@ const DocumentUpdatePage = () => {
                                   ) : []
                                 ) : []
                             }
-                            {/* {companyData.map((Organization) => (
-                              <DropdownOption key={Organization.companyName} value={Organization.companyName}>
-                                {Organization.companyName}
-                              </DropdownOption>
-                            ))} */}
                           </Dropdown>
-
                           
                           <InputHeading>Document Name</InputHeading>
                           <Input
@@ -179,15 +175,25 @@ const DocumentUpdatePage = () => {
                             </div>
                           </RowContainer> 
                         
-                          <InputHeading>Upload Scan Copy</InputHeading>
+                          <InputHeading>Upload Scan Copy <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
 
                           {/* --------------------------------------------------------------- */}
                           <FileInputContainer>
-                            <div style={{ display: "flex", flexDirection: "column" }} >
-                              {formData.dFileUploaded && <img style={{ 
-                                  height: "70px", 
-                                  objectFit: "cover"
-                              }} src={formData.dFileUploaded} />}
+                            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                              {formData.dFileUploaded && !fileLoading && (
+                                <>
+                                  {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                                    <img
+                                      style={{
+                                        height: "70px",
+                                        objectFit: "cover",
+                                      }}
+                                      src={formData.dFileUploaded}
+                                      alt="Preview"
+                                    />
+                                  ) : <FileIcon size={"50px"} />}
+                                </>                    
+                              )}
                               {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                               {formData.dFileUploaded && (
                                 <FileInputLabel 
@@ -228,18 +234,41 @@ const DocumentUpdatePage = () => {
 
                         <>
                           <ButtonContainer>
-                            <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
-                            <CancelButton type="button" onClick={() => "handleCancel"}>Cancel</CancelButton>
+                            <SubmitButton 
+                              type="submit" 
+                              onClick={handleSubmit}
+                              disabled={
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              }            
+                            >{(
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              ) ? 
+                              "Loading..." : "Submit"
+                            }</SubmitButton>
+                            <CancelButton 
+                              type="button" 
+                              onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.dDocumentRoute.aListRoute)}
+                              disabled={
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              }            
+                            >{(
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              ) ? 
+                              "Loading..." : "Cancel"
+                            }</CancelButton>                          
                           </ButtonContainer>
                         </>
                       </Form>
                     </Container>
                   </React.Fragment>
-                ) : "Backend Error"
+                ) : <ErrorComponent message="Backend Error..." />
               }
             </React.Fragment>
-          ) :
-          "Let me understand first"
+          ) : <ErrorComponent message="Let me understand first" />
         }
 
       </>

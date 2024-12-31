@@ -4,6 +4,9 @@ import handleImageDeleteForObject from '@/bLove/dUtility/aImageForObject/cHandle
 import React, { useEffect, useState } from 'react';
 import { AddButton, AddHeading, AddLicense, AddLicenseForm, ButtonBack, ButtonTag, CancelButton, ContactInfo, ContactInput, FileInput, FileInputContainer, FileInputLabel, FirstRow, Input2, InputHeading, IssueDate, Para, UploadedFile } from '../../style';
 import apiResponseHandler from './extras/aAPIResponseHandler';
+import { FileIcon } from 'lucide-react';
+import LoaderComponent from '@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent';
+import ErrorComponent from '@/bLove/cComponent/aGlobalComponent/component/bErrorComponent';
 
 
 const InspectionTabUpdateComponent = (props: any) => {
@@ -74,8 +77,8 @@ const InspectionTabUpdateComponent = (props: any) => {
       {/* InspectionTabUpdateComponent */}
 
       {
-        APICall.inspectionRetrieveAPIResponse.isLoading ? "Loading..." : 
-        APICall.inspectionRetrieveAPIResponse.isError ? "Error..." :
+        APICall.inspectionRetrieveAPIResponse.isLoading ? <LoaderComponent /> : 
+        APICall.inspectionRetrieveAPIResponse.isError ? <ErrorComponent message="Error..." /> :
         APICall.inspectionRetrieveAPIResponse.isSuccess ? (
           <React.Fragment>
             {
@@ -107,15 +110,25 @@ const InspectionTabUpdateComponent = (props: any) => {
                           />
                         </IssueDate>
                       </ContactInfo>
-                      <InputHeading>Upload Scan Copy License</InputHeading>
+                      <InputHeading>Upload Scan Copy <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading>
 
                       {/* --------------------------------------------------------------- */}
                       <FileInputContainer>
-                        <div style={{ display: "flex", flexDirection: "column" }} >
-                          {formData.dFileUploaded && <img style={{ 
-                              height: "70px", 
-                              objectFit: "cover"
-                          }} src={formData.dFileUploaded} />}
+                        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                          {formData.dFileUploaded && !fileLoading && (
+                            <>
+                              {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                                <img
+                                  style={{
+                                    height: "70px",
+                                    objectFit: "cover",
+                                  }}
+                                  src={formData.dFileUploaded}
+                                  alt="Preview"
+                                />
+                              ) : <FileIcon size={"50px"} />}
+                            </>                    
+                          )}
                           {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                           {formData.dFileUploaded && (
                             <FileInputLabel 
@@ -153,21 +166,47 @@ const InspectionTabUpdateComponent = (props: any) => {
                       {/* --------------------------------------------------------------- */}
 
                       <ButtonTag>
-                        <AddButton type="submit" onClick={handleSubmit}>
-                          <Para>Add New Inspection Report</Para>
+                        <AddButton 
+                          type="submit" 
+                          onClick={handleSubmit}
+                          disabled={
+                            fileLoading ||
+                            APICall.inspectionUpdateAPIResponse.isLoading
+                          }            
+                        >
+                          <Para>
+                            {(
+                                fileLoading ||
+                                APICall.inspectionUpdateAPIResponse.isLoading
+                              ) ? 
+                              "Loading..." : "Update Inspection Report"
+                            }
+                          </Para>
                         </AddButton>
-                        <CancelButton onClick={() => activateInspectionList()}>
-                          <Para>Cancel</Para>
+                        <CancelButton 
+                          onClick={() => activateInspectionList()}
+                          disabled={
+                            fileLoading ||
+                            APICall.inspectionUpdateAPIResponse.isLoading
+                          }            
+                        >
+                          <Para>
+                            {(
+                                fileLoading ||
+                                APICall.inspectionUpdateAPIResponse.isLoading
+                              ) ? 
+                              "Loading..." : "Cancel"
+                            }
+                          </Para>
                         </CancelButton>
                       </ButtonTag>
                     </AddLicenseForm>
                   </AddLicense>
                 </React.Fragment>
-              ) : "Backend Error"
+              ) : <ErrorComponent message="Backend Error..." />
             }
           </React.Fragment>
-        ) :
-        "Let me understand first"
+        ) : <ErrorComponent message="Let me understand first" />
       } 
 
     </React.Fragment>

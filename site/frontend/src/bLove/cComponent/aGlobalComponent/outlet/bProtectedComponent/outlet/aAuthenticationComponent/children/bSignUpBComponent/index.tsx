@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { Button, CityInfo, ContactInfo, ContactInput, Container, ContentWrapper, ContinueLink, Dropdown, DropdownOption, EmailInfo, Form, HyperLink, Image, ImageWrapper, Input, InputHeading, MainHeading, PageLink, PanCard, Para, PhoneInfo, PinCode, StateInfo, statesAndCities } from "./style";
-import LessThanSign from '@/bLove/hAsset/icon/LessThanSign.png'
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import allFirmType from "@/bLove/hAsset/data/allFirmType";
+import LessThanSign from '@/bLove/hAsset/icon/LessThanSign.png';
+import { Button, CityInfo, ContactInfo, ContactInput, Container, ContentWrapper, ContinueLink, Dropdown, DropdownOption, EmailInfo, Form, HyperLink, Image, ImageWrapper, Input, InputHeading, MainHeading, PageLink, PanCard, Para, PhoneInfo, PinCode, StateInfo, statesAndCities } from "./style";
 
 
 const SignUpBComponent = () => {
@@ -26,19 +27,6 @@ const SignUpBComponent = () => {
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchFirmType = async () => {
-  //     try {
-  //       const response = await api.get('firm-types/');
-  //       setFirmType(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching licenses:', error);
-  //     }
-  //   };
-
-  //   fetchFirmType();
-  // }, []);
-
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -53,11 +41,6 @@ const SignUpBComponent = () => {
     const city = e.target.value;
     setFormData({ ...formData, selectedCity: city });
   };
-
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-  
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -99,13 +82,6 @@ const SignUpBComponent = () => {
               onChange={handleInputChange}
             />
             <InputHeading>Select type of Firm</InputHeading>
-            {/* <Input
-              type="text"
-              placeholder="Select type of firm"
-              name="firmType"
-              value={formData.firmType}
-              onChange={handleInputChange}
-            /> */}
             <Dropdown
               name="type_of_firm"
               value={formData.type_of_firm}
@@ -114,13 +90,12 @@ const SignUpBComponent = () => {
               <DropdownOption value="" disabled>
                 Type of Firm
               </DropdownOption>
-              {/* {firmType.map((state) => ( */}
-              {["Type 1", "Type 2", "Type 3", "Type 4", 'Type 5'].map((state) => (
+              {allFirmType.map((each) => (
                 <DropdownOption
-                  key={state}
-                  value={state} // .toLowerCase().replace(/\s+/g, "-")
+                  key={each}
+                  value={each} // .toLowerCase().replace(/\s+/g, "-")
                 >
-                  {state}
+                  {each}
                 </DropdownOption>
               ))}
             </Dropdown>

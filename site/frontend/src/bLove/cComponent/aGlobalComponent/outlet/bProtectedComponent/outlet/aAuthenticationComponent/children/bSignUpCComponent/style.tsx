@@ -31,7 +31,7 @@ const Form = styled.form`
 `;
 
 const InputHeading = styled.div`
-  margin-top: 20px;
+  margin-top: 10px;
   font-weight: 500;
 `;
 
@@ -134,6 +134,16 @@ const Dropdown = styled.select`
   margin-right: 10px;
 `;
 
+const Dropdown1 = styled.select`
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  width: 324px;
+  font-size: 16px;
+  margin-top: 10px;
+  margin-right: 10px;
+`;
+
 const DropdownOption = styled.option`
   font-size: 16px;
   font-weight: 400 !important;
@@ -185,6 +195,7 @@ export {
   ContactInput,
   ContinueLink,
   Dropdown,
+  Dropdown1,
   DropdownOption,
   FileInputContainer,
   FileInput,

@@ -4,6 +4,7 @@ import apiResponseHandler from './extras/aAPIResponseHandler';
 import handleImageDeleteForObject from '@/bLove/dUtility/aImageForObject/cHandleImageDeleteForObject';
 import handleImageCreateForObject from '@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject';
 import handleImageUpdateForObject from '@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject';
+import { FileIcon } from 'lucide-react';
 
 
 const DocumentTabCreateComponent = (props: any) => {
@@ -96,15 +97,25 @@ const DocumentTabCreateComponent = (props: any) => {
 
             </ExpiryDate>
           </ContactInfo>
-          <InputHeading>Upload Scan Copy License</InputHeading>
+          <InputHeading>Upload Scan Copy <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading>
 
           {/* --------------------------------------------------------------- */}
           <FileInputContainer>
-            <div style={{ display: "flex", flexDirection: "column" }} >
-              {formData.dFileUploaded && <img style={{ 
-                  height: "70px", 
-                  objectFit: "cover"
-              }} src={formData.dFileUploaded} />}
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+              {formData.dFileUploaded && !fileLoading && (
+                <>
+                  {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                    <img
+                      style={{
+                        height: "70px",
+                        objectFit: "cover",
+                      }}
+                      src={formData.dFileUploaded}
+                      alt="Preview"
+                    />
+                  ) : <FileIcon size={"50px"} />}
+                </>                    
+              )}
               {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
               {formData.dFileUploaded && (
                 <FileInputLabel 
@@ -142,11 +153,38 @@ const DocumentTabCreateComponent = (props: any) => {
           {/* --------------------------------------------------------------- */}
 
           <ButtonTag>
-            <AddButton type="submit" onClick={handleSubmit}>
-              <Para>Add New Document</Para>
+            <AddButton 
+              type="submit" 
+              onClick={handleSubmit}
+              disabled={
+                fileLoading ||
+                APICall.documentCreateAPIResponse.isLoading
+              }
+            >
+              <Para>
+                {(
+                    fileLoading ||
+                    APICall.documentCreateAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Add New Document"
+                }
+              </Para>
             </AddButton>
-            <CancelButton onClick={() => activateDocumentList()}>
-              <Para>Cancel</Para>
+            <CancelButton 
+              onClick={() => activateDocumentList()}
+              disabled={
+                fileLoading ||
+                APICall.documentCreateAPIResponse.isLoading
+              }
+            >
+              <Para>
+                {(
+                    fileLoading ||
+                    APICall.documentCreateAPIResponse.isLoading
+                  ) ? 
+                  "Loading..." : "Cancel"
+                }
+              </Para>
             </CancelButton>
           </ButtonTag>
         </AddLicenseForm>

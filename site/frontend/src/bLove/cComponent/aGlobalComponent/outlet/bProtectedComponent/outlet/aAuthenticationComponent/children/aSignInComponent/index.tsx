@@ -20,9 +20,11 @@ const SignInComponent = () => {
   }
   
   // API Call
+  const userSignUp = userAPIEndpoint.useUserSignInAPIMutation()
+
   const APICall = {
-    submitAPITrigger: userAPIEndpoint.useUserSignInAPIMutation()[0],
-    submitAPIResponse: userAPIEndpoint.useUserSignInAPIMutation()[1],
+    submitAPITrigger: userSignUp[0],
+    submitAPIResponse: userSignUp[1],
   }
 
   //
@@ -130,16 +132,7 @@ const SignInComponent = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
-
-    // const finalFormData = {
-    //   ...formData,
-    //   ...location.state.formData
-    // }
-
-    console.log("Form submitted:", formData);
-
     loginAPIHandler(formData)
-
   };
 
   const handleInputChange = (e: any) => {
@@ -202,7 +195,10 @@ const SignInComponent = () => {
               )}
             /> */}
             <ContinueLink>
-              <Button type="submit">Go to Dashboard</Button>
+              <Button 
+                type="submit"
+                disabled={APICall.submitAPIResponse.isLoading}
+              >{APICall.submitAPIResponse.isLoading ? "Loading..." : "Go to Dashboard"}</Button>
             </ContinueLink>
           </Form>
         </ContentWrapper>

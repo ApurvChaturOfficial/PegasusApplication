@@ -11,6 +11,8 @@ const apiResponseHandler = {
 
         dSelectedLicense: data.dSelectedLicense,
         dLicenseNumber: data.dLicenseNumber,
+        dCategory: data.dCategory,
+        dOwnLoan: data.dOwnLoan,
         dIssueDate: data.dIssueDate,
         dExpiryDate: data.dExpiryDate,
         dFileUploaded: data.dFileUploaded,

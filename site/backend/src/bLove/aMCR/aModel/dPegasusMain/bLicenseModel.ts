@@ -11,6 +11,8 @@ export type LicenseModelType = DefaultSchemaUtilityType & {
   dLicenseNumber?: string,
   dIssueDate?: string,
   dExpiryDate?: string,
+  dCategory?: string,
+  dOwnLoan?: string,
   dFileUploaded?: string,
   dFileUploadedID?: string,
 
@@ -26,6 +28,8 @@ const schema = new mongoose.Schema<LicenseModelType>({
   dLicenseNumber: { type: String },
   dIssueDate: { type: String },
   dExpiryDate: { type: String },
+  dCategory: { type: String },
+  dOwnLoan: { type: String },
   dFileUploaded: { type: String },
   dFileUploadedID: { type: String },
 

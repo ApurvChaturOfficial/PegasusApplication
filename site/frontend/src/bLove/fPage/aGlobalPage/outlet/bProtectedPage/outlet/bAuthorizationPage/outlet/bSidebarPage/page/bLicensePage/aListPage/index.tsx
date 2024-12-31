@@ -73,6 +73,8 @@ const LicenseListPage = () => {
                 <TableHeading>Organization</TableHeading>
                 <TableHeading>License</TableHeading>
                 <TableHeading>License Number</TableHeading>
+                <TableHeading>Category</TableHeading>
+                <TableHeading>Own/Loan</TableHeading>
                 <TableHeading>Date of Issue</TableHeading>
                 <TableHeading>Date of Expiry</TableHeading>
                 <TableHeading>Alert</TableHeading>
@@ -96,6 +98,12 @@ const LicenseListPage = () => {
                                   {each.cEnrolledService?.cService?.aTitle && <em style={{ marginLeft: "2px", color: "tomato" }} >(Enrolled)</em>}
                                 </TableBody>
                                 <TableBody>{each.dLicenseNumber}</TableBody>
+                                <TableBody>
+                                  {each.dCategory || each.cEnrolledService?.cService?.dCategory}
+                                </TableBody>
+                                <TableBody>
+                                  {each.dOwnLoan || each.cEnrolledService?.cService?.dOwnLoan}
+                                </TableBody>
                                 <TableBody>{each.dIssueDate}</TableBody>
                                 <TableBody>{each.dExpiryDate}</TableBody>
                                 <TableBody>

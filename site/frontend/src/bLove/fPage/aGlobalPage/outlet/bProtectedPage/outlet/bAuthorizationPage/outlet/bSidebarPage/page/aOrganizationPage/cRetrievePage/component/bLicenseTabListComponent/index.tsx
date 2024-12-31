@@ -67,6 +67,8 @@ const LicenseTabListComponent = (props: any) => {
           <TableSection>
             <TableHeading style={{  width: "200px" }}>License</TableHeading>
             <TableHeading>License Number</TableHeading>
+            <TableHeading>Category</TableHeading>
+            <TableHeading>Own/Loan</TableHeading>
             <TableHeading>Date of Issue</TableHeading>
             <TableHeading>Date of Expiry</TableHeading>
             <TableHeading>Alerts</TableHeading>
@@ -94,6 +96,12 @@ const LicenseTabListComponent = (props: any) => {
                             </TableBody>
                             <TableBody>
                               {each.dLicenseNumber}</TableBody>
+                            <TableBody>
+                              {each.dCategory || each.cEnrolledService?.cService?.dCategory}
+                            </TableBody>
+                            <TableBody>
+                              {each.dOwnLoan || each.cEnrolledService?.cService?.dOwnLoan}
+                            </TableBody>
                             <TableBody>
                               {each.dIssueDate}
                             </TableBody>

@@ -51,6 +51,16 @@ const Dropdown = styled.select`
   margin-right: 10px;
 `;
 
+const Dropdown1 = styled.select`
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 350px;
+  margin-top: 10px;
+  margin-right: 10px;
+`;
+
 const DropdownOption = styled.option`
   font-size: 16px;
   font-weight: 400 !important;
@@ -100,6 +110,7 @@ const UploadedFile = styled.div`
 const FinalTag = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between
 `;
 
 const AddNew = styled.button`
@@ -214,6 +225,7 @@ export {
   Input,
   MainHeading,
   Dropdown,
+  Dropdown1,
   DropdownOption,
   ContactInput,
   IssueDate,

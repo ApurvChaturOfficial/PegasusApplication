@@ -113,6 +113,8 @@ const apiResponseHandler = {
         dLicenseNumber: data.dLicenseNumber,
         dIssueDate: data.dLicenseIssueDate,
         dExpiryDate: data.dLicenseExpiryDate,
+        dCategory: data.dCategory,
+        dOwnLoan: data.dOwnLoan,
         dFileUploaded: data.dFileUploaded,
         dFileUploadedID: data.dFileUploadedID,
       } });

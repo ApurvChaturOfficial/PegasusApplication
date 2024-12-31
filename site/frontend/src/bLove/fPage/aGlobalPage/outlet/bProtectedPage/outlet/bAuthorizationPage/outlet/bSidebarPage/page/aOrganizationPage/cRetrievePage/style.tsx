@@ -500,6 +500,16 @@ const Dropdown = styled.select`
   width: 100%;
 `;
 
+const Dropdown1 = styled.select`
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #b5b5b5;
+  font-size: 16px;
+  margin-top: 10px;
+  margin-right: 10px;
+  width: 350px;
+`;
+
 const DropdownOption = styled.option`
   font-size: 1rem;
   font-weight: 300 !important;
@@ -541,6 +551,13 @@ const ContactInfo = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+`;
+
+const ContactInfo1 = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 840px;
 `;
 
 const IssueDate = styled.div``;
@@ -775,12 +792,14 @@ export {
   CancelButton,
   ButtonTag,
   Dropdown,
+  Dropdown1,
   DropdownOption,
   FileInputContainer,
   FileInput,
   FileInputLabel,
   UploadedFile,
   ContactInfo,
+  ContactInfo1,
   IssueDate,
   ExpiryDate,
   ContactInput,

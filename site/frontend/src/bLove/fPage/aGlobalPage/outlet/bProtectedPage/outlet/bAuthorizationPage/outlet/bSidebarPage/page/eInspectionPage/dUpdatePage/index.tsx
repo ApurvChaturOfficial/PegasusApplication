@@ -14,6 +14,9 @@ import handleImageDeleteForObject from "@/bLove/dUtility/aImageForObject/cHandle
 import handleImageCreateForObject from "@/bLove/dUtility/aImageForObject/aHandleImageCreateForObject";
 import handleImageUpdateForObject from "@/bLove/dUtility/aImageForObject/bHandleImageUpdateForObject";
 import fullRoute from "@/bLove/gRoute/bFullRoute";
+import { FileIcon } from "lucide-react";
+import LoaderComponent from "@/bLove/cComponent/aGlobalComponent/component/aLoaderComponent";
+import ErrorComponent from "@/bLove/cComponent/aGlobalComponent/component/bErrorComponent";
 
 
 const InspectionUpdatePage = () => {
@@ -40,13 +43,17 @@ const InspectionUpdatePage = () => {
   }
 
   // API Call
+  const inspectionRetrieveAPI = inspectionAPIEndpoint.useInspectionRetrievePIQuery({ params: { _id: id } });
+  const inspectionUpdateAPI = inspectionAPIEndpoint.useInspectionUpdateAPIMutation();
+  const organziationListAPI = organizationAPIEndpoint.useOrganizationListAPIQuery(null)
+
   const APICall = {
-    retrieveAPIResponse: inspectionAPIEndpoint.useInspectionRetrievePIQuery({ params: { _id: id } }),
-    updateAPITrigger: inspectionAPIEndpoint.useInspectionUpdateAPIMutation()[0],
-    updateAPIResponse: inspectionAPIEndpoint.useInspectionUpdateAPIMutation()[1],
+    retrieveAPIResponse: inspectionRetrieveAPI,
+    updateAPITrigger: inspectionUpdateAPI[0],
+    updateAPIResponse: inspectionUpdateAPI[1],
     
     // Requirements... Muaaah...
-    organizationListAPIResponse: organizationAPIEndpoint.useOrganizationListAPIQuery(null),
+    organizationListAPIResponse: organziationListAPI,
 
   }  
 
@@ -62,7 +69,7 @@ const InspectionUpdatePage = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    console.log("formDataObj", formData);
+    // console.log("formDataObj", formData);
     apiResponseHandler.updateAPIResponseHandler(formData, APICall.updateAPITrigger, navigate, { id: id })
   };
 
@@ -84,12 +91,6 @@ const InspectionUpdatePage = () => {
     ) : null
   }, [APICall.retrieveAPIResponse])
   
-
-  // Extra Render
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-
   // JSX
   return (
     <React.Fragment>
@@ -98,8 +99,8 @@ const InspectionUpdatePage = () => {
       <>
         <TopNavBarComponent />
         {
-          APICall.retrieveAPIResponse.isLoading ? "Loading..." : 
-          APICall.retrieveAPIResponse.isError ? "Error..." :
+          APICall.retrieveAPIResponse.isLoading ? <LoaderComponent /> : 
+          APICall.retrieveAPIResponse.isError ? <ErrorComponent message="Error..." /> :
           APICall.retrieveAPIResponse.isSuccess ? (
             <React.Fragment>
               {
@@ -161,15 +162,25 @@ const InspectionUpdatePage = () => {
                             </IssueDate>
                           </RowContainer> 
                         
-                          <InputHeading>Upload Scan Copy</InputHeading>
+                          <InputHeading>Upload Scan Copy License <em style={{ color: "tomato" }} >(.pdf, .doc, .docx, .jpg, .jpeg, .png)</em></InputHeading> 
 
                           {/* --------------------------------------------------------------- */}
                           <FileInputContainer>
-                            <div style={{ display: "flex", flexDirection: "column" }} >
-                              {formData.dFileUploaded && <img style={{ 
-                                  height: "70px", 
-                                  objectFit: "cover"
-                              }} src={formData.dFileUploaded} />}
+                            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }} >
+                              {formData.dFileUploaded && !fileLoading && (
+                                <>
+                                  {(formData.dFileUploaded as any).match(/\.(jpeg|jpg|png)$/i) ? (
+                                    <img
+                                      style={{
+                                        height: "70px",
+                                        objectFit: "cover",
+                                      }}
+                                      src={formData.dFileUploaded}
+                                      alt="Preview"
+                                    />
+                                  ) : <FileIcon size={"50px"} />}
+                                </>                    
+                              )}
                               {formData.dFileUploaded && <FileInputLabel htmlFor="fileUpdate">{fileLoading ? "Loading..." : "Change File"}</FileInputLabel>}
                               {formData.dFileUploaded && (
                                 <FileInputLabel 
@@ -210,18 +221,41 @@ const InspectionUpdatePage = () => {
 
                         <>
                           <ButtonContainer>
-                            <SubmitButton type="submit" onClick={handleSubmit}>Submit</SubmitButton>
-                            <CancelButton type="button" onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.aListRoute)}>Cancel</CancelButton>
+                            <SubmitButton 
+                              type="submit" 
+                              onClick={handleSubmit}
+                              disabled={
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              }            
+                            >{(
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              ) ? 
+                              "Loading..." : "Submit"
+                            }</SubmitButton>
+                            <CancelButton 
+                              type="button" 
+                              onClick={() => navigate(fullRoute.aGlobalRoute.bProtectedRoute.bAuthorizationRoute.bSidebarRoute.eInspectionRoute.aListRoute)}
+                              disabled={
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              }            
+                            >{(
+                                fileLoading ||
+                                APICall.updateAPIResponse.isLoading
+                              ) ? 
+                              "Loading..." : "Cancel"
+                            }</CancelButton>
                           </ButtonContainer>
                         </>
                       </Form>
                     </Container>
                   </React.Fragment>
-                ) : "Backend Error"
+                ) : <ErrorComponent message="Backend Error..." />
               }
             </React.Fragment>
-          ) :
-          "Let me understand first"
+          ) : <ErrorComponent message="Let me understand first" />
         }
 
       </>

@@ -20,7 +20,7 @@ const licenseController = (Model=LicenseModel, Label="License") => ({
           select: "aTitle",
           populate: {
             path: 'cService',
-            select: 'aTitle',
+            select: 'aTitle dCategory dOwnLoan',
           }
         });
 

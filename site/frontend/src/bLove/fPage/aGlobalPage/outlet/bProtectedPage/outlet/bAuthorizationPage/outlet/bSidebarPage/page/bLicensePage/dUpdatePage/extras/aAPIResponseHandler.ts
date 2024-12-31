@@ -18,6 +18,8 @@ const apiResponseHandler = {
           dLicenseNumber: data.dLicenseNumber,
           dIssueDate: data.dIssueDate,
           dExpiryDate: data.dExpiryDate,
+          dCategory: data.dCategory,
+          dOwnLoan: data.dOwnLoan,  
           dFileUploaded: data.dFileUploaded,
           dFileUploadedID: data.dFileUploadedID,
         } 

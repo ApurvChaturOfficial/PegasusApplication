@@ -84,52 +84,65 @@ const OrganizationRetrievePage = () => {
   const [lazyServiceListAPITrigger, lazyServiceListAPIResponse] = serviceAPIEndpoint.useLazyServiceListAPIQuery()
 
   const [lazyEnrolledServiceListAPITrigger, lazyEnrolledServiceListAPIResponse] = enrolledServiceAPIEndpoint.useLazyEnrolledServiceListAPIQuery()
+
+  const organizationUpdateAPI = organizationAPIEndpoint.useOrganizationUpdateAPIMutation()
+
+  const licenseCreateAPI = licenseAPIEndpoint.useLicenseCreateAPIMutation()
+  const licenseUpdateAPI = licenseAPIEndpoint.useLicenseUpdateAPIMutation()
   
+  const inspectionCreateAPI = inspectionAPIEndpoint.useInspectionCreateAPIMutation();
+  const inspectionUpdateAPI = inspectionAPIEndpoint.useInspectionUpdateAPIMutation()
+
+  const documentCreateAPI = documentAPIEndpoint.useDocumentCreateAPIMutation();
+  const documentUpdateAPI = documentAPIEndpoint.useDocumentUpdateAPIMutation()
+
+  const enrolledServiceCreateAPI = enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation();
+
   const APICall = {
     retrieveAPIResponse: organizationAPIEndpoint.useOrganizationRetrievePIQuery({ params: { _id: id } }),
     
-    updateAPITrigger: organizationAPIEndpoint.useOrganizationUpdateAPIMutation()[0],
-    updateAPIResponse: organizationAPIEndpoint.useOrganizationUpdateAPIMutation()[1],
+    updateAPITrigger: organizationUpdateAPI[0],
+    updateAPIResponse: organizationUpdateAPI[1],
 
     // Requirements... Muaaah...
     // License
     licenseListAPITrigger: lazyLicenseListAPITrigger,
     licenseListAPIResponse: lazyLicenseListAPIResponse,
 
-    licenseCreateAPITrigger: licenseAPIEndpoint.useLicenseCreateAPIMutation()[0],
-    licenseCreateAPIResponse: licenseAPIEndpoint.useLicenseCreateAPIMutation()[1],
+    licenseCreateAPITrigger: licenseCreateAPI[0],
+    licenseCreateAPIResponse: licenseCreateAPI[1],
 
     licenseRetrieveAPITrigger: lazyLicenseRetrieveAPITrigger,
     licenseRetrieveAPIResponse: lazyLicenseRetrieveAPIResponse,
 
-    licenseUpdateAPITrigger: licenseAPIEndpoint.useLicenseUpdateAPIMutation()[0],
-    licenseUpdateAPIResponse: licenseAPIEndpoint.useLicenseUpdateAPIMutation()[1],
+    licenseUpdateAPITrigger: licenseUpdateAPI[0],
+    licenseUpdateAPIResponse: licenseUpdateAPI[1],
 
     // Inspection
     inspectionListAPITrigger: lazyInspectionListAPITrigger,
     inspectionListAPIResponse: lazyInspectionListAPIResponse,
 
-    inspectionCreateAPITrigger: inspectionAPIEndpoint.useInspectionCreateAPIMutation()[0],
-    inspectionCreateAPIResponse: inspectionAPIEndpoint.useInspectionCreateAPIMutation()[1],
+    inspectionCreateAPITrigger: inspectionCreateAPI[0],
+    inspectionCreateAPIResponse: inspectionCreateAPI[1],
 
     inspectionRetrieveAPITrigger: lazyInspectionRetrieveAPITrigger,
     inspectionRetrieveAPIResponse: lazyInspectionRetrieveAPIResponse,    
 
-    inspectionUpdateAPITrigger: inspectionAPIEndpoint.useInspectionUpdateAPIMutation()[0],
-    inspectionUpdateAPIResponse: inspectionAPIEndpoint.useInspectionUpdateAPIMutation()[1],
+    inspectionUpdateAPITrigger: inspectionUpdateAPI[0],
+    inspectionUpdateAPIResponse: inspectionUpdateAPI[1],
 
     // Document
     documentListAPITrigger: lazyDocumentListAPITrigger,
     documentListAPIResponse: lazyDocumentListAPIResponse,
 
-    documentCreateAPITrigger: documentAPIEndpoint.useDocumentCreateAPIMutation()[0],
-    documentCreateAPIResponse: documentAPIEndpoint.useDocumentCreateAPIMutation()[1],
+    documentCreateAPITrigger: documentCreateAPI[0],
+    documentCreateAPIResponse: documentCreateAPI[1],
 
     documentRetrieveAPITrigger: lazyDocumentRetrieveAPITrigger,
     documentRetrieveAPIResponse: lazyDocumentRetrieveAPIResponse,    
 
-    documentUpdateAPITrigger: documentAPIEndpoint.useDocumentUpdateAPIMutation()[0],
-    documentUpdateAPIResponse: documentAPIEndpoint.useDocumentUpdateAPIMutation()[1],
+    documentUpdateAPITrigger: documentUpdateAPI[0],
+    documentUpdateAPIResponse: documentUpdateAPI[1],
 
     // Service
     serviceListAPITrigger: lazyServiceListAPITrigger,
@@ -139,8 +152,8 @@ const OrganizationRetrievePage = () => {
     enrolledServiceListAPITrigger: lazyEnrolledServiceListAPITrigger,
     enrolledServiceListAPIResponse: lazyEnrolledServiceListAPIResponse,
 
-    enrolledServiceCreateAPITrigger: enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation()[0],
-    enrolledServiceCreateAPIResponse: enrolledServiceAPIEndpoint.useEnrolledServiceCreateAPIMutation()[1],    
+    enrolledServiceCreateAPITrigger: enrolledServiceCreateAPI[0],
+    enrolledServiceCreateAPIResponse: enrolledServiceCreateAPI[1],    
   }  
 
   // JSX
