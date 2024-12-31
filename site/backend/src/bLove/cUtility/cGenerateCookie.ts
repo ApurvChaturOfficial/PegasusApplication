@@ -4,6 +4,8 @@ import { UserModelType } from '../aMCR/aModel/bUserAdministration/aUserModel';
 
 const generateCookie = async (code: 200 | 201, message: string, key: string, object: UserModelType | any, response: express.Response) => {
 
+  console.log("first")
+
   // Create Token
   const token = object.getAuthenticationToken();
 

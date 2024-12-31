@@ -11,6 +11,8 @@ const authenticationMiddleware = catchAsyncMiddleware(
     // Get Token from Cookie
     const { AUTH_TOKEN_BY_ANKAS: token } = request.cookies;
 
+    console.log(token)
+
     // Not Found
     if (!token || token === "j:null") {
       return next(new ErrorUtility("Please login to access this resource", 401));
