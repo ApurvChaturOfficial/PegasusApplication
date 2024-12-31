@@ -1,4 +1,3 @@
-import path from 'path';
 import express from 'express'
 
 import morganMiddleware from 'morgan'
@@ -30,8 +29,6 @@ import { singleImageRouter } from '../bLove/aMCR/cRoute/zFreestyleSample/aSingle
 
 
 const appConnection = express();
-
-const _dirname = path.resolve()
 
 // Third Party Middleware
 appConnection.use(morganMiddleware("dev"));
@@ -67,9 +64,9 @@ appConnection.use('/api/v1/single-image/', singleImageRouter);
 appConnection.use(errorMiddleware);
 
 // Connect Frontend (For AWS Deployment)
-appConnection.use(express.static(path.join(_dirname, "../frontend/dist")))
-appConnection.get("*", (_, response) => {
-  response.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
-})
+// appConnection.use(express.static(path.join(_dirname, "../frontend/dist")))
+// appConnection.get("*", (_, response) => {
+//   response.sendFile(path.resolve(_dirname, "frontend", "dist", "index.html"))
+// })
 
 export default appConnection;
